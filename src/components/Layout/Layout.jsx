@@ -21,7 +21,7 @@ export default function Layout() {
       </main>
 
       <footer className="layout__footer">
-        © {new Date().getFullYear()} Learning Space
+        © {new Date().getFullYear()} Learning Space by Thxncdzch
       </footer>
     </div>
   );

@@ -13,7 +13,7 @@ export default function Home() {
           <span className="home__title-gradient">visualized.</span>
         </h1>
         <p className="home__subtitle">
-          Clear explanations paired with interactive visualizations for each
+          This is the web pages made to clear explanations paired with interactive visualizations for each
           topic in every subject. Pick a subject to begin.
         </p>
       </section>
