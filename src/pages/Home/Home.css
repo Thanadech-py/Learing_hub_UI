@@ -1,0 +1,39 @@
+/* Hero */
+.home__hero {
+  text-align: center;
+  padding: 5rem 0 4rem;
+}
+
+.home__title {
+  margin: 0;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.home__title-gradient {
+  background: linear-gradient(90deg, #38bdf8, #a78bfa, #34d399, #fb923c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.home__subtitle {
+  max-width: 600px;
+  margin: 1.5rem auto 0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+/* Subjects */
+.home__subjects {
+  padding-bottom: 5rem;
+}
+
+.home__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}

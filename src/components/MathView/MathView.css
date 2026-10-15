@@ -1,0 +1,31 @@
+.math-view {
+  font-size: 1.05em;
+  color: inherit;
+}
+
+.math-view--block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  padding: 0.85rem 1rem;
+  margin: 0.75rem 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.math-view--block .katex-display {
+  margin: 0;
+}
+
+.math-view .katex {
+  font-size: 1.1em;
+}
+
+.math-fallback {
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+}
