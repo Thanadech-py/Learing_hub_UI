@@ -282,9 +282,8 @@ const thermodynamicsData = {
           symbol: '\\dot{Q}',
           name: 'Convective Heat Rate',
           unit: '\\text{W} = \\text{J/s}',
-          description: 'The rate of energy transferred from the surface into the flowing fluid.',
-          connections:
-            'Directly proportional to the convection heat transfer coefficient h, surface area A, and thermal driving head (T_s - T_∞).',
+          description: 'The rate of energy transferred from the surface into the flowing fluid.',          
+          connections:'Directly proportional to the convection heat transfer coefficient h, surface area A, and thermal driving head (T_s - T_∞).',
         },
         {
           symbol: 'h',

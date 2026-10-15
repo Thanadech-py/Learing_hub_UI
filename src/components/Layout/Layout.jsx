@@ -1,4 +1,5 @@
 import { Link, Outlet } from 'react-router-dom';
+import logoImg from '../logo/Logo.png';
 import './Layout.css';
 
 /**
@@ -10,8 +11,8 @@ export default function Layout() {
     <div className="layout">
       <header className="layout__nav">
         <Link to="/" className="layout__logo">
-          <span className="layout__logo-mark" aria-hidden="true">◆</span>
-          Learning Space
+          <img src={logoImg} alt="Learning Space Logo" className="layout__logo-img" />
+          <span className="layout__logo-text">Learning Space</span>
         </Link>
       </header>
 
