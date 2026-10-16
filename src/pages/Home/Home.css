@@ -1,7 +1,7 @@
 /* Hero */
 .home__hero {
   text-align: center;
-  padding: 5rem 0 4rem;
+  padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(2rem, 4vw, 4rem);
 }
 
 .home__title {

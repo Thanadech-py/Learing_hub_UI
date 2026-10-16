@@ -531,6 +531,18 @@ export function useIsometric3D(initialPreset = 'Isometric', options = {}) {
     setCamera({ ...preset, activePreset: name });
   }, []);
 
+  useEffect(() => {
+    const onDimChange = (e) => {
+      if (e.detail === '2d') {
+        setPreset('Top (XY)');
+      } else if (e.detail === '3d') {
+        setPreset('Isometric');
+      }
+    };
+    window.addEventListener('viz-dimension-change', onDimChange);
+    return () => window.removeEventListener('viz-dimension-change', onDimChange);
+  }, [setPreset]);
+
   const getCanvasPoint = (e, canvas) => {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;

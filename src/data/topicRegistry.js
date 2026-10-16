@@ -1,9 +1,10 @@
 import { getPhysicsTopicById, getAllPhysicsTopics } from './physicsTopics/index.js';
 import { getMathTopicById, getAllMathTopics } from './mathTopics/index.js';
 import { getLinearAlgebraTopicById, getAllLinearAlgebraTopics } from './linearAlgebraTopics/index.js';
+import { getComProgTopicById, getAllComProgTopics } from './comProgTopics/index.js';
 
 /**
- * Universal topic resolver supporting Physics, Mathematics, and Linear Algebra.
+ * Universal topic resolver supporting Physics, Mathematics, Linear Algebra, and Com-Prog.
  */
 export function getTopicData(subjectId, topicId) {
   if (subjectId === 'physics') {
@@ -14,6 +15,9 @@ export function getTopicData(subjectId, topicId) {
   }
   if (subjectId === 'linear-algebra') {
     return getLinearAlgebraTopicById(topicId);
+  }
+  if (subjectId === 'com-prog') {
+    return getComProgTopicById(topicId);
   }
   return null;
 }
@@ -27,6 +31,9 @@ export function getAllTopicsForSubject(subjectId) {
   }
   if (subjectId === 'linear-algebra') {
     return getAllLinearAlgebraTopics();
+  }
+  if (subjectId === 'com-prog') {
+    return getAllComProgTopics();
   }
   return [];
 }

@@ -17,28 +17,37 @@ const foundationsSubPage = {
     'Accumulation of quantities, Riemann sums, net area under curves, antiderivatives, and the bridge between differentiation and integration.',
   estimatedTime: '24 min read + interactive lab',
   overview: [
-    'Integral calculus solves the general problem of accumulation. While multiplication calculates area for simple flat rectangles (Area = Base × Height), real-world boundaries are curved. Integration slices a continuous region into thousands of infinitesimally thin vertical strips, computes their rectangular areas, and sums them together.',
-    'The crowning glory of calculus is the Fundamental Theorem of Calculus (FTC), discovered independently by Isaac Newton and Gottfried Wilhelm Leibniz. The FTC demonstrates that differentiation and integration are exact inverse operations—unveiling an unexpected bridge between the slope of a tangent line and the area under a curve.',
-    'Integrals are ubiquitous across science: accumulating velocity gives displacement, accumulating power gives energy consumed, accumulating probability density gives probabilities, and accumulating mass density gives total mass and center of gravity.',
-    'This topic houses the complete suite of Finals Exam Integration Chapters: select any technique or application from the chapter ribbon above to explore its derivations, governing equations, and dedicated interactive visualizer!',
+    'Welcome to the Integral Calculus Home Page. Integral calculus solves the fundamental problem of continuous accumulation: slicing a curved region into infinitely many infinitesimal strips of width dx and summing their contributions.',
+    'The crowning achievement of calculus is the Fundamental Theorem of Calculus (FTC), discovered independently by Isaac Newton and Gottfried Wilhelm Leibniz. It establishes that differentiation and integration are exact inverse operations—allowing definite integrals to be evaluated effortlessly via antiderivatives: ∫ₐᵇ f(x) dx = F(b) − F(a).',
+    'Start by exploring the foundational Riemann Sum & FTC visualization and core principles on this home page, then scroll down to the Integration Sub-Topic Cards to navigate to dedicated pages for U-Substitution, Integration by Parts, Trigonometric Integrals, Trig Substitution, Partial Fractions, Improper Integrals, Area Between Curves, Volumes of Revolution, and Arc Length!',
   ],
   keyConcepts: [
     {
       title: 'Riemann Sums: Slicing and Summing to Infinity',
       content:
-        'To find the exact area under y = f(x) from x = a to x = b, partition the interval into n sub-intervals of width Δx = (b - a)/n. On each strip, erect a rectangle of height f(x_i*). As n → ∞ (and Δx → 0), the sum of rectangle areas converges precisely to the definite integral: ∫_a^b f(x) dx.\n\n' +
-        'Approximation methods include Left Riemann sum (height sampled at left edge), Right Riemann sum (sampled at right edge), Midpoint rule (sampled at middle), and Trapezoidal rule (averaging left and right).',
+        'To find the exact area under y = f(x) from x = a to x = b, partition the interval into n sub-intervals of width Δx = (b - a)/n. On each strip, erect a rectangle of height f(x_i*). As n → ∞ (and Δx → 0), the sum of rectangle areas converges to the definite integral.',
+      exampleLabel: 'Fundamental Riemann Limit Definition',
+      latex:
+        '\\text{Area} = \\lim_{n \\to \\infty} \\sum_{i=1}^n f(x_i^*)\\,\\Delta x = \\int_a^b f(x)\\,dx, \\qquad \\Delta x = \\frac{b - a}{n}',
     },
     {
-      title: 'The Fundamental Theorem of Calculus (FTC)',
+      title: 'The Fundamental Theorem of Calculus (FTC Parts 1 & 2)',
       content:
-        '• Part 1 (Derivatives undo Integrals): If F(x) = ∫_a^x f(t) dt, then F\'(x) = f(x). The rate of change of accumulated area at coordinate x is simply the height of the curve at x!\n\n' +
-        '• Part 2 (Evaluation Theorem): If F(x) is any antiderivative of f(x) (meaning F\'(x) = f(x)), then the definite integral is simply the net change in the antiderivative: ∫_a^b f(x) dx = F(b) - F(a). This eliminates the tedious need to compute infinite sums by hand!',
+        '• Part 1 (Derivative of an Area Function): If F(x) = ∫ₐˣ f(t) dt, then dF/dx = f(x).\n' +
+        '• Part 2 (Evaluation Theorem): If F\'(x) = f(x), then ∫ₐᵇ f(x) dx = F(b) − F(a).',
+      exampleLabel: 'Worked Fundamental Power-Rule Integral Calculation',
+      latex:
+        '\\int_1^3 \\left(3x^2 + 2x\\right) dx = \\Big[ x^3 + x^2 \\Big]_1^3 = \\left(3^3 + 3^2\\right) - \\left(1^3 + 1^2\\right) = 36 - 2 = 34',
+      exampleNote:
+        'Using the Reverse Power Rule ∫ xⁿ dx = xⁿ⁺¹/(n+1), we find the antiderivative F(x) = x³ + x² and evaluate F(3) − F(1).',
     },
     {
-      title: 'Net Signed Area: Positive vs. Negative Regions',
+      title: 'Basic Antiderivative Rules & Net Signed Area',
       content:
-        'A definite integral computes net signed area: regions where the curve lies above the x-axis (f(x) > 0) contribute positive area (+), while regions beneath the x-axis (f(x) < 0) contribute negative area (-). If a function is odd (like sin x from -π to +π), the positive and negative halves cancel exactly, yielding an integral of 0.',
+        'Regions above the x-axis (f(x) > 0) contribute positive area (+), while regions below the x-axis (f(x) < 0) contribute negative area (−). Master the elementary antiderivative table before tackling advanced techniques in the sub-topic cards below.',
+      exampleLabel: 'Essential Elementary Antiderivative Formulas',
+      latex:
+        '\\int x^n\\,dx = \\frac{x^{n+1}}{n+1}+C \\;(n\\ne -1), \\quad \\int \\frac{1}{x}\\,dx = \\ln|x|+C, \\quad \\int e^x\\,dx = e^x+C, \\quad \\int \\cos x\\,dx = \\sin x+C',
     },
   ],
   equations: [

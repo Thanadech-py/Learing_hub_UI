@@ -40,7 +40,7 @@ export function PlaybackBar({
             disabled={isPlaying}
             title="Step forward 1 frame"
           >
-            <span classNamviz-e="viz-icon" aria-hidden="true">⏯</span> Step
+            <span className="viz-icon" aria-hidden="true">⏯</span> Step
           </button>
         )}
 
