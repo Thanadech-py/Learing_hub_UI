@@ -1,33 +1,64 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SliderControl, MetricBadge } from '../shared/VizControls.jsx';
+import {
+  useIsometric3D,
+  IsometricToolbar,
+  project3D,
+  draw3DGrid,
+  draw3DAxes,
+  drawOrientationGizmo,
+  draw3DVector,
+  draw3DPlane,
+} from './viz3dUtils.jsx';
 
 export default function SystemsOfEquationsViz() {
-  const [a1, setA1] = useState(1);
-  const [b1, setB1] = useState(1);
-  const [c1, setC1] = useState(4);
+  const [mode, setMode] = useState('solution'); // 'solution' | 'planes'
 
-  const [a2, setA2] = useState(2);
-  const [b2, setB2] = useState(-1);
-  const [c2, setC2] = useState(2);
+  // Mode 1: Complete Solution x = x_p + x_n in 3D (Rank 2 matrix with 2D Row Plane & 1D Null Line)
+  const [xp, setXp] = useState([1.4, 1.0, 0.4]); // Particular solution in Row Space
+  const [nullDir, setNullDir] = useState([-0.6, 0.8, 1.8]); // Null space direction n
+  const [tParam, setTParam] = useState(0.8); // Free variable scalar t along null space line
 
-  const canvasRef = useRef(null);
+  // Mode 2: 3D Intersecting Planes
+  const [d1, setD1] = useState(1.2); // Plane 1 offset
+  const [d2, setD2] = useState(0.8); // Plane 2 offset
+  const [d3, setD3] = useState(0.6); // Plane 3 offset
+  const [parallelMode, setParallelMode] = useState(false);
 
-  // Determinant: a1*b2 - a2*b1
-  const det = a1 * b2 - a2 * b1;
-  const isParallel = Math.abs(det) < 1e-4;
+  const {
+    canvasRef,
+    camera,
+    setPreset,
+    handlesRef,
+    activeHandleId,
+    hoveredHandleId,
+    baseScale,
+    centerOffset,
+  } = useIsometric3D('Isometric', { baseScale: 42, snap: 0.1, clampRange: 3.2 });
 
-  // Check if coincident
-  const ratioA = a2 !== 0 ? a1 / a2 : 0;
-  const ratioC = c2 !== 0 ? c1 / c2 : 0;
-  const isCoincident = isParallel && Math.abs(ratioA - ratioC) < 1e-4;
+  // Orthogonalize xp against nullDir so xp strictly lives in the Row Space C(A^T) ⊥ N(A)
+  const nLenSq = nullDir[0] ** 2 + nullDir[1] ** 2 + nullDir[2] ** 2 || 1;
+  const dotXpN = xp[0] * nullDir[0] + xp[1] * nullDir[1] + xp[2] * nullDir[2];
+  const xpRow = [
+    xp[0] - (dotXpN / nLenSq) * nullDir[0],
+    xp[1] - (dotXpN / nLenSq) * nullDir[1],
+    xp[2] - (dotXpN / nLenSq) * nullDir[2],
+  ];
+  const xn = [nullDir[0] * tParam, nullDir[1] * tParam, nullDir[2] * tParam];
+  const xTotal = [xpRow[0] + xn[0], xpRow[1] + xn[1], xpRow[2] + xn[2]];
 
-  // Cramer's rule for solution (x*, y*)
-  let solX = 0;
-  let solY = 0;
-  if (!isParallel) {
-    solX = (c1 * b2 - c2 * b1) / det;
-    solY = (a1 * c2 - a2 * c1) / det;
-  }
+  // Build two basis vectors spanning the Row Space plane ⊥ nullDir
+  const refVec = Math.abs(nullDir[0]) < 0.8 ? [1, 0, 0] : [0, 1, 0];
+  const rBasis1 = [
+    nullDir[1] * refVec[2] - nullDir[2] * refVec[1],
+    nullDir[2] * refVec[0] - nullDir[0] * refVec[2],
+    nullDir[0] * refVec[1] - nullDir[1] * refVec[0],
+  ];
+  const rBasis2 = [
+    nullDir[1] * rBasis1[2] - nullDir[2] * rBasis1[1],
+    nullDir[2] * rBasis1[0] - nullDir[0] * rBasis1[2],
+    nullDir[0] * rBasis1[1] - nullDir[1] * rBasis1[0],
+  ];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,118 +70,258 @@ export default function SystemsOfEquationsViz() {
     ctx.fillStyle = '#080d1a';
     ctx.fillRect(0, 0, width, height);
 
-    const originX = width / 2;
-    const originY = height / 2;
-    const scale = 36; // px per unit
+    draw3DGrid(ctx, camera, width, height, { range: 4, baseScale, centerOffset });
+    draw3DAxes(ctx, camera, width, height, { range: 4.2, baseScale, centerOffset });
 
-    // Grid
-    ctx.strokeStyle = '#1e293b';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += scale) {
+    const proj = (pt) => project3D(pt, camera, width, height, baseScale, centerOffset);
+
+    if (mode === 'solution') {
+      // Draw Row Space Plane C(A^T) through origin
+      draw3DPlane(ctx, camera, width, height, rBasis1, rBasis2, {
+        extent: 2.7,
+        fillColor: 'rgba(56, 189, 248, 0.12)',
+        strokeColor: 'rgba(56, 189, 248, 0.42)',
+        baseScale,
+        centerOffset,
+      });
+
+      // Draw Null Space Line N(A) through origin (amber dashed)
+      const nA = proj(nullDir.map((v) => -v * 1.8));
+      const nB = proj(nullDir.map((v) => v * 1.8));
+      ctx.save();
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.65)';
+      ctx.lineWidth = 2.4;
+      ctx.setLineDash([6, 4]);
       ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
+      ctx.moveTo(nA.x, nA.y);
+      ctx.lineTo(nB.x, nB.y);
       ctx.stroke();
-    }
-    for (let y = 0; y < height; y += scale) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
+      ctx.restore();
 
-    // Axes
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(20, originY);
-    ctx.lineTo(width - 20, originY);
-    ctx.moveTo(originX, 20);
-    ctx.lineTo(originX, height - 20);
-    ctx.stroke();
-
-    // Helper: Draw line a*x + b*y = c -> y = (c - a*x)/b
-    const drawLine = (aCoeff, bCoeff, cCoeff, color, label) => {
-      ctx.strokeStyle = color;
+      // Draw Shifted Solution Line x = x_p + t*n (parallel to N(A), passing through x_p!)
+      const sA = proj([xpRow[0] - nullDir[0] * 1.8, xpRow[1] - nullDir[1] * 1.8, xpRow[2] - nullDir[2] * 1.8]);
+      const sB = proj([xpRow[0] + nullDir[0] * 1.8, xpRow[1] + nullDir[1] * 1.8, xpRow[2] + nullDir[2] * 1.8]);
+      ctx.save();
+      ctx.strokeStyle = '#22c55e';
       ctx.lineWidth = 3;
       ctx.beginPath();
-
-      if (Math.abs(bCoeff) > 1e-4) {
-        const xMin = -12;
-        const xMax = 12;
-        const y1 = (cCoeff - aCoeff * xMin) / bCoeff;
-        const y2 = (cCoeff - aCoeff * xMax) / bCoeff;
-        ctx.moveTo(originX + xMin * scale, originY - y1 * scale);
-        ctx.lineTo(originX + xMax * scale, originY - y2 * scale);
-      } else {
-        // Vertical line x = c/a
-        const xFix = cCoeff / aCoeff;
-        ctx.moveTo(originX + xFix * scale, 0);
-        ctx.lineTo(originX + xFix * scale, height);
-      }
+      ctx.moveTo(sA.x, sA.y);
+      ctx.lineTo(sB.x, sB.y);
       ctx.stroke();
-
-      ctx.fillStyle = color;
-      ctx.font = 'bold 12px system-ui, sans-serif';
-      ctx.fillText(label, 40, color === '#38bdf8' ? 40 : 65);
-    };
-
-    drawLine(a1, b1, c1, '#38bdf8', `L₁: ${a1}x + ${b1}y = ${c1}`);
-    drawLine(a2, b2, c2, '#a78bfa', `L₂: ${a2}x + ${b2}y = ${c2}`);
-
-    // If Unique Solution: Draw glowing intersection dot
-    if (!isParallel) {
-      const px = originX + solX * scale;
-      const py = originY - solY * scale;
-
       ctx.fillStyle = '#22c55e';
-      ctx.shadowColor = '#22c55e';
-      ctx.shadowBlur = 12;
-      ctx.beginPath();
-      ctx.arc(px, py, 7, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      ctx.font = 'bold 11px system-ui, sans-serif';
+      ctx.fillText('Solution Line x = x_p + x_n', sB.x + 8, sB.y);
+      ctx.restore();
 
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 13px system-ui, sans-serif';
-      ctx.fillText(`Intersection (${solX.toFixed(2)}, ${solY.toFixed(2)})`, px + 10, py - 10);
+      // Tip-to-tail arrow from x_p to x = x_p + x_n
+      draw3DVector(ctx, camera, width, height, xTotal, {
+        from: xpRow,
+        color: '#f59e0b',
+        label: `+ x_n (t=${tParam})`,
+        lineWidth: 2.4,
+        dashed: true,
+        showDropStalk: false,
+        baseScale,
+        centerOffset,
+      });
+
+      // Total solution vector x = x_p + x_n
+      draw3DVector(ctx, camera, width, height, xTotal, {
+        color: '#22c55e',
+        label: `x = [${xTotal.map((v) => v.toFixed(1)).join(',')}]`,
+        lineWidth: 3.4,
+        showDropStalk: true,
+        baseScale,
+        centerOffset,
+      });
+
+      // Draggable Particular Solution x_p and Null Space Generator n
+      const tipXp = draw3DVector(ctx, camera, width, height, xpRow, {
+        color: '#38bdf8',
+        label: `x_p (Row Space)`,
+        lineWidth: 3.2,
+        draggable: true,
+        isDragging: activeHandleId === 'xp',
+        isHovered: hoveredHandleId === 'xp',
+        baseScale,
+        centerOffset,
+      });
+
+      const tipN = draw3DVector(ctx, camera, width, height, nullDir, {
+        color: '#f59e0b',
+        label: `n ∈ N(A) (An = 0)`,
+        lineWidth: 3,
+        draggable: true,
+        isDragging: activeHandleId === 'n',
+        isHovered: hoveredHandleId === 'n',
+        baseScale,
+        centerOffset,
+      });
+
+      drawOrientationGizmo(ctx, camera, width);
+
+      handlesRef.current = [
+        { id: 'xp', vec: xp, screen: tipXp, onChange: setXp },
+        { id: 'n', vec: nullDir, screen: tipN, onChange: setNullDir },
+      ];
+    } else {
+      // Mode 2: Three 3D Planes
+      // Plane 1: normal ~ [1, 0, 0.3], Plane 2: normal ~ [0, 1, 0.3], Plane 3: normal ~ [0, 0, 1] (or parallel to Plane 1)
+      draw3DPlane(ctx, camera, width, height, [0, 1, 0], [0, 0, 1], {
+        origin: [d1, 0, 0],
+        extent: 2.5,
+        fillColor: 'rgba(56, 189, 248, 0.14)',
+        strokeColor: 'rgba(56, 189, 248, 0.55)',
+        baseScale,
+        centerOffset,
+      });
+
+      draw3DPlane(ctx, camera, width, height, [1, 0, 0], [0, 0, 1], {
+        origin: [0, d2, 0],
+        extent: 2.5,
+        fillColor: 'rgba(167, 139, 250, 0.14)',
+        strokeColor: 'rgba(167, 139, 250, 0.55)',
+        baseScale,
+        centerOffset,
+      });
+
+      if (parallelMode) {
+        // Plane 3 parallel to Plane 1 -> Inconsistent (No Solution) unless d3 === d1
+        draw3DPlane(ctx, camera, width, height, [0, 1, 0], [0, 0, 1], {
+          origin: [d3 - 1.2, 0, 0],
+          extent: 2.5,
+          fillColor: 'rgba(244, 63, 94, 0.14)',
+          strokeColor: 'rgba(244, 63, 94, 0.55)',
+          baseScale,
+          centerOffset,
+        });
+      } else {
+        // Plane 3 horizontal z = d3 -> Unique 3D intersection point [d1, d2, d3]!
+        draw3DPlane(ctx, camera, width, height, [1, 0, 0], [0, 1, 0], {
+          origin: [0, 0, d3],
+          extent: 2.5,
+          fillColor: 'rgba(34, 197, 94, 0.14)',
+          strokeColor: 'rgba(34, 197, 94, 0.55)',
+          baseScale,
+          centerOffset,
+        });
+
+        // Draggable 3D intersection vector x* = [d1, d2, d3]
+        const sol = [d1, d2, d3];
+        const tipSol = draw3DVector(ctx, camera, width, height, sol, {
+          color: '#22c55e',
+          label: `Unique Solution x* = [${d1.toFixed(1)}, ${d2.toFixed(1)}, ${d3.toFixed(1)}]`,
+          lineWidth: 3.4,
+          draggable: true,
+          isDragging: activeHandleId === 'sol',
+          isHovered: hoveredHandleId === 'sol',
+          baseScale,
+          centerOffset,
+        });
+
+        handlesRef.current = [
+          {
+            id: 'sol',
+            vec: sol,
+            screen: tipSol,
+            onChange: (next) => {
+              setD1(next[0]);
+              setD2(next[1]);
+              setD3(next[2]);
+            },
+          },
+        ];
+      }
+
+      drawOrientationGizmo(ctx, camera, width);
     }
-  }, [a1, b1, c1, a2, b2, c2, isParallel, solX, solY]);
+  }, [mode, xp, xpRow, nullDir, tParam, xn, xTotal, rBasis1, rBasis2, d1, d2, d3, parallelMode, camera, activeHandleId, hoveredHandleId, baseScale, centerOffset, handlesRef]);
 
   return (
     <div className="viz-container">
       <header className="viz-header">
         <div className="viz-header__title-block">
-          <h3 className="viz-header__title">Systems of Linear Equations (Ax = b)</h3>
-          <span className="viz-header__tag">Intersection of 2D Hyperplanes</span>
+          <h3 className="viz-header__title">3D Systems Ax = b: Complete Solution & Intersecting Planes</h3>
+          <span className="viz-header__tag">x = x_p + x_n • Row Picture vs. Column Picture</span>
+        </div>
+        <div className="viz-mode-tabs">
+          <button
+            type="button"
+            className={`viz-mode-btn ${mode === 'solution' ? 'viz-mode-btn--active' : ''}`}
+            onClick={() => setMode('solution')}
+          >
+            Complete Solution (x = x_p + x_n)
+          </button>
+          <button
+            type="button"
+            className={`viz-mode-btn ${mode === 'planes' ? 'viz-mode-btn--active' : ''}`}
+            onClick={() => setMode('planes')}
+          >
+            3D Intersecting Planes
+          </button>
         </div>
       </header>
 
       <div className="viz-metrics-bar">
-        <MetricBadge label="Line 1" value={`${a1}x + ${b1}y = ${c1}`} unit="" />
-        <MetricBadge label="Line 2" value={`${a2}x + ${b2}y = ${c2}`} unit="" />
-        <MetricBadge label="Determinant det(A)" value={det.toFixed(1)} unit="" />
-        <MetricBadge
-          label="Solution State"
-          value={isCoincident ? 'Infinite Solutions' : isParallel ? 'No Solution (Parallel)' : `(${solX.toFixed(2)}, ${solY.toFixed(2)})`}
-          unit={isParallel ? 'Inconsistent' : 'Unique Solution'}
-          highlight={!isParallel}
-        />
+        {mode === 'solution' ? (
+          <>
+            <MetricBadge label="Particular x_p ∈ C(Aᵀ)" value={`[${xpRow.map((v) => v.toFixed(1)).join(', ')}]ᵀ`} unit="Ax_p = b" />
+            <MetricBadge label="Homogeneous x_n ∈ N(A)" value={`[${xn.map((v) => v.toFixed(1)).join(', ')}]ᵀ`} unit="Ax_n = 0" />
+            <MetricBadge label="Complete Solution x" value={`[${xTotal.map((v) => v.toFixed(1)).join(', ')}]ᵀ`} unit="A(x_p + x_n) = b" highlight />
+            <MetricBadge label="Orthogonality x_p · x_n" value="0.00" unit="C(Aᵀ) ⊥ N(A)" highlight />
+          </>
+        ) : (
+          <>
+            <MetricBadge label="Plane 1 (x = d₁)" value={`x = ${d1.toFixed(1)}`} unit="Cyan Plane" />
+            <MetricBadge label="Plane 2 (y = d₂)" value={`y = ${d2.toFixed(1)}`} unit="Purple Plane" />
+            <MetricBadge
+              label="Plane 3"
+              value={parallelMode ? `x = ${(d3 - 1.2).toFixed(1)}` : `z = ${d3.toFixed(1)}`}
+              unit={parallelMode ? 'Parallel to Plane 1' : 'Green Plane'}
+            />
+            <MetricBadge
+              label="System Status"
+              value={parallelMode ? 'No Solution (Inconsistent)' : `[${d1.toFixed(1)}, ${d2.toFixed(1)}, ${d3.toFixed(1)}]ᵀ`}
+              unit={parallelMode ? 'Rank(A) < Rank([A|b])' : 'Unique 3D Point'}
+              highlight
+            />
+          </>
+        )}
       </div>
 
-      <div className="viz-canvas-area" style={{ height: '370px' }}>
-        <canvas ref={canvasRef} width={800} height={370} />
+      <div className="viz-canvas-area" style={{ height: '420px' }}>
+        <IsometricToolbar
+          camera={camera}
+          setPreset={setPreset}
+          extraButtons={
+            mode === 'planes' ? (
+              <button
+                type="button"
+                className={`viz-3d-btn ${parallelMode ? 'viz-3d-btn--active' : ''}`}
+                onClick={() => setParallelMode((p) => !p)}
+              >
+                {parallelMode ? 'Parallel Planes (No Solution)' : 'Intersecting Planes (Unique)'}
+              </button>
+            ) : null
+          }
+        />
+        <canvas ref={canvasRef} width={840} height={420} />
       </div>
 
       <div className="viz-controls-panel">
-        <div className="viz-sliders-grid">
-          <SliderControl label="Line 1: a₁" value={a1} min={-3} max={3} step={1} unit="" onChange={setA1} />
-          <SliderControl label="Line 1: b₁" value={b1} min={-3} max={3} step={1} unit="" onChange={setB1} />
-          <SliderControl label="Line 1: c₁" value={c1} min={-6} max={6} step={1} unit="" onChange={setC1} />
-          <SliderControl label="Line 2: a₂" value={a2} min={-3} max={3} step={1} unit="" onChange={setA2} />
-          <SliderControl label="Line 2: b₂" value={b2} min={-3} max={3} step={1} unit="" onChange={setB2} />
-          <SliderControl label="Line 2: c₂" value={c2} min={-6} max={6} step={1} unit="" onChange={setC2} />
-        </div>
+        {mode === 'solution' ? (
+          <div className="viz-sliders-grid">
+            <SliderControl label="Free Variable Parameter t (along N(A))" value={tParam} min={-2} max={2} step={0.1} onChange={setTParam} />
+            <SliderControl label="Particular x_p (Z component)" value={xp[2]} min={-2.5} max={2.5} step={0.1} onChange={(v) => setXp([xp[0], xp[1], v])} />
+            <SliderControl label="Null Space n_z" value={nullDir[2]} min={-2.5} max={2.5} step={0.1} onChange={(v) => setNullDir([nullDir[0], nullDir[1], v])} />
+          </div>
+        ) : (
+          <div className="viz-sliders-grid">
+            <SliderControl label="Plane 1 Offset d₁" value={d1} min={-2.5} max={2.5} step={0.1} onChange={setD1} />
+            <SliderControl label="Plane 2 Offset d₂" value={d2} min={-2.5} max={2.5} step={0.1} onChange={setD2} />
+            <SliderControl label="Plane 3 Offset d₃" value={d3} min={-2.5} max={2.5} step={0.1} onChange={setD3} />
+          </div>
+        )}
       </div>
     </div>
   );

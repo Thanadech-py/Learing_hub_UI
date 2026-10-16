@@ -15,22 +15,22 @@ const newtonsLawsData = {
     {
       title: 'First Law: Law of Inertia',
       content:
-        'A body remains in a state of rest or uniform motion in a straight line unless acted upon by a non-zero net external force (ΣF = 0 ⟹ a = 0). Mass is the quantitative scalar measure of this inertia.',
+        'Without a net external force (ΣF = 0), an object maintains constant velocity (a = 0). Mass is the scalar measure of this inertia.',
     },
     {
-      title: 'Second Law: Fundamental Dynamic Law',
+      title: 'Second Law: Fundamental Dynamics',
       content:
-        'The acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass (ΣF = ma). Acceleration always points in the exact direction of the net force vector.',
+        'Net force directly accelerates mass: ΣF = ma. Acceleration is always collinear with the net vector force.',
     },
     {
       title: 'Third Law: Action & Reaction',
       content:
-        'Whenever body A exerts a force on body B, body B simultaneously exerts an equal and opposite force on body A (F_AB = -F_BA). These paired forces act on different bodies, so they never cancel each other out on a single free-body diagram.',
+        'Forces always exist in equal and opposite pairs acting on different bodies: F_AB = -F_BA. They never cancel on the same free-body diagram.',
     },
     {
       title: 'Friction: Static vs. Kinetic',
       content:
-        'Static friction (fs ≤ μs N) self-adjusts to counteract applied forces up to a maximum threshold. Once relative motion begins, kinetic friction (fk = μk N) applies a nearly constant opposing force, typically smaller than the peak static threshold (μk < μs).',
+        'Static friction (fs ≤ μs N) prevents motion up to a threshold. Kinetic friction (fk = μk N) opposes ongoing sliding and is usually lower.',
     },
   ],
   equations: [
@@ -130,6 +130,80 @@ const newtonsLawsData = {
           description: 'The angle between the incline surface and horizontal ground.',
           connections:
             'Controls the balance between driving downhill force (sinθ) and pressing normal force (cosθ). At critical angle θ_c = arctan(μs), the block just begins to slide.',
+        },
+        {
+          symbol: '\\mu_k',
+          name: 'Coefficient of Kinetic Friction',
+          unit: '\\text{dimensionless}',
+          description: 'The sliding friction ratio between the block and the incline surface.',
+          connections:
+            'Multiplies g cosθ to oppose downhill motion. If μk = tanθ, acceleration a = 0 and the block slides downhill at constant velocity.',
+        },
+      ],
+    },
+    {
+      name: 'Vector Dot Product (Scalar Product)',
+      latex: '\\vec{a} \\cdot \\vec{b} = ab\\cos\\theta',
+      summary:
+        'Projects one vector onto another to yield a scalar quantity, foundational to work (W = F · s) and energy calculations.',
+      conditions: ['θ is the interior angle between vectors a and b (0° ≤ θ ≤ 180°)'],
+      variables: [
+        {
+          symbol: '\\vec{a} \\cdot \\vec{b}',
+          name: 'Scalar Product Result',
+          unit: '\\text{Product of component units}',
+          description: 'The scalar product of vectors a and b.',
+          connections:
+            'Maximised when vectors are parallel (θ = 0°, cos 0° = 1). Vanishes when vectors are mutually perpendicular (θ = 90°, cos 90° = 0).',
+        },
+        {
+          symbol: 'a, b',
+          name: 'Vector Magnitudes',
+          unit: '\\text{Same as vectors}',
+          description: 'The non-negative geometric lengths of vectors a and b.',
+          connections:
+            'Linear scaling: doubling the length of either vector doubles the dot product.',
+        },
+        {
+          symbol: '\\theta',
+          name: 'Enclosed Angle',
+          unit: '^\\circ \\text{ or radians}',
+          description: 'The geometric angle between the directions of the two vectors.',
+          connections:
+            'Positive for acute angles (0° to 90°), zero at 90°, and negative for obtuse angles (90° to 180°).',
+        },
+      ],
+    },
+    {
+      name: 'Vector Cross Product Magnitude',
+      latex: '|\\vec{a} \\times \\vec{b}| = ab\\sin\\theta',
+      summary:
+        'Computes the area of the parallelogram formed by two vectors, directed perpendicularly via the right-hand rule (essential for torque and angular momentum).',
+      conditions: ['Produces a vector mutually perpendicular to both a and b', 'Right-hand rule determines vector orientation'],
+      variables: [
+        {
+          symbol: '|\\vec{a} \\times \\vec{b}|',
+          name: 'Cross Product Magnitude',
+          unit: '\\text{Product of component units}',
+          description: 'The magnitude of the vector product.',
+          connections:
+            'Maximised when vectors are perpendicular (θ = 90°, sin 90° = 1). Equals zero when vectors are collinear (θ = 0° or 180°).',
+        },
+        {
+          symbol: 'a, b',
+          name: 'Vector Magnitudes',
+          unit: '\\text{Same as vectors}',
+          description: 'The lengths of the two interacting vectors.',
+          connections:
+            'Directly scales the cross product magnitude.',
+        },
+        {
+          symbol: '\\theta',
+          name: 'Enclosed Angle',
+          unit: '^\\circ \\text{ or radians}',
+          description: 'The angle between vectors a and b.',
+          connections:
+            'Governed by the sine function: zero when parallel, maximum when perpendicular.',
         },
       ],
     },

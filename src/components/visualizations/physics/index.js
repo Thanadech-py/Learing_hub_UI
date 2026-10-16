@@ -7,6 +7,7 @@ import CircularMotionViz from './CircularMotionViz.jsx';
 import OscillationsViz from './OscillationsViz.jsx';
 import WavesViz from './WavesViz.jsx';
 import ThermodynamicsViz from './ThermodynamicsViz.jsx';
+import FluidMechanicsViz from './FluidMechanicsViz.jsx';
 
 const physicsVizMap = {
   'units-and-measurement': UnitsMeasurementViz,
@@ -17,6 +18,7 @@ const physicsVizMap = {
   'circular-motion': CircularMotionViz,
   oscillations: OscillationsViz,
   waves: WavesViz,
+  'fluid-mechanics': FluidMechanicsViz,
   thermodynamics: ThermodynamicsViz,
 };
 

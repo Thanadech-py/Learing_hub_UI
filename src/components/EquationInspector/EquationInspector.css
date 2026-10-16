@@ -163,7 +163,7 @@
 }
 
 .var-card__symbol {
-  width: 100px;
+  width: 5cm;
   height: 44px;
   border-radius: 10px;
   background: color-mix(in srgb, var(--accent, #38bdf8) 12%, transparent);

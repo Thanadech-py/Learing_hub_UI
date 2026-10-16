@@ -1,23 +1,134 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SliderControl, MetricBadge } from '../shared/VizControls.jsx';
+import {
+  useIsometric3D,
+  IsometricToolbar,
+  project3D,
+  draw3DGrid,
+  draw3DAxes,
+  drawOrientationGizmo,
+  draw3DVector,
+  draw3DPlane,
+  draw3DParallelepiped,
+} from './viz3dUtils.jsx';
+
+const PRESETS = {
+  'Standard Basis (Rank 3)': {
+    v1: [2.0, 0.0, 0.0],
+    v2: [0.0, 2.0, 0.0],
+    v3: [0.0, 0.0, 2.0],
+    a: 1.0,
+    b: 1.0,
+    c: 1.0,
+  },
+  'Skewed Independent (Rank 3)': {
+    v1: [2.0, 0.6, 0.2],
+    v2: [0.4, 2.0, 0.6],
+    v3: [0.4, 0.6, 2.2],
+    a: 1.0,
+    b: 0.8,
+    c: 0.8,
+  },
+  'Coplanar (Rank 2 — v₃ in Span{v₁,v₂})': {
+    v1: [2.2, 0.4, 0.6],
+    v2: [0.4, 2.0, 0.8],
+    v3: [1.3, 1.2, 0.7], // 0.5*v1 + 0.5*v2
+    a: 1.0,
+    b: 1.0,
+    c: 1.0,
+  },
+  'Collinear (Rank 1 — Line)': {
+    v1: [1.6, 1.0, 0.8],
+    v2: [2.4, 1.5, 1.2],
+    v3: [-1.6, -1.0, -0.8],
+    a: 1.0,
+    b: 0.5,
+    c: 0.5,
+  },
+};
+
+function cross3(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0],
+  ];
+}
+
+function dot3(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function norm3(a) {
+  return Math.hypot(a[0], a[1], a[2]);
+}
 
 export default function LinearCombinationsViz() {
-  const [c1, setC1] = useState(1.5);
-  const [c2, setC2] = useState(-1.0);
-  const [v1x, setV1x] = useState(2);
-  const [v1y, setV1y] = useState(1);
-  const [v2x, setV2x] = useState(0);
-  const [v2y, setV2y] = useState(2);
+  const [v1, setV1] = useState([2.0, 0.6, 0.2]);
+  const [v2, setV2] = useState([0.4, 2.0, 0.6]);
+  const [v3, setV3] = useState([0.4, 0.6, 2.2]);
+  const [alpha, setAlpha] = useState(1.0);
+  const [beta, setBeta] = useState(0.8);
+  const [gamma, setGamma] = useState(0.8);
+  const [showTipToTail, setShowTipToTail] = useState(true);
+  const [showSpanGeometry, setShowSpanGeometry] = useState(true);
+  const [activePreset, setActivePreset] = useState('Skewed Independent (Rank 3)');
 
-  const canvasRef = useRef(null);
+  const {
+    canvasRef,
+    camera,
+    setPreset,
+    handlesRef,
+    activeHandleId,
+    hoveredHandleId,
+    baseScale,
+    centerOffset,
+  } = useIsometric3D('Isometric', { baseScale: 42, snap: 0.1, clampRange: 3.5 });
 
-  // Result vector w = c1*v1 + c2*v2
-  const wx = c1 * v1x + c2 * v2x;
-  const wy = c1 * v1y + c2 * v2y;
+  // Compute w = alpha*v1 + beta*v2 + gamma*v3
+  const av1 = [alpha * v1[0], alpha * v1[1], alpha * v1[2]];
+  const bv2 = [beta * v2[0], beta * v2[1], beta * v2[2]];
+  const gv3 = [gamma * v3[0], gamma * v3[1], gamma * v3[2]];
+  const w = [
+    +(av1[0] + bv2[0] + gv3[0]).toFixed(2),
+    +(av1[1] + bv2[1] + gv3[1]).toFixed(2),
+    +(av1[2] + bv2[2] + gv3[2]).toFixed(2),
+  ];
 
-  // Check linear dependence: det [v1, v2] = v1x*v2y - v1y*v2x
-  const detBasis = v1x * v2y - v1y * v2x;
-  const isDependent = Math.abs(detBasis) < 1e-4;
+  // Triple product det([v1 v2 v3]) = v1 · (v2 × v3)
+  const det3 = dot3(v1, cross3(v2, v3));
+  const c12 = norm3(cross3(v1, v2));
+  const c23 = norm3(cross3(v2, v3));
+  const c13 = norm3(cross3(v1, v3));
+  const maxLen = Math.max(norm3(v1), norm3(v2), norm3(v3));
+
+  let rank = 3;
+  let spanLabel = '3D Space ℝ³ (Independent)';
+  if (maxLen < 0.05) {
+    rank = 0;
+    spanLabel = '0D Origin {0}';
+  } else if (Math.abs(det3) > 0.18) {
+    rank = 3;
+    spanLabel = '3D Space ℝ³ (Independent)';
+  } else if (Math.max(c12, c23, c13) > 0.12) {
+    rank = 2;
+    spanLabel = '2D Tilted Plane (Coplanar)';
+  } else {
+    rank = 1;
+    spanLabel = '1D Line (Collinear)';
+  }
+
+  const applyPreset = (name) => {
+    const p = PRESETS[name];
+    if (!p) return;
+    setV1([...p.v1]);
+    setV2([...p.v2]);
+    setV3([...p.v3]);
+    setAlpha(p.a);
+    setBeta(p.b);
+    setGamma(p.c);
+    setActivePreset(name);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -29,145 +140,234 @@ export default function LinearCombinationsViz() {
     ctx.fillStyle = '#080d1a';
     ctx.fillRect(0, 0, width, height);
 
-    const originX = width / 2;
-    const originY = height / 2;
-    const scale = 34; // px per unit
+    draw3DGrid(ctx, camera, width, height, { range: 4, baseScale, centerOffset });
+    draw3DAxes(ctx, camera, width, height, { range: 4.2, baseScale, centerOffset });
 
-    // If Independent, draw the oblique coordinate grid spanned by v1 and v2
-    if (!isDependent) {
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
-      ctx.lineWidth = 1;
-      for (let i = -5; i <= 5; i++) {
-        // Lines parallel to v2 shifted by i*v1
-        ctx.beginPath();
-        ctx.moveTo(
-          originX + (i * v1x - 6 * v2x) * scale,
-          originY - (i * v1y - 6 * v2y) * scale
-        );
-        ctx.lineTo(
-          originX + (i * v1x + 6 * v2x) * scale,
-          originY - (i * v1y + 6 * v2y) * scale
-        );
-        ctx.stroke();
+    const proj = (pt) => project3D(pt, camera, width, height, baseScale, centerOffset);
 
-        // Lines parallel to v1 shifted by i*v2
+    // Visualize Span Geometry based on rank (3D Parallelepiped, 2D Plane, or 1D Line)
+    if (showSpanGeometry) {
+      if (rank === 3) {
+        draw3DParallelepiped(ctx, camera, width, height, av1, bv2, gv3, {
+          fillColor: 'rgba(34, 197, 94, 0.08)',
+          strokeColor: 'rgba(34, 197, 94, 0.35)',
+          dashed: true,
+          baseScale,
+          centerOffset,
+        });
+      } else if (rank === 2) {
+        // Choose two non-collinear vectors to draw the 2D span plane
+        const pair = c12 >= c23 && c12 >= c13 ? [v1, v2] : c23 >= c13 ? [v2, v3] : [v1, v3];
+        draw3DPlane(ctx, camera, width, height, pair[0], pair[1], {
+          extent: 3.0,
+          fillColor: 'rgba(245, 158, 11, 0.14)',
+          strokeColor: 'rgba(245, 158, 11, 0.48)',
+          gridColor: 'rgba(245, 158, 11, 0.2)',
+          baseScale,
+          centerOffset,
+        });
+      } else if (rank === 1) {
+        const dir = norm3(v1) >= norm3(v2) ? v1 : v2;
+        const len = norm3(dir) || 1;
+        const pA = proj(dir.map((d) => (-3.8 * d) / len));
+        const pB = proj(dir.map((d) => (3.8 * d) / len));
+        ctx.save();
+        ctx.strokeStyle = 'rgba(244, 63, 94, 0.7)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([6, 4]);
         ctx.beginPath();
-        ctx.moveTo(
-          originX + (-6 * v1x + i * v2x) * scale,
-          originY - (-6 * v1y + i * v2y) * scale
-        );
-        ctx.lineTo(
-          originX + (6 * v1x + i * v2x) * scale,
-          originY - (6 * v1y + i * v2y) * scale
-        );
+        ctx.moveTo(pA.x, pA.y);
+        ctx.lineTo(pB.x, pB.y);
         ctx.stroke();
+        ctx.restore();
       }
-    } else {
-      // Dependent: Draw the single 1D span line (orange)
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.5)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath();
-      ctx.moveTo(originX - 10 * v1x * scale, originY + 10 * v1y * scale);
-      ctx.lineTo(originX + 10 * v1x * scale, originY - 10 * v1y * scale);
-      ctx.stroke();
-      ctx.setLineDash([]);
     }
 
-    // Axes
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(20, originY);
-    ctx.lineTo(width - 20, originY);
-    ctx.moveTo(originX, 20);
-    ctx.lineTo(originX, height - 20);
-    ctx.stroke();
+    // Tip-to-tail construction: 0 -> αv1 -> αv1 + βv2 -> w
+    if (showTipToTail) {
+      const step1 = av1;
+      const step2 = [av1[0] + bv2[0], av1[1] + bv2[1], av1[2] + bv2[2]];
 
-    const toPx = (x, y) => ({
-      x: originX + x * scale,
-      y: originY - y * scale,
+      draw3DVector(ctx, camera, width, height, step1, {
+        from: [0, 0, 0],
+        color: 'rgba(56, 189, 248, 0.65)',
+        label: `αv₁`,
+        lineWidth: 2,
+        dashed: true,
+        showDropStalk: false,
+        baseScale,
+        centerOffset,
+      });
+
+      draw3DVector(ctx, camera, width, height, step2, {
+        from: step1,
+        color: 'rgba(167, 139, 250, 0.75)',
+        label: `+βv₂`,
+        lineWidth: 2,
+        dashed: true,
+        showDropStalk: false,
+        baseScale,
+        centerOffset,
+      });
+
+      draw3DVector(ctx, camera, width, height, w, {
+        from: step2,
+        color: 'rgba(245, 158, 11, 0.85)',
+        label: `+γv₃`,
+        lineWidth: 2,
+        dashed: true,
+        showDropStalk: false,
+        baseScale,
+        centerOffset,
+      });
+    }
+
+    // Resultant linear combination w
+    draw3DVector(ctx, camera, width, height, w, {
+      color: '#22c55e',
+      label: `w = [${w[0].toFixed(1)}, ${w[1].toFixed(1)}, ${w[2].toFixed(1)}]`,
+      lineWidth: 3.6,
+      showDropStalk: true,
+      baseScale,
+      centerOffset,
     });
 
-    const p0 = { x: originX, y: originY };
-    const pV1 = toPx(v1x, v1y);
-    const pV2 = toPx(v2x, v2y);
-    const pC1V1 = toPx(c1 * v1x, c1 * v1y);
-    const pW = toPx(wx, wy);
+    // Draggable basis vectors v1, v2, v3
+    const tip1 = draw3DVector(ctx, camera, width, height, v1, {
+      color: '#38bdf8',
+      label: `v₁ [${v1.map((n) => n.toFixed(1)).join(',')}]`,
+      lineWidth: 3,
+      draggable: true,
+      isDragging: activeHandleId === 'v1',
+      isHovered: hoveredHandleId === 'v1',
+      baseScale,
+      centerOffset,
+    });
 
-    const drawVector = (from, to, color, label, widthLine = 3) => {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = widthLine;
-      ctx.beginPath();
-      ctx.moveTo(from.x, from.y);
-      ctx.lineTo(to.x, to.y);
-      ctx.stroke();
+    const tip2 = draw3DVector(ctx, camera, width, height, v2, {
+      color: '#a78bfa',
+      label: `v₂ [${v2.map((n) => n.toFixed(1)).join(',')}]`,
+      lineWidth: 3,
+      draggable: true,
+      isDragging: activeHandleId === 'v2',
+      isHovered: hoveredHandleId === 'v2',
+      baseScale,
+      centerOffset,
+    });
 
-      const angle = Math.atan2(to.y - from.y, to.x - from.x);
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(to.x, to.y);
-      ctx.lineTo(to.x - 9 * Math.cos(angle - Math.PI / 6), to.y - 9 * Math.sin(angle - Math.PI / 6));
-      ctx.lineTo(to.x - 9 * Math.cos(angle + Math.PI / 6), to.y - 9 * Math.sin(angle + Math.PI / 6));
-      ctx.closePath();
-      ctx.fill();
+    const tip3 = draw3DVector(ctx, camera, width, height, v3, {
+      color: '#f59e0b',
+      label: `v₃ [${v3.map((n) => n.toFixed(1)).join(',')}]`,
+      lineWidth: 3,
+      draggable: true,
+      isDragging: activeHandleId === 'v3',
+      isHovered: hoveredHandleId === 'v3',
+      baseScale,
+      centerOffset,
+    });
 
-      ctx.fillStyle = color;
-      ctx.font = 'bold 12px system-ui, sans-serif';
-      ctx.fillText(label, to.x + 8, to.y - 4);
-    };
+    drawOrientationGizmo(ctx, camera, width);
 
-    // Draw component vectors
-    drawVector(p0, pV1, '#38bdf8', 'v₁');
-    drawVector(p0, pV2, '#a78bfa', 'v₂');
-
-    // Dashed path: 0 -> c1*v1 -> c1*v1 + c2*v2
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([3, 3]);
-    ctx.beginPath();
-    ctx.moveTo(pC1V1.x, pC1V1.y);
-    ctx.lineTo(pW.x, pW.y);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Draw resultant w = c1*v1 + c2*v2
-    drawVector(p0, pW, '#22c55e', `w = ${c1.toFixed(1)}v₁ + ${c2.toFixed(1)}v₂`, 4);
-  }, [c1, c2, v1x, v1y, v2x, v2y, wx, wy, isDependent]);
+    handlesRef.current = [
+      {
+        id: 'v1',
+        vec: v1,
+        screen: tip1,
+        onChange: (next) => {
+          setActivePreset(null);
+          setV1(next);
+        },
+      },
+      {
+        id: 'v2',
+        vec: v2,
+        screen: tip2,
+        onChange: (next) => {
+          setActivePreset(null);
+          setV2(next);
+        },
+      },
+      {
+        id: 'v3',
+        vec: v3,
+        screen: tip3,
+        onChange: (next) => {
+          setActivePreset(null);
+          setV3(next);
+        },
+      },
+    ];
+  }, [v1, v2, v3, av1, bv2, gv3, w, rank, c12, c23, c13, showTipToTail, showSpanGeometry, camera, activeHandleId, hoveredHandleId, baseScale, centerOffset, handlesRef]);
 
   return (
     <div className="viz-container">
       <header className="viz-header">
         <div className="viz-header__title-block">
-          <h3 className="viz-header__title">Linear Combinations & Span Visualizer</h3>
-          <span className="viz-header__tag">w = c₁v₁ + c₂v₂</span>
+          <h3 className="viz-header__title">3D Linear Combinations, Span & Independence</h3>
+          <span className="viz-header__tag">w = αv₁ + βv₂ + γv₃ in ℝ³</span>
         </div>
       </header>
 
+      <div className="viz-presets-bar">
+        <span className="viz-presets-bar__label">Scenarios:</span>
+        {Object.keys(PRESETS).map((name) => (
+          <button
+            key={name}
+            type="button"
+            className={`viz-preset-chip ${activePreset === name ? 'viz-preset-chip--active' : ''}`}
+            onClick={() => applyPreset(name)}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+
       <div className="viz-metrics-bar">
-        <MetricBadge label="Weight c₁" value={c1.toFixed(1)} unit="" />
-        <MetricBadge label="Weight c₂" value={c2.toFixed(1)} unit="" />
-        <MetricBadge label="Combination w" value={`[${wx.toFixed(1)}, ${wy.toFixed(1)}]ᵀ`} unit="" highlight />
+        <MetricBadge label="Weights (α, β, γ)" value={`(${alpha}, ${beta}, ${gamma})`} unit="" />
+        <MetricBadge label="Combination w" value={`[${w.join(', ')}]ᵀ`} unit="" highlight />
+        <MetricBadge label="3D Triple Product" value={det3.toFixed(2)} unit="v₁ · (v₂ × v₃)" />
         <MetricBadge
-          label="Span Condition"
-          value={isDependent ? 'Linearly Dependent' : 'Linearly Independent'}
-          unit={isDependent ? 'Span is 1D Line' : 'Spans Entire ℝ²'}
-          highlight={!isDependent}
+          label="Span Dimension"
+          value={`Rank ${rank} (${rank} DOF)`}
+          unit={spanLabel}
+          highlight
         />
       </div>
 
-      <div className="viz-canvas-area" style={{ height: '370px' }}>
-        <canvas ref={canvasRef} width={800} height={370} />
+      <div className="viz-canvas-area" style={{ height: '430px' }}>
+        <IsometricToolbar
+          camera={camera}
+          setPreset={setPreset}
+          extraButtons={
+            <>
+              <button
+                type="button"
+                className={`viz-3d-btn ${showTipToTail ? 'viz-3d-btn--active' : ''}`}
+                onClick={() => setShowTipToTail((s) => !s)}
+              >
+                Tip-to-Tail Chain
+              </button>
+              <button
+                type="button"
+                className={`viz-3d-btn ${showSpanGeometry ? 'viz-3d-btn--active' : ''}`}
+                onClick={() => setShowSpanGeometry((s) => !s)}
+              >
+                Span Geometry
+              </button>
+            </>
+          }
+        />
+        <canvas ref={canvasRef} width={840} height={430} />
       </div>
 
       <div className="viz-controls-panel">
         <div className="viz-sliders-grid">
-          <SliderControl label="Scalar Weight c₁" value={c1} min={-3} max={3} step={0.25} unit="" onChange={setC1} />
-          <SliderControl label="Scalar Weight c₂" value={c2} min={-3} max={3} step={0.25} unit="" onChange={setC2} />
-          <SliderControl label="Vector v₁_x" value={v1x} min={-3} max={3} step={0.5} unit="" onChange={setV1x} />
-          <SliderControl label="Vector v₁_y" value={v1y} min={-3} max={3} step={0.5} unit="" onChange={setV1y} />
-          <SliderControl label="Vector v₂_x" value={v2x} min={-3} max={3} step={0.5} unit="" onChange={setV2x} />
-          <SliderControl label="Vector v₂_y" value={v2y} min={-3} max={3} step={0.5} unit="" onChange={setV2y} />
+          <SliderControl label="Weight α (on v₁)" value={alpha} min={-2} max={2} step={0.1} onChange={setAlpha} />
+          <SliderControl label="Weight β (on v₂)" value={beta} min={-2} max={2} step={0.1} onChange={setBeta} />
+          <SliderControl label="Weight γ (on v₃)" value={gamma} min={-2} max={2} step={0.1} onChange={setGamma} />
+          <SliderControl label="v₁_z (Elevation)" value={v1[2]} min={-3} max={3} step={0.1} onChange={(val) => setV1([v1[0], v1[1], val])} />
+          <SliderControl label="v₂_z (Elevation)" value={v2[2]} min={-3} max={3} step={0.1} onChange={(val) => setV2([v2[0], v2[1], val])} />
+          <SliderControl label="v₃_z (Elevation)" value={v3[2]} min={-3} max={3} step={0.1} onChange={(val) => setV3([v3[0], v3[1], val])} />
         </div>
       </div>
     </div>

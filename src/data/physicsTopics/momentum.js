@@ -13,19 +13,19 @@ const momentumData = {
   ],
   keyConcepts: [
     {
-      title: 'Vector Nature of Momentum',
+      title: 'Momentum Vector & Conservation',
       content:
-        'Momentum is a vector that points in the exact direction of velocity. In two or three dimensions, momentum must be conserved independently along each orthogonal axis (Σp_x = const, Σp_y = const). A stationary firecracker exploding into fragments maintains zero total vector momentum.',
+        'Total momentum (p = mv) is conserved in isolated systems (ΣF_ext = 0) along each spatial axis independently: Σp_i = Σp_f.',
     },
     {
-      title: 'Impulse and Contact Duration',
+      title: 'Impulse & Impact Mitigation',
       content:
-        'To produce a required change in momentum Δp, an applied force can either be huge over a tiny time interval (hard impact) or small over an extended duration (soft catch, airbag). Extending the impact time Δt drastically lowers the peak force F experienced by the body.',
+        'Impulse (J = Δp = F_avg Δt) equals the momentum change. Extending contact duration Δt proportionally lowers peak impact force.',
     },
     {
       title: 'Elastic vs. Inelastic Collisions',
       content:
-        'Momentum is conserved in ALL collisions where external forces are zero. However, kinetic energy is only conserved in perfectly elastic collisions (e = 1, e.g. billiard balls, subatomic particles). In completely inelastic collisions (e = 0), objects stick together and maximal kinetic energy is converted into deformation and thermal heat.',
+        'Momentum is always conserved. Kinetic energy is conserved only in elastic collisions (e = 1); inelastic collisions (e < 1) lose kinetic energy to heat.',
     },
   ],
   equations: [
@@ -45,12 +45,28 @@ const momentumData = {
             'Directly proportional to both mass m and velocity v. A 0.1 kg baseball flying at 40 m/s has the same momentum (4 kg·m/s) as a 4 kg bowling ball rolling at 1 m/s.',
         },
         {
-          symbol: '\\vec{J}',
-          name: 'Impulse Vector',
-          unit: '\\text{N}\\cdot\\text{s} = \\text{kg}\\cdot\\text{m/s}',
-          description: 'The cumulative effect of a force exerted over a time interval.',
+          symbol: 'm',
+          name: 'Mass',
+          unit: '\\text{kg}',
+          description: 'Inertial mass of the moving body.',
           connections:
-            'Identical in dimension and numerical value to Δp. Equals the area under the force-time curve (F vs. t).',
+            'Scales momentum linearly at a given velocity.',
+        },
+        {
+          symbol: '\\vec{v}',
+          name: 'Velocity Vector',
+          unit: '\\text{m/s}',
+          description: 'Speed and direction of motion.',
+          connections:
+            'Defines the exact direction of the momentum vector p.',
+        },
+        {
+          symbol: '\\vec{J}, \\Delta \\vec{p}',
+          name: 'Impulse & Momentum Change',
+          unit: '\\text{N}\\cdot\\text{s} = \\text{kg}\\cdot\\text{m/s}',
+          description: 'The cumulative effect of force over time, equal to net change in momentum (p_f - p_i).',
+          connections:
+            'Equals the area under the force-time curve (∫ F dt).',
         },
         {
           symbol: '\\vec{F}_{\\text{avg}}',
@@ -64,7 +80,7 @@ const momentumData = {
           symbol: '\\Delta t',
           name: 'Contact Time Duration',
           unit: '\\text{s}',
-          description: 'The time duration over which collision contact occurs.',
+          description: 'The time duration (t2 - t1) over which collision contact occurs.',
           connections:
             'A vital safety parameter: extending Δt is how catchers’ mitts, airbags, helmets, and landing mats mitigate injurious impact forces.',
         },
@@ -117,6 +133,112 @@ const momentumData = {
           description: 'The metric of collision elasticity.',
           connections:
             'At e = 1 (perfectly elastic), relative separation speed equals relative approach speed and mechanical kinetic energy is 100% conserved. At e = 0 (perfectly inelastic), separation speed is zero (v1f = v2f, bodies stick together) and maximum kinetic energy is lost.',
+        },
+        {
+          symbol: 'v_{2f} - v_{1f}',
+          name: 'Relative Separation Speed',
+          unit: '\\text{m/s}',
+          description: 'The speed at which the two bodies move apart after collision.',
+          connections:
+            'Equals e times the relative approach speed. Vanishes (0 m/s) when objects stick together in a completely inelastic collision.',
+        },
+        {
+          symbol: 'v_{1i} - v_{2i}',
+          name: 'Relative Approach Speed',
+          unit: '\\text{m/s}',
+          description: 'The closing speed at which the two bodies approach each other before impact.',
+          connections:
+            'Forms the denominator scaling the rebound separation speed.',
+        },
+      ],
+    },
+    {
+      name: "Newton's Second Law in Momentum Form",
+      latex: '\\sum \\vec{F} = \\frac{d\\vec{p}}{dt}',
+      summary:
+        'States that the net force equals the time rate of change of linear momentum, valid even for variable mass systems.',
+      conditions: ['Valid in all inertial frames', 'Reduces to ΣF = ma for constant mass'],
+      variables: [
+        {
+          symbol: '\\sum \\vec{F}',
+          name: 'Net Vector Force',
+          unit: '\\text{N}',
+          description: 'The resultant external force acting on the body.',
+          connections:
+            'When net force is zero, dp/dt = 0, proving linear momentum is constant.',
+        },
+        {
+          symbol: '\\vec{p}',
+          name: 'Linear Momentum Vector',
+          unit: '\\text{kg}\\cdot\\text{m/s}',
+          description: 'Instantaneous momentum p = mv of the system.',
+          connections:
+            'Changes over time only when acted upon by a non-zero net external force.',
+        },
+        {
+          symbol: 't',
+          name: 'Time',
+          unit: '\\text{s}',
+          description: 'Independent time variable.',
+          connections:
+            'Differentiating momentum p with respect to t yields the instantaneous net force.',
+        },
+      ],
+    },
+    {
+      name: 'Center of Mass Coordinates & Total System Momentum',
+      latex: 'x_{\\text{cm}} = \\frac{1}{M}\\sum m_i x_i, \\quad y_{\\text{cm}} = \\frac{1}{M}\\sum m_i y_i, \\quad \\vec{P} = M\\vec{v}_{\\text{cm}}',
+      summary:
+        'Computes the mass-weighted center of a multi-particle system and defines total momentum through center of mass velocity.',
+      conditions: ['M = Σ mi is the total mass of the system'],
+      variables: [
+        {
+          symbol: 'x_{\\text{cm}}, y_{\\text{cm}}',
+          name: 'Center of Mass Coordinates',
+          unit: '\\text{m}',
+          description: 'The mass-weighted average position of the multi-body system.',
+          connections:
+            'Moves as if all external forces acted directly at this single point: ΣF_ext = M a_cm.',
+        },
+        {
+          symbol: 'M',
+          name: 'Total System Mass',
+          unit: '\\text{kg}',
+          description: 'The sum of all constituent particle masses (M = Σ mi).',
+          connections:
+            'Normalizes the mass-position moments and scales center-of-mass velocity into total momentum P.',
+        },
+        {
+          symbol: 'm_i',
+          name: 'i-th Particle Mass',
+          unit: '\\text{kg}',
+          description: 'Mass of the individual i-th particle in the system.',
+          connections:
+            'Heavier particles pull the center of mass closer to their own coordinates.',
+        },
+        {
+          symbol: 'x_i, y_i',
+          name: 'i-th Particle Coordinates',
+          unit: '\\text{m}',
+          description: 'Spatial coordinates of the i-th particle.',
+          connections:
+            'Weighted by mass mi to determine the balance point of the system.',
+        },
+        {
+          symbol: '\\vec{P}',
+          name: 'Total System Momentum',
+          unit: '\\text{kg}\\cdot\\text{m/s}',
+          description: 'The vector sum of individual momenta: P = Σ pi = M v_cm.',
+          connections:
+            'In the absence of external forces, P stays constant: Σ pi = Σ pf.',
+        },
+        {
+          symbol: '\\vec{v}_{\\text{cm}}',
+          name: 'Center of Mass Velocity',
+          unit: '\\text{m/s}',
+          description: 'The velocity of the center of mass coordinate.',
+          connections:
+            'Constant for any isolated system regardless of internal explosions or collisions.',
         },
       ],
     },

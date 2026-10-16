@@ -1,65 +1,116 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SliderControl, MetricBadge } from '../shared/VizControls.jsx';
+import {
+  useIsometric3D,
+  IsometricToolbar,
+  project3D,
+  draw3DGrid,
+  draw3DAxes,
+  drawOrientationGizmo,
+  draw3DVector,
+} from './viz3dUtils.jsx';
+
+const PRESETS = {
+  '3 Distinct Eigenvalues': {
+    lam1: 2.0,
+    lam2: 1.2,
+    lam3: 0.6,
+    v: [1.4, 1.2, 1.0],
+  },
+  'Snap v to Eigenvector e₁ (Av = 2v)': {
+    lam1: 2.0,
+    lam2: 1.0,
+    lam3: -0.8,
+    v: [1.6, 0.8, 0.0], // exact direction of e1 = [2, 1, 0]
+  },
+  'Snap v to Eigenvector e₃ (Av = -1.2v)': {
+    lam1: 1.8,
+    lam2: 1.0,
+    lam3: -1.2,
+    v: [0.0, 0.6, 1.8], // exact direction of e3 = [0, 1, 3]
+  },
+  'Singular (λ₃ = 0 Collapse)': {
+    lam1: 2.0,
+    lam2: 1.4,
+    lam3: 0.0,
+    v: [1.4, 1.0, 1.5],
+  },
+};
+
+function cross3(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0],
+  ];
+}
+
+function dot3(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+function norm3(a) {
+  return Math.hypot(a[0], a[1], a[2]);
+}
+
+function normalize3(a) {
+  const len = norm3(a) || 1;
+  return [a[0] / len, a[1] / len, a[2] / len];
+}
 
 export default function EigenvaluesViz() {
-  const [testAngleDeg, setTestAngleDeg] = useState(45);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [lam1, setLam1] = useState(2.0);
+  const [lam2, setLam2] = useState(1.2);
+  const [lam3, setLam3] = useState(0.6);
+  const [v, setV] = useState([1.4, 1.2, 1.0]);
+  const [showEigenBasis, setShowEigenBasis] = useState(true);
+  const [activePreset, setActivePreset] = useState('3 Distinct Eigenvalues');
 
-  // Matrix A entries: [[2, 1], [1, 2]] (Symmetric, eigenvalues λ1 = 3 at 45°, λ2 = 1 at 135°)
-  const [a11, setA11] = useState(2);
-  const [a12, setA12] = useState(1);
-  const [a21, setA21] = useState(1);
-  const [a22, setA22] = useState(2);
+  const {
+    canvasRef,
+    camera,
+    setPreset,
+    handlesRef,
+    activeHandleId,
+    hoveredHandleId,
+    baseScale,
+    centerOffset,
+  } = useIsometric3D('Isometric', { baseScale: 42, snap: 0.1, clampRange: 3.4 });
 
-  const canvasRef = useRef(null);
-  const animRef = useRef(null);
+  // Fixed clean 3D eigenvector directions e1, e2, e3 (orthogonal or skewed basis)
+  const e1 = normalize3([2.0, 1.0, 0.0]);
+  const e2 = normalize3([-1.0, 2.0, 0.5]);
+  const e3 = normalize3(cross3(e1, e2));
 
-  // Test vector x on unit circle
-  const testRad = (testAngleDeg * Math.PI) / 180;
-  const xVec = Math.cos(testRad);
-  const yVec = Math.sin(testRad);
+  // Project v onto the eigenbasis {e1, e2, e3} -> Av = c1*lam1*e1 + c2*lam2*e2 + c3*lam3*e3
+  const c1 = dot3(v, e1);
+  const c2 = dot3(v, e2);
+  const c3 = dot3(v, e3);
 
-  // Transformed vector Ax
-  const axX = a11 * xVec + a12 * yVec;
-  const axY = a21 * xVec + a22 * yVec;
+  const av = [
+    c1 * lam1 * e1[0] + c2 * lam2 * e2[0] + c3 * lam3 * e3[0],
+    c1 * lam1 * e1[1] + c2 * lam2 * e2[1] + c3 * lam3 * e3[1],
+    c1 * lam1 * e1[2] + c2 * lam2 * e2[2] + c3 * lam3 * e3[2],
+  ];
 
-  // Check collinearity: cross product in 2D = x * axY - y * axX
-  const crossProd = Math.abs(xVec * axY - yVec * axX);
-  const isEigenvector = crossProd < 0.08;
+  // Collinearity test ||v × Av|| / (||v|| ||Av||)
+  const lenV = norm3(v);
+  const lenAv = norm3(av);
+  const sinAngle =
+    lenV > 1e-4 && lenAv > 1e-4
+      ? norm3(cross3(v, av)) / (lenV * lenAv)
+      : 0;
+  const isEigenvector = lenV > 0.2 && sinAngle < 0.08;
+  const effectiveRatio = lenV > 0.1 ? (dot3(v, av) / (lenV * lenV)).toFixed(2) : '0.00';
 
-  // Approximate eigenvalue if near collinear
-  const dotVal = xVec * axX + yVec * axY;
-  const approxLambda = dotVal / (xVec * xVec + yVec * yVec);
-
-  // Analytical eigenvalues of 2x2 matrix: λ^2 - tr*λ + det = 0
-  const tr = a11 + a22;
-  const det = a11 * a22 - a12 * a21;
-  const disc = tr * tr - 4 * det;
-  let lambda1Text = 'N/A';
-  let lambda2Text = 'N/A';
-  if (disc >= 0) {
-    const l1 = ((tr + Math.sqrt(disc)) / 2).toFixed(2);
-    const l2 = ((tr - Math.sqrt(disc)) / 2).toFixed(2);
-    lambda1Text = `λ₁ = ${l1}`;
-    lambda2Text = `λ₂ = ${l2}`;
-  } else {
-    lambda1Text = 'Complex Eigenvalues (Rotation)';
-  }
-
-  useEffect(() => {
-    if (!isPlaying) return;
-    let lastTime = null;
-    const loop = (time) => {
-      if (lastTime != null) {
-        const dt = (time - lastTime) / 1000;
-        setTestAngleDeg((prev) => (prev + dt * 35) % 360);
-      }
-      lastTime = time;
-      animRef.current = requestAnimationFrame(loop);
-    };
-    animRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(animRef.current);
-  }, [isPlaying]);
+  const snapToEigen = (dir) => {
+    setActivePreset(null);
+    setV([
+      +(dir[0] * 2.0).toFixed(2),
+      +(dir[1] * 2.0).toFixed(2),
+      +(dir[2] * 2.0).toFixed(2),
+    ]);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -71,155 +122,169 @@ export default function EigenvaluesViz() {
     ctx.fillStyle = '#080d1a';
     ctx.fillRect(0, 0, width, height);
 
-    const originX = width / 2;
-    const originY = height / 2;
-    const scale = 55;
+    draw3DGrid(ctx, camera, width, height, { range: 4, baseScale, centerOffset });
+    draw3DAxes(ctx, camera, width, height, { range: 4.2, baseScale, centerOffset });
 
-    // Grid
-    ctx.strokeStyle = '#1e293b';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += scale) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < height; y += scale) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
+    const proj = (pt) => project3D(pt, camera, width, height, baseScale, centerOffset);
 
-    // Axes
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(30, originY);
-    ctx.lineTo(width - 30, originY);
-    ctx.moveTo(originX, 20);
-    ctx.lineTo(originX, height - 20);
-    ctx.stroke();
+    // Draw the 3 Invariant Eigen-Axes spanning R^3
+    if (showEigenBasis) {
+      const axesData = [
+        { dir: e1, lam: lam1, color: '#f59e0b', name: 'e₁' },
+        { dir: e2, lam: lam2, color: '#a78bfa', name: 'e₂' },
+        { dir: e3, lam: lam3, color: '#ec4899', name: 'e₃' },
+      ];
 
-    // Unit circle reference track (where x lives)
-    ctx.strokeStyle = 'rgba(148, 163, 184, 0.3)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3, 4]);
-    ctx.beginPath();
-    ctx.arc(originX, originY, scale, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Helper: Draw vector
-    const drawVec = (vx, vy, color, label, widthLine = 3) => {
-      const px = originX + vx * scale;
-      const py = originY - vy * scale;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = widthLine;
-      ctx.beginPath();
-      ctx.moveTo(originX, originY);
-      ctx.lineTo(px, py);
-      ctx.stroke();
-
-      const angle = Math.atan2(py - originY, px - originX);
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(px - 10 * Math.cos(angle - Math.PI / 6), py - 10 * Math.sin(angle - Math.PI / 6));
-      ctx.lineTo(px - 10 * Math.cos(angle + Math.PI / 6), py - 10 * Math.sin(angle + Math.PI / 6));
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.font = 'bold 12px system-ui, sans-serif';
-      ctx.fillText(label, px + 8, py - 4);
-    };
-
-    // If Eigenvector condition met: draw glowing line through origin!
-    if (isEigenvector) {
-      ctx.strokeStyle = 'rgba(34, 197, 94, 0.5)';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([6, 6]);
-      ctx.beginPath();
-      ctx.moveTo(originX - 6 * xVec * scale, originY + 6 * yVec * scale);
-      ctx.lineTo(originX + 6 * xVec * scale, originY - 6 * yVec * scale);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      for (const ax of axesData) {
+        const pA = proj(ax.dir.map((d) => -d * 3.4));
+        const pB = proj(ax.dir.map((d) => d * 3.4));
+        ctx.save();
+        ctx.strokeStyle = ax.color;
+        ctx.globalAlpha = 0.45;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(pA.x, pA.y);
+        ctx.lineTo(pB.x, pB.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 0.95;
+        ctx.fillStyle = ax.color;
+        ctx.font = 'bold 11px system-ui, sans-serif';
+        ctx.fillText(`Eigen-axis ${ax.name} (λ=${ax.lam})`, pB.x + 6, pB.y - 4);
+        ctx.restore();
+      }
     }
 
-    // Draw input vector x (Cyan)
-    drawVec(xVec, yVec, isEigenvector ? '#22c55e' : '#38bdf8', 'Vector x (Input)');
+    // Transformed output vector Av
+    draw3DVector(ctx, camera, width, height, av, {
+      color: isEigenvector ? '#22c55e' : '#f43f5e',
+      label: `Av = [${av.map((n) => n.toFixed(1)).join(',')}]`,
+      lineWidth: 3.6,
+      showDropStalk: true,
+      baseScale,
+      centerOffset,
+    });
 
-    // Draw output vector Ax (Purple or Glowing Green if Eigenvector)
-    drawVec(
-      axX,
-      axY,
-      isEigenvector ? '#22c55e' : '#a78bfa',
-      isEigenvector ? `Ax = λx (λ ≈ ${approxLambda.toFixed(2)})` : 'Vector Ax (Transformed)',
-      isEigenvector ? 4.5 : 3
-    );
+    // Draggable test vector v
+    const tipV = draw3DVector(ctx, camera, width, height, v, {
+      color: '#38bdf8',
+      label: isEigenvector
+        ? `v ★ EIGENVECTOR! (Av ≈ ${effectiveRatio}v)`
+        : `v = [${v.map((n) => n.toFixed(1)).join(',')}]`,
+      lineWidth: 3.3,
+      draggable: true,
+      isDragging: activeHandleId === 'v',
+      isHovered: hoveredHandleId === 'v',
+      baseScale,
+      centerOffset,
+    });
 
-    // Header banner on canvas
-    ctx.fillStyle = isEigenvector ? '#22c55e' : '#cbd5e1';
-    ctx.font = 'bold 13px system-ui, sans-serif';
-    ctx.fillText(
-      isEigenvector
-        ? '🎯 EIGENVECTOR DETECTED! x and Ax are collinear (Av = λv)'
-        : 'Rotate test vector x until it aligns collinear with Ax',
-      40,
-      40
-    );
-  }, [xVec, yVec, axX, axY, isEigenvector, approxLambda]);
+    drawOrientationGizmo(ctx, camera, width);
+
+    handlesRef.current = [
+      {
+        id: 'v',
+        vec: v,
+        screen: tipV,
+        onChange: (next) => {
+          setActivePreset(null);
+          setV(next);
+        },
+      },
+    ];
+  }, [lam1, lam2, lam3, v, av, e1, e2, e3, isEigenvector, effectiveRatio, showEigenBasis, camera, activeHandleId, hoveredHandleId, baseScale, centerOffset, handlesRef]);
 
   return (
     <div className="viz-container">
       <header className="viz-header">
         <div className="viz-header__title-block">
-          <h3 className="viz-header__title">Eigenvalue & Eigenvector Hunter</h3>
-          <span className="viz-header__tag">Av = λv</span>
-        </div>
-        <div className="viz-mode-tabs">
-          <button
-            type="button"
-            className={`viz-btn ${isPlaying ? 'viz-btn--active' : ''}`}
-            onClick={() => setIsPlaying(!isPlaying)}
-          >
-            {isPlaying ? '⏸ Pause Sweep' : '▶ Continuous Sweep'}
-          </button>
+          <h3 className="viz-header__title">3D Eigenvalues, Invariant Axes & Diagonalization (A = PΛP⁻¹)</h3>
+          <span className="viz-header__tag">Av = λv • 3D Eigenvector Hunter</span>
         </div>
       </header>
 
+      <div className="viz-presets-bar">
+        <span className="viz-presets-bar__label">Presets & Snap:</span>
+        {Object.keys(PRESETS).map((name) => (
+          <button
+            key={name}
+            type="button"
+            className={`viz-preset-chip ${activePreset === name ? 'viz-preset-chip--active' : ''}`}
+            onClick={() => {
+              const p = PRESETS[name];
+              setLam1(p.lam1);
+              setLam2(p.lam2);
+              setLam3(p.lam3);
+              setV([...p.v]);
+              setActivePreset(name);
+            }}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+
       <div className="viz-metrics-bar">
-        <MetricBadge label="Direction θ" value={`${testAngleDeg.toFixed(1)}°`} unit="" />
-        <MetricBadge label="Matrix Trace" value={tr} unit="λ₁ + λ₂" />
-        <MetricBadge label="Determinant" value={det} unit="λ₁ · λ₂" />
-        <MetricBadge label="Eigenvalues" value={`${lambda1Text}, ${lambda2Text}`} unit="" highlight />
+        <MetricBadge label="Spectrum (λ₁, λ₂, λ₃)" value={`${lam1}, ${lam2}, ${lam3}`} unit="Eigenvalues" highlight />
+        <MetricBadge label="Trace tr(A) = Σλᵢ" value={(lam1 + lam2 + lam3).toFixed(2)} unit="" />
+        <MetricBadge label="Determinant det(A) = Πλᵢ" value={(lam1 * lam2 * lam3).toFixed(2)} unit="" />
         <MetricBadge
-          label="Alignment"
-          value={isEigenvector ? '✓ EIGENVECTOR!' : 'Rotating'}
-          unit={isEigenvector ? `λ ≈ ${approxLambda.toFixed(2)}` : 'Not collinear'}
-          highlight={isEigenvector}
+          label="Alignment (v vs Av)"
+          value={isEigenvector ? `Collinear! (λ ≈ ${effectiveRatio})` : `Off-Axis (sin θ = ${sinAngle.toFixed(2)})`}
+          unit=""
+          highlight
         />
       </div>
 
-      <div className="viz-canvas-area" style={{ height: '370px' }}>
-        <canvas ref={canvasRef} width={800} height={370} />
+      <div className="viz-canvas-area" style={{ height: '420px' }}>
+        <IsometricToolbar
+          camera={camera}
+          setPreset={setPreset}
+          extraButtons={
+            <>
+              <button
+                type="button"
+                className="viz-3d-btn"
+                onClick={() => snapToEigen(e1)}
+              >
+                ◆ Snap e₁
+              </button>
+              <button
+                type="button"
+                className="viz-3d-btn"
+                onClick={() => snapToEigen(e2)}
+              >
+                ◆ Snap e₂
+              </button>
+              <button
+                type="button"
+                className="viz-3d-btn"
+                onClick={() => snapToEigen(e3)}
+              >
+                ◆ Snap e₃
+              </button>
+              <button
+                type="button"
+                className={`viz-3d-btn ${showEigenBasis ? 'viz-3d-btn--active' : ''}`}
+                onClick={() => setShowEigenBasis((s) => !s)}
+              >
+                Eigen-Axes
+              </button>
+            </>
+          }
+        />
+        <canvas ref={canvasRef} width={840} height={420} />
       </div>
 
       <div className="viz-controls-panel">
         <div className="viz-sliders-grid">
-          <SliderControl
-            label="Rotate Test Vector (θ)"
-            value={testAngleDeg}
-            min={0}
-            max={360}
-            step={1}
-            unit="°"
-            onChange={setTestAngleDeg}
-          />
-          <SliderControl label="Matrix A₁₁" value={a11} min={-3} max={3} step={0.5} unit="" onChange={setA11} />
-          <SliderControl label="Matrix A₁₂" value={a12} min={-3} max={3} step={0.5} unit="" onChange={setA12} />
-          <SliderControl label="Matrix A₂₁" value={a21} min={-3} max={3} step={0.5} unit="" onChange={setA21} />
-          <SliderControl label="Matrix A₂₂" value={a22} min={-3} max={3} step={0.5} unit="" onChange={setA22} />
+          <SliderControl label="Eigenvalue λ₁ (along e₁)" value={lam1} min={-2} max={2.5} step={0.1} onChange={setLam1} />
+          <SliderControl label="Eigenvalue λ₂ (along e₂)" value={lam2} min={-2} max={2.5} step={0.1} onChange={setLam2} />
+          <SliderControl label="Eigenvalue λ₃ (along e₃)" value={lam3} min={-2} max={2.5} step={0.1} onChange={setLam3} />
+          <SliderControl label="Test Vector v_x" value={v[0]} min={-3} max={3} step={0.1} onChange={(val) => setV([val, v[1], v[2]])} />
+          <SliderControl label="Test Vector v_y" value={v[1]} min={-3} max={3} step={0.1} onChange={(val) => setV([v[0], val, v[2]])} />
+          <SliderControl label="Test Vector v_z" value={v[2]} min={-3} max={3} step={0.1} onChange={(val) => setV([v[0], v[1], val])} />
         </div>
       </div>
     </div>

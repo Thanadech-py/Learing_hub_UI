@@ -13,19 +13,19 @@ const unitsAndMeasurementData = {
   ],
   keyConcepts: [
     {
-      title: 'Base Quantities vs. Derived Quantities',
+      title: 'Base vs. Derived Quantities',
       content:
-        'The International System of Units (SI) defines seven fundamental base quantities: Length (meter, m), Mass (kilogram, kg), Time (second, s), Electric Current (ampere, A), Thermodynamic Temperature (kelvin, K), Amount of Substance (mole, mol), and Luminous Intensity (candela, cd). All other mechanical quantities (velocity, force, work, momentum) are derived combinations of length, mass, and time.',
+        'The 7 SI base units (m, kg, s, A, K, mol, cd) form the bedrock of measurement. All mechanical quantities (force, momentum, energy) are derived combinations of length, mass, and time.',
     },
     {
-      title: 'Dimensional Analysis & Homogeneity',
+      title: 'Dimensional Homogeneity',
       content:
-        'Dimensions are denoted using brackets [ ]. Length is [L], Mass is [M], and Time is [T]. Any term added, subtracted, or equated must have identical dimensions. For example, in s = ut + ½at², [ut] = (LT⁻¹)(T) = L and [½at²] = (LT⁻²)(T²) = L. This is an indispensable tool for verifying theoretical derivations.',
+        'Every valid physical equation must be dimensionally consistent: every term added, subtracted, or equated must have identical dimensions ([L], [M], [T]).',
     },
     {
-      title: 'Measurement Precision & Error Analysis',
+      title: 'Precision, Accuracy & Error',
       content:
-        'No measurement is absolute. Instrumental precision depends on least count (the smallest increment a tool can resolve). Errors are classified into systematic errors (calibration bias, zero errors) and random errors (thermal fluctuations, visual parallax). Percentage error benchmarks experimental fidelity.',
+        'Measurement resolution is bounded by least count. Errors divide into systematic (predictable zero offset) and random (fluctuations, parallax), quantified via percentage error.',
     },
   ],
   equations: [
@@ -59,6 +59,14 @@ const unitsAndMeasurementData = {
           description: 'The rate of change of velocity with respect to time.',
           connections:
             'Decomposed into length [L] divided by time squared [T]². The inverse square time dependence reflects two successive time derivatives (position → velocity → acceleration).',
+        },
+        {
+          symbol: '[M], [L], [T]',
+          name: 'Fundamental Mechanical Dimensions (Mass, Length, Time)',
+          unit: '\\text{kg, m, s}',
+          description: 'The three primary base dimensions from which all classical mechanical quantities are constructed.',
+          connections:
+            'Combined with exponents (+1 for M, +1 for L, -2 for T) to uniquely define the dimensional signature of force.',
         },
       ],
     },

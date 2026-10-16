@@ -6,6 +6,7 @@ import momentumData from './momentum.js';
 import circularMotionData from './circular-motion.js';
 import oscillationsData from './oscillations.js';
 import wavesData from './waves.js';
+import fluidMechanicsData from './fluid-mechanics.js';
 import thermodynamicsData from './thermodynamics.js';
 
 const physicsTopics = [
@@ -17,6 +18,7 @@ const physicsTopics = [
   circularMotionData,
   oscillationsData,
   wavesData,
+  fluidMechanicsData,
   thermodynamicsData,
 ];
 

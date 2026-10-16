@@ -14,29 +14,29 @@ const wavesData = {
   ],
   keyConcepts: [
     {
-      title: 'Wave Anatomy: Geometric & Temporal Properties',
+      title: 'Wave Anatomy & Propagation',
       content:
-        'Every periodic wave is characterized by distinct anatomical features: Crest (the maximum positive displacement above equilibrium), Trough (the maximum negative displacement below equilibrium), Amplitude (A, the magnitude of maximum displacement from the equilibrium baseline), Wavelength (λ, the spatial distance over which the wave’s shape repeats), Period (T, the time required for one complete cycle to pass a fixed point), and Frequency (f = 1/T, the number of cycles per second measured in Hertz).',
+        'Waves transport energy without net matter transfer. Governed by amplitude (A), wavelength (λ), period (T), and frequency (f = 1/T), linked via v = fλ.',
     },
     {
-      title: 'Sound Waves: Compressions, Rarefactions & Pressure',
+      title: 'Sound as Longitudinal Pressure Waves',
       content:
-        'Sound is a longitudinal mechanical wave. As a vibrating object (such as a speaker cone or vocal cord) pushes forward, it compresses adjacent air molecules into a region of high density and high pressure called a Compression. As it retreats, it leaves a region of low density and low pressure called a Rarefaction. In air at 20°C, sound propagates at approximately 343 m/s. The speed of sound depends exclusively on the elasticity (bulk modulus) and density of the medium (v = √(B/ρ)), not on frequency or amplitude.',
+        'Sound propagates via alternating compressions (high pressure) and rarefactions (low pressure) at speed v = √(B/ρ), independent of frequency.',
     },
     {
-      title: 'Standing Waves in Pipes: Open vs. Closed Boundary Conditions',
+      title: 'Boundary Resonance & Standing Waves',
       content:
-        'When sound waves travel inside a pipe or tube, reflections at the ends establish standing wave patterns. The acoustic boundary conditions dictate the allowed resonant frequencies:\n\n• Open End: Air molecules are completely free to move in and out of the open atmosphere, creating a Displacement Antinode (maximum air motion) and a Pressure Node (pressure stays at atmospheric level).\n\n• Closed End: A rigid barrier prevents air molecules from moving, enforcing a Displacement Node (zero air motion) and a Pressure Antinode (maximum pressure fluctuation).\n\n• Open–Open Pipe (both ends open): Supports all integer harmonics: f_n = n(v / 2L) for n = 1, 2, 3, 4...\n\n• Open–Closed Pipe (one end closed, one open): Supports only ODD harmonics: f_m = m(v / 4L) for m = 1, 3, 5, 7... Even harmonics are completely absent! This is why a clarinet (closed at the mouthpiece) has a rich, distinctive hollow timbre compared to an open flute.',
+        'Open-open pipes support all harmonics: fn = n(v/2L). Open-closed pipes enforce a displacement node and support only odd harmonics: fm = m(v/4L).',
     },
     {
-      title: 'The Doppler Effect & Supersonic Shockwaves',
+      title: 'Doppler Shift & Mach Shockwaves',
       content:
-        'When a sound-emitting source moves through air, each successive wavefront is emitted from a new, forward-shifted position. Ahead of the source, wavefronts are compressed into a shorter effective wavelength, causing an approaching observer to perceive a higher frequency (higher pitch). Behind the source, wavefronts are stretched out, causing a receding observer to hear a lower frequency (lower pitch).\n\nWhen source speed equals the speed of sound (v_s = v, Mach 1), wavefronts pile up directly at the front of the source into an intense acoustic barrier. When v_s > v (supersonic), the overlapping wavefronts form a conical shockwave called a Mach Cone with half-angle sin(θ) = v / v_s = 1/M. As this cone sweeps past a ground observer, the abrupt jump in pressure is heard as a loud Sonic Boom.',
+        'Motion shifts perceived frequency: approaching raises pitch, receding lowers it. When vs > v, overlapping wavefronts form a conical supersonic Mach cone.',
     },
     {
-      title: 'Phase Angle, Phasors & Reading Phase from a Sine Wave',
+      title: 'Phase Angle & Unit Circle Projection',
       content:
-        'A sine wave is the one-dimensional geometric projection of uniform circular motion! As a vector (called a phasor) of length A rotates counterclockwise around the unit circle at angular speed ω, its vertical coordinate y = A sin(θ) traces out a continuous sine wave over angle or time.\n\n• At θ = 0° (0 rad): The phasor points horizontally right (+x). The sine wave crosses y = 0 moving upward.\n• At θ = 90° (π/2 rad): The phasor points vertically up (+y). The sine wave reaches its positive Crest (y = +A).\n• At θ = 180° (π rad): The phasor points left (-x). The sine wave crosses y = 0 moving downward.\n• At θ = 270° (3π/2 rad): The phasor points down (-y). The sine wave reaches its negative Trough (y = -A).\n• At θ = 360° (2π rad): The phasor completes one full revolution, corresponding to one complete wavelength λ.\n\nTo read the phase angle of any sine wave y(x) = A sin(kx + φ₀): observe where the wave crosses the equilibrium axis relative to the origin. If it starts at peak y = +A at x = 0, its phase is φ₀ = +90° (π/2 rad, a cosine wave). If it is shifted horizontally by distance Δx, the phase difference is Δφ = 2π (Δx / λ).',
+        'A sine wave projects uniform circular motion: y = A sin(kx - ωt + φ0). A spatial shift Δx corresponds to phase offset Δφ = 2π(Δx/λ).',
     },
   ],
   equations: [
@@ -80,12 +80,20 @@ const wavesData = {
             'The reciprocal of frequency: T = 1 / f. Connects wave speed via v = λ / T.',
         },
         {
-          symbol: 'A',
-          name: 'Amplitude',
-          unit: '\\text{m (or Pa for sound pressure)}',
-          description: 'The peak magnitude of displacement from the undisturbed equilibrium baseline.',
+          symbol: '\\omega',
+          name: 'Angular Frequency',
+          unit: '\\text{rad/s}',
+          description: 'The rate of phase progression in radians per second: ω = 2πf = 2π/T.',
           connections:
-            'Directly dictates wave energy and sound intensity: energy transported by a wave is proportional to the square of amplitude (E ∝ A²). Does NOT affect wave speed or wavelength.',
+            'Connects temporal oscillation to spatial wavenumber k via wave speed: v = ω / k.',
+        },
+        {
+          symbol: 'k',
+          name: 'Angular Wavenumber',
+          unit: '\\text{rad/m}',
+          description: 'The spatial frequency of the wave in radians per meter: k = 2π / λ.',
+          connections:
+            'Counts how many radians of wave phase fit into 1 meter of space.',
         },
       ],
     },
@@ -103,6 +111,22 @@ const wavesData = {
           description: 'The resonant acoustic frequency producing standing wave patterns in the tube.',
           connections:
             'Supports ALL integer multiples of the fundamental frequency f1 (f1, 2f1, 3f1, 4f1...). The second harmonic (n = 2) produces the octave above the fundamental.',
+        },
+        {
+          symbol: 'f_1',
+          name: 'Fundamental Frequency (First Harmonic)',
+          unit: '\\text{Hz}',
+          description: 'The lowest resonant frequency (n = 1) of the open pipe: f₁ = v / (2L).',
+          connections:
+            'Defines the musical pitch perceived by the ear; higher harmonics n·f₁ add overtone timbre.',
+        },
+        {
+          symbol: '\\lambda_n',
+          name: 'n-th Harmonic Wavelength',
+          unit: '\\text{m}',
+          description: 'The spatial wavelength of the n-th standing wave mode: λₙ = 2L / n.',
+          connections:
+            'For the fundamental mode (n = 1), λ₁ = 2L (exactly half a wavelength fits inside the pipe length L).',
         },
         {
           symbol: 'n',
@@ -146,12 +170,36 @@ const wavesData = {
             'Notice the denominator has 4L instead of 2L! For the same physical length L, a closed pipe sounds an entire octave LOWER than an open pipe (f_1,closed = ½ f_1,open). Furthermore, even harmonics (2, 4, 6...) cannot form because boundary conditions cannot be satisfied.',
         },
         {
+          symbol: 'f_1',
+          name: 'Fundamental Frequency (First Harmonic)',
+          unit: '\\text{Hz}',
+          description: 'The lowest resonant frequency (m = 1) of the closed-end pipe: f₁ = v / (4L).',
+          connections:
+            'One octave lower than an open-open pipe of the same physical length L.',
+        },
+        {
+          symbol: '\\lambda_m',
+          name: 'm-th Harmonic Wavelength',
+          unit: '\\text{m}',
+          description: 'The spatial wavelength of the m-th standing wave mode: λₘ = 4L / m.',
+          connections:
+            'At m = 1, λ₁ = 4L; at m = 3, λ₃ = 4L/3 (three-quarters of a wavelength fits inside the tube).',
+        },
+        {
           symbol: 'm',
           name: 'Odd Harmonic Index',
           unit: '\\text{odd integer } (1, 3, 5, 7, \\dots)',
           description: 'The harmonic mode number. Strictly restricted to odd integers.',
           connections:
             'The first overtone is the 3rd harmonic (m = 3), sounding a musical twelfth (octave + fifth) above the fundamental, rather than an octave. This gives closed pipes their signature hollow, warm timbre.',
+        },
+        {
+          symbol: 'v',
+          name: 'Speed of Sound in Gas',
+          unit: '\\text{m/s}',
+          description: 'Propagation speed of acoustic waves inside the tube medium.',
+          connections:
+            'Directly proportional to all harmonic frequencies f_m.',
         },
         {
           symbol: 'L',
@@ -232,6 +280,22 @@ const wavesData = {
             'Inversely related to Mach number: as speed increases (e.g. Mach 2, Mach 3), the shock cone becomes narrower and sharper (sin θ_M = 1/2 ⟹ θ_M = 30° at Mach 2; sin θ_M = 1/3 ⟹ θ_M = 19.5° at Mach 3).',
         },
         {
+          symbol: 'v',
+          name: 'Speed of Sound in Medium',
+          unit: '\\text{m/s}',
+          description: 'The speed at which spherical acoustic wavefronts expand outward.',
+          connections:
+            'Forms the opposite leg of the right triangle of the Mach cone after time t (radius r = v·t).',
+        },
+        {
+          symbol: 'v_s',
+          name: 'Supersonic Source Speed',
+          unit: '\\text{m/s}',
+          description: 'The velocity of the supersonic object (where v_s > v).',
+          connections:
+            'Forms the hypotenuse of the Mach cone right triangle after time t (distance d = v_s·t).',
+        },
+        {
           symbol: 'M',
           name: 'Mach Number',
           unit: '\\text{dimensionless} = v_s / v',
@@ -257,12 +321,36 @@ const wavesData = {
             'Advances by 2π radians (360°) whenever spatial position advances by one full wavelength λ or time advances by one period T.',
         },
         {
-          symbol: '\\Delta\\phi',
-          name: 'Phase Difference',
-          unit: '\\text{radians or degrees}',
-          description: 'The angular separation between two points on a wave, or the relative phase offset between two overlapping waves.',
+          symbol: 'k',
+          name: 'Angular Wavenumber',
+          unit: '\\text{rad/m}',
+          description: 'Spatial phase rate of change: k = 2π / λ.',
           connections:
-            'Governs wave interference: Δφ = 0° or 360° (in phase) yields maximum constructive interference (amplitude doubles). Δφ = 180° (π rad, out of phase) yields complete destructive cancellation.',
+            'Multiplies coordinate x to determine spatial phase contribution kx.',
+        },
+        {
+          symbol: 'x',
+          name: 'Spatial Position Coordinate',
+          unit: '\\text{m}',
+          description: 'Position along the wave propagation axis.',
+          connections:
+            'Shifting position by Δx changes phase by Δφ = k·Δx = 2π(Δx / λ).',
+        },
+        {
+          symbol: '\\omega',
+          name: 'Angular Frequency',
+          unit: '\\text{rad/s}',
+          description: 'Temporal phase rate of change: ω = 2π / T.',
+          connections:
+            'Multiplies time t to determine temporal phase progression ωt.',
+        },
+        {
+          symbol: 't, \\Delta t',
+          name: 'Time & Time Delay',
+          unit: '\\text{s}',
+          description: 'Instantaneous time t and time interval Δt between two wave observations at a fixed point.',
+          connections:
+            'A time delay of half a period (Δt = T/2) produces an exact out-of-phase shift of π radians (180°).',
         },
         {
           symbol: '\\phi_0',
@@ -271,6 +359,14 @@ const wavesData = {
           description: 'The starting phase angle at spatial origin x = 0 and timestamp t = 0.',
           connections:
             'Acts as an initial angle on the unit circle: φ0 = 0 produces a standard sine wave; φ0 = +90° (+π/2 rad) produces a cosine wave (leading by 90°); φ0 = 180° (π rad) inverts the wave.',
+        },
+        {
+          symbol: '\\Delta\\phi',
+          name: 'Phase Difference',
+          unit: '\\text{radians or degrees}',
+          description: 'The angular separation between two points on a wave, or the relative phase offset between two overlapping waves.',
+          connections:
+            'Governs wave interference: Δφ = 0° or 360° (in phase) yields maximum constructive interference (amplitude doubles). Δφ = 180° (π rad, out of phase) yields complete destructive cancellation.',
         },
         {
           symbol: '\\Delta x',
@@ -287,6 +383,307 @@ const wavesData = {
           description: 'The spatial period corresponding to one full 360° (2π radian) rotation on the unit circle.',
           connections:
             'Normalizes spatial shift: (Δx / λ) is the fractional progress through the circle, converted to radians by multiplying by 2π.',
+        },
+        {
+          symbol: 'T',
+          name: 'Wave Period',
+          unit: '\\text{s}',
+          description: 'The temporal duration of one complete 360° (2π radian) wave oscillation.',
+          connections:
+            'Normalizes time delay: (Δt / T) is the fraction of a full cycle elapsed.',
+        },
+      ],
+    },
+    {
+      name: 'Harmonic Traveling Wave Function',
+      latex: 'y(x,t) = A\\sin(kx \\pm \\omega t), \\quad k = \\frac{2\\pi}{\\lambda}, \\quad \\omega = 2\\pi f = \\frac{2\\pi}{T}',
+      summary:
+        'The mathematical description of a one-dimensional transverse or longitudinal traveling sinusoidal wave.',
+      conditions: ['Minus sign (-ωt) denotes wave traveling in +x direction', 'Plus sign (+ωt) denotes wave traveling in -x direction'],
+      variables: [
+        {
+          symbol: 'y(x,t)',
+          name: 'Wave Displacement',
+          unit: '\\text{m}',
+          description: 'Displacement of medium particle at coordinate x and timestamp t.',
+          connections:
+            'Oscillates harmonically between +A and -A over time and space.',
+        },
+        {
+          symbol: 'A',
+          name: 'Wave Amplitude',
+          unit: '\\text{m}',
+          description: 'Maximum displacement of a medium particle from its equilibrium position.',
+          connections:
+            'Wave energy and intensity scale with the square of amplitude (I ∝ A²).',
+        },
+        {
+          symbol: 'k',
+          name: 'Spatial Wavenumber',
+          unit: '\\text{rad/m}',
+          description: 'Spatial frequency of the wave: k = 2π / λ.',
+          connections:
+            'Relates spatial wavelength to wave speed: v = ω / k.',
+        },
+        {
+          symbol: 'x',
+          name: 'Position along Propagation Axis',
+          unit: '\\text{m}',
+          description: 'Spatial coordinate along the direction of wave travel.',
+          connections:
+            'Fixing t yields a spatial snapshot y(x) sinusoidal in x with wavelength λ.',
+        },
+        {
+          symbol: '\\omega',
+          name: 'Angular Frequency',
+          unit: '\\text{rad/s}',
+          description: 'Rate of oscillation in radians per second: ω = 2πf = 2π / T.',
+          connections:
+            'Determines the maximum transverse particle speed: v_y,max = ωA.',
+        },
+        {
+          symbol: 't',
+          name: 'Elapsed Time',
+          unit: '\\text{s}',
+          description: 'Time variable tracking wave propagation.',
+          connections:
+            'Fixing x yields simple harmonic motion y(t) of a single particle with period T.',
+        },
+        {
+          symbol: '\\lambda',
+          name: 'Wavelength',
+          unit: '\\text{m}',
+          description: 'Spatial distance between two consecutive crests.',
+          connections:
+            'Inversely proportional to wavenumber: λ = 2π / k.',
+        },
+        {
+          symbol: 'f',
+          name: 'Oscillation Frequency',
+          unit: '\\text{Hz}',
+          description: 'Number of complete wave cycles per second.',
+          connections:
+            'Directly proportional to angular frequency: f = ω / (2π) = 1 / T.',
+        },
+        {
+          symbol: 'T',
+          name: 'Oscillation Period',
+          unit: '\\text{s}',
+          description: 'Time required for one full wave cycle to pass a fixed point.',
+          connections:
+            'Reciprocal of frequency: T = 1 / f = 2π / ω.',
+        },
+      ],
+    },
+    {
+      name: 'Wave Speed on a Stretched String',
+      latex: 'v = \\sqrt{\\frac{T_{\\text{tension}}}{\\mu}}, \\quad \\mu = \\frac{m}{L}',
+      summary:
+        'Determines the propagation speed of transverse waves along a taut string under tension.',
+      conditions: ['Small amplitude transverse vibrations', 'Uniform linear mass density μ'],
+      variables: [
+        {
+          symbol: 'v',
+          name: 'Transverse Wave Speed',
+          unit: '\\text{m/s}',
+          description: 'Speed at which vibrations travel along the string.',
+          connections:
+            'Proportional to square root of tension: tightening a guitar peg quadruples tension to double pitch.',
+        },
+        {
+          symbol: 'T_{\\text{tension}}',
+          name: 'String Tension Force',
+          unit: '\\text{N}',
+          description: 'The pulling force stretching the string.',
+          connections:
+            'Higher tension provides greater restoring force, accelerating wave propagation.',
+        },
+        {
+          symbol: '\\mu',
+          name: 'Linear Mass Density',
+          unit: '\\text{kg/m}',
+          description: 'Mass per unit length of the string: μ = m / L.',
+          connections:
+            'Inversely proportional under square root: heavier, thicker bass strings propagate waves slower.',
+        },
+        {
+          symbol: 'm',
+          name: 'String Mass',
+          unit: '\\text{kg}',
+          description: 'The total mass of the vibrating string segment.',
+          connections:
+            'Increases inertial resistance to transverse acceleration, lowering wave speed v.',
+        },
+        {
+          symbol: 'L',
+          name: 'String Length',
+          unit: '\\text{m}',
+          description: 'The length of the string segment.',
+          connections:
+            'Divides total mass m to yield linear density μ = m / L.',
+        },
+      ],
+    },
+    {
+      name: 'Standing Wave Product Form',
+      latex: 'y(x,t) = 2A\\sin(kx)\\cos(\\omega t)',
+      summary:
+        'Represents the stationary interference pattern produced by the superposition of two identical waves traveling in opposite directions.',
+      conditions: ['Identical frequency, wavelength, and amplitude traveling in opposite directions'],
+      variables: [
+        {
+          symbol: 'y(x,t)',
+          name: 'Standing Wave Displacement',
+          unit: '\\text{m}',
+          description: 'Instantaneous transverse displacement of the medium at coordinate x and time t.',
+          connections:
+            'Unlike a traveling wave, wavefronts do not translate left or right; each point x oscillates in place with amplitude |2A sin(kx)|.',
+        },
+        {
+          symbol: 'A',
+          name: 'Individual Traveling Wave Amplitude',
+          unit: '\\text{m}',
+          description: 'Amplitude of each of the two counter-propagating waves.',
+          connections:
+            'At antinodes, constructive interference doubles the peak amplitude to 2A.',
+        },
+        {
+          symbol: 'k',
+          name: 'Wavenumber',
+          unit: '\\text{rad/m}',
+          description: 'Spatial wavenumber k = 2π / λ.',
+          connections:
+            'Determines node locations: sin(kx) = 0 ⟹ x = n(λ/2).',
+        },
+        {
+          symbol: 'x',
+          name: 'Spatial Position',
+          unit: '\\text{m}',
+          description: 'Distance measured from the fixed boundary (x = 0).',
+          connections:
+            'Selects the local oscillation envelope amplitude 2A sin(kx).',
+        },
+        {
+          symbol: '\\omega',
+          name: 'Angular Frequency',
+          unit: '\\text{rad/s}',
+          description: 'Temporal oscillation rate ω = 2πf.',
+          connections:
+            'All points between consecutive nodes oscillate in phase with angular frequency ω.',
+        },
+        {
+          symbol: 't',
+          name: 'Time',
+          unit: '\\text{s}',
+          description: 'Elapsed time variable.',
+          connections:
+            'Enters through cos(ωt), causing the entire string to flatten simultaneously twice per period.',
+        },
+        {
+          symbol: '2A\\sin(kx)',
+          name: 'Position-Dependent Amplitude Envelope',
+          unit: '\\text{m}',
+          description: 'Spatial amplitude profile.',
+          connections:
+            'Nodes occur where sin(kx) = 0 (zero motion). Antinodes occur where sin(kx) = ±1 (maximum motion 2A).',
+        },
+        {
+          symbol: '\\cos(\\omega t)',
+          name: 'Temporal Harmonic Oscillation',
+          unit: '\\text{dimensionless}',
+          description: 'Time-dependent oscillation factor.',
+          connections:
+            'All particles pass through equilibrium simultaneously every half period.',
+        },
+      ],
+    },
+    {
+      name: 'Sound Intensity & Inverse-Square Law',
+      latex: 'I = \\frac{P}{A} = \\frac{P}{4\\pi r^2}',
+      summary:
+        'Quantifies the acoustic power transmitted per unit area from an isotropic point source spreading spherically.',
+      conditions: ['Isotropic radiation into uniform 3D medium without attenuation or reflection'],
+      variables: [
+        {
+          symbol: 'I',
+          name: 'Sound Intensity',
+          unit: '\\text{W/m}^2',
+          description: 'Time-averaged rate of acoustic energy flow through a perpendicular unit area.',
+          connections:
+            'Obeys inverse-square law: doubling distance r from a sound source drops intensity to 1/4th.',
+        },
+        {
+          symbol: 'P',
+          name: 'Acoustic Source Power',
+          unit: '\\text{W}',
+          description: 'Total sound energy output rate emitted by the source.',
+          connections:
+            'Scales intensity linearly everywhere.',
+        },
+        {
+          symbol: 'A',
+          name: 'Wavefront Surface Area',
+          unit: '\\text{m}^2',
+          description: 'The cross-sectional area through which the acoustic power P passes (A = 4πr² for a spherical wavefront).',
+          connections:
+            'As the spherical shell expands outward, its surface area grows as r², diluting the energy concentration.',
+        },
+        {
+          symbol: 'r',
+          name: 'Distance from Source',
+          unit: '\\text{m}',
+          description: 'Radial distance from the acoustic center.',
+          connections:
+            'Inverse-square dependence: I ∝ 1/r².',
+        },
+      ],
+    },
+    {
+      name: 'Sound Intensity Level (Decibels)',
+      latex: '\\beta = 10\\log_{10}\\left(\\frac{I}{I_0}\\right), \\quad \\Delta\\beta = 10\\log_{10}\\left(\\frac{I_2}{I_1}\\right)',
+      summary:
+        'Expresses perceived acoustic volume on a logarithmic decibel (dB) scale referenced to the threshold of human hearing.',
+      conditions: ['I0 = 10⁻¹² W/m² (standard reference threshold of human hearing at 1 kHz)'],
+      variables: [
+        {
+          symbol: '\\beta',
+          name: 'Sound Level',
+          unit: '\\text{dB (Decibels)}',
+          description: 'The logarithmic metric matching human hearing perception.',
+          connections:
+            'An increase of +10 dB corresponds to a 10× increase in acoustic intensity. A +20 dB jump is 100× intensity.',
+        },
+        {
+          symbol: 'I',
+          name: 'Measured Sound Intensity',
+          unit: '\\text{W/m}^2',
+          description: 'The physical acoustic power per unit area at the listener’s location.',
+          connections:
+            'Can be recovered from decibel level via I = I₀ · 10^(β/10).',
+        },
+        {
+          symbol: 'I_0',
+          name: 'Hearing Threshold Reference Intensity',
+          unit: '\\text{W/m}^2 = 10^{-12}\\,\\text{W/m}^2',
+          description: 'Standard baseline benchmark representing 0 dB.',
+          connections:
+            'Fixed international reference constant.',
+        },
+        {
+          symbol: '\\Delta\\beta',
+          name: 'Decibel Difference',
+          unit: '\\text{dB}',
+          description: 'Change in sound level between two intensities I1 and I2: Δβ = β₂ - β₁.',
+          connections:
+            'Doubling sound intensity (I2/I1 = 2) raises the sound level by 10 log10(2) ≈ +3.01 dB.',
+        },
+        {
+          symbol: 'I_1, I_2',
+          name: 'Initial and Final Sound Intensities',
+          unit: '\\text{W/m}^2',
+          description: 'The two acoustic intensities being compared in the ratio I₂ / I₁.',
+          connections:
+            'A tenfold ratio (I₂ / I₁ = 10) yields Δβ = +10 dB.',
         },
       ],
     },

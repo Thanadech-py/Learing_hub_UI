@@ -19,49 +19,34 @@ const thermodynamicsData = {
   ],
   keyConcepts: [
     {
-      title: 'Heat vs. Temperature vs. Internal Energy: The Golden Distinction',
+      title: 'Temperature, Internal Energy & Heat',
       content:
-        'To master thermodynamics, one must rigorously separate three commonly conflated concepts:\n\n' +
-        '1. Temperature (T): A macroscopic property that reflects the average microscopic kinetic energy of random particle motion (vibrations in solids, translations in gases). If two bodies have the same temperature, their particles have the same average kinetic energy, and no net heat flows between them.\n\n' +
-        '2. Internal Energy (U): The total microscopic energy stored within a system—including the kinetic energy of all vibrating and translating molecules plus the potential energy stored in intermolecular chemical bonds and intermolecular forces. A giant frozen iceberg at 0°C has a lower temperature than a tiny cup of boiling water at 100°C, but the iceberg possesses far MORE total internal energy simply because it contains billions of times more molecules!\n\n' +
-        '3. Heat (Q): Energy in transit. Heat is NOT a state property; a system does not "possess" heat. Energy is called heat only while it is flowing across a system boundary due to a temperature gradient. Once the energy enters the receiving system, it becomes internal energy.',
+        'Temperature (T) reflects average molecular kinetic energy. Internal energy (U) is total microscopic energy. Heat (Q) is energy in transit solely driven by a temperature difference.',
     },
     {
-      title: 'The Zeroth Law & The Absolute Temperature Scale (Kelvin)',
+      title: 'The Zeroth Law & Absolute Temperature',
       content:
-        'The Zeroth Law states: "If system A is in thermal equilibrium with system B, and system B is in thermal equilibrium with system C, then system A is in thermal equilibrium with system C." While this may sound obvious, it provides the fundamental logical basis for all temperature measurement: it guarantees that a calibrated thermometer (system B) can reliably compare the thermal states of any two separate systems without bringing them into direct contact.\n\n' +
-        'Why must thermodynamics use the Kelvin scale? Common scales like Celsius and Fahrenheit choose arbitrary reference points (the freezing point of brine or pure water). In equations of state like PV = nRT, plugging in 0°C would incorrectly imply that gas pressure or volume collapses to zero! The Kelvin scale is an absolute thermodynamic scale whose origin (0 K = -273.15°C) corresponds to absolute zero—the theoretical state where classical molecular translational motion ceases completely.',
+        'Thermal equilibrium is transitive (if A=B and B=C, then A=C). Calculations strictly require the absolute Kelvin scale (TK = TC + 273.15) where 0 K represents zero molecular translation.',
     },
     {
-      title: 'The Three Heat Transfer Mechanisms: Conduction, Convection, & Radiation',
+      title: 'Conduction, Convection & Radiation',
       content:
-        'Heat spontaneously migrates from hotter bodies to cooler bodies through three fundamental physical pathways:\n\n' +
-        '• Thermal Conduction: Heat transfer through stationary matter via direct microscopic particle collisions and free electron movement. In solids, hot atoms vibrate vigorously and bump into cooler neighbours, transferring kinetic energy along the lattice. In metals, mobile conduction electrons carry heat extremely rapidly, making copper and aluminum excellent thermal conductors. Insulators (such as wood, foam, or glass) lack free electrons and have bonded lattices that hinder vibrational transport.\n\n' +
-        '• Thermal Convection: Heat transfer through the macroscopic bulk motion of fluids (liquids and gases). In Natural (Free) Convection, fluid touching a hot surface warms up, expands, becomes less dense, and is pushed upward by buoyant forces; cooler, denser fluid sinks to replace it, establishing a circulating convection cell. In Forced Convection, an external mechanical device (such as a fan, pump, or breeze) accelerates fluid flow across the surface, dramatically boosting the convective heat transfer coefficient h.\n\n' +
-        '• Thermal Radiation: Heat transfer through electromagnetic waves emitted by all matter having an absolute temperature greater than 0 K. Unlike conduction and convection, radiation requires NO material medium—it travels through the absolute vacuum of outer space at the speed of light. Governed by the Stefan-Boltzmann law, emitted power scales with the fourth power of absolute temperature (T⁴). Doubling an object’s absolute temperature multiplies its radiated energy by 2⁴ = 16 times!',
+        'Conduction transfers heat through atomic lattice collisions. Convection circulates heat via macroscopic fluid flow. Radiation emits electromagnetic waves across vacuum (P ∝ T⁴).',
     },
     {
-      title: 'The First Law: Energy Conservation & Boundary Work in Gases',
+      title: 'The First Law & Boundary Work',
       content:
-        'The First Law of Thermodynamics is the law of conservation of energy applied to thermal systems: ΔU = Q - W. The change in internal energy (ΔU) of a closed system equals the net heat added to the system (Q) minus the mechanical work done by the system on its surroundings (W).\n\n' +
-        'How does an expanding gas do work? Imagine gas enclosed in a cylinder fitted with a frictionless movable piston of cross-sectional area A. The gas exerts pressure P against the piston face, producing an outward force F = P · A. When the gas expands by an infinitesimal displacement dx, the work done is dW = F · dx = (P · A) dx = P · dV. For any macroscopic expansion from volume V₁ to V₂, the total work done is the geometric area beneath the process curve on a Pressure-Volume (P-V) indicator diagram: W = ∫ P dV.\n\n' +
-        'When gas particles bounce off a piston face that is retreating outwards, they rebound with less speed, losing microscopic kinetic energy. Thus, when an isolated gas expands and pushes a piston, it cools down because its internal energy is converted into macroscopic mechanical work!',
+        'Energy is conserved: ΔU = Q - W. Expanding gas does work on surroundings (W = ∫ P dV), reducing internal energy and temperature unless heat is added.',
     },
     {
-      title: 'The Four Fundamental Thermodynamic Processes',
+      title: 'The Four Fundamental Gas Processes',
       content:
-        'When an ideal gas transitions from one state (P₁, V₁, T₁) to another, it typically follows one of four idealized thermodynamic paths:\n\n' +
-        '1. Isobaric (Constant Pressure, ΔP = 0): The gas expands or contracts while pressure remains fixed (e.g., a piston loaded with a constant weight). Work done is simply W = P(V₂ - V₁). Heat added raises both the temperature and does boundary work.\n\n' +
-        '2. Isochoric / Isovolumetric (Constant Volume, ΔV = 0): The gas is trapped inside a rigid, unyielding container. Because the piston cannot move, the boundary displacement is zero: W = 0! By the First Law, all heat added goes 100% into increasing the internal energy and temperature: ΔU = Q = n Cᵥ ΔT.\n\n' +
-        '3. Isothermal (Constant Temperature, ΔT = 0): The gas is in constant contact with a massive thermal reservoir and expands very slowly. Because internal energy of an ideal gas depends solely on temperature, ΔU = 0. Therefore, all heat absorbed is directly converted into boundary work: Q = W = nRT ln(V₂ / V₁). The curve on a P-V diagram is a hyperbola (P ∝ 1/V).\n\n' +
-        '4. Adiabatic (Zero Heat Transfer, Q = 0): The cylinder is either heavily thermally insulated, or the expansion/compression occurs so rapidly that heat has no time to flow across the boundary. By the First Law, ΔU = -W. When an adiabatic gas expands and does work, its internal energy plummets and the gas cools down dramatically (PV^γ = constant, where γ = Cₚ/Cᵥ). This is why gas spraying rapidly from an aerosol can feels freezing cold!',
+        'Isobaric (constant P, W = PΔV), Isochoric (constant V, W = 0, ΔU = Q), Isothermal (constant T, ΔU = 0, Q = W), and Adiabatic (insulated Q = 0, PV^γ = const).',
     },
     {
-      title: 'The Second Law, Entropy, & The Carnot Limit',
+      title: 'The Second Law, Entropy & Carnot Limit',
       content:
-        'The First Law states that energy is conserved, but it does not specify which direction natural processes can proceed. A cold cup of coffee never spontaneously gathers heat from the room to boil itself, and a dropped egg never spontaneously reassembles its fragments and leaps back onto the table, even though neither event violates energy conservation!\n\n' +
-        'The Second Law of Thermodynamics introduces the concept of Entropy (S)—a quantitative measure of molecular disorder, energy dispersal, and the multiplicity of microscopic states. Clausius stated that heat can never spontaneously flow from a colder body to a hotter body without external work. Kelvin and Planck stated that it is impossible to build a cyclic heat engine whose sole effect is to absorb heat from a single thermal reservoir and convert 100% of it into work.\n\n' +
-        'In 1824, French engineer Sadi Carnot proved that the maximum theoretical thermal efficiency of ANY heat engine operating between a hot reservoir at T_H and a cold reservoir at T_C is strictly limited to: η_Carnot = 1 - (T_C / T_H). Even under frictionless, perfectly reversible conditions, an engine MUST reject a portion of its heat (Q_C) to the cold sink. To achieve 100% efficiency, one would need a cold sink at absolute zero (T_C = 0 K), which the Third Law of Thermodynamics proves is physically unattainable.',
+        'Entropy increases in spontaneous processes (ΔS ≥ 0). No heat engine can be 100% efficient; maximum reversible efficiency is the Carnot limit: η = 1 - TC / TH.',
     },
   ],
   equations: [
@@ -120,6 +105,14 @@ const thermodynamicsData = {
             'Directly proportional to the average translational kinetic energy of the molecules: E_k,avg = (3/2) k_B T. Doubling T in Kelvin doubles the average kinetic energy and doubles the product P·V.',
         },
         {
+          symbol: 'N',
+          name: 'Total Number of Molecules',
+          unit: '\\text{molecules (dimensionless)}',
+          description: 'The total microscopic count of gas particles in the container: N = n · N_A.',
+          connections:
+            'Pairs with Boltzmann’s constant k_B in the microscopic form PV = N k_B T.',
+        },
+        {
           symbol: 'k_B',
           name: 'Boltzmann Constant',
           unit: '\\text{J/K}',
@@ -173,6 +166,14 @@ const thermodynamicsData = {
           description: 'The net difference between final temperature and initial temperature: T_f - T_i.',
           connections:
             'Because 1 Kelvin step is identical in size to 1 Celsius degree step, ΔT is numerically identical whether calculated in Kelvin or Celsius.',
+        },
+        {
+          symbol: 'T_i, T_f',
+          name: 'Initial and Final Temperatures',
+          unit: '\\text{K} \\text{ or } ^\\circ\\text{C}',
+          description: 'The starting temperature T_i before heating/cooling and ending temperature T_f.',
+          connections:
+            'When T_f > T_i, ΔT > 0 and heat Q > 0 is absorbed by the substance.',
         },
       ],
     },
@@ -234,6 +235,14 @@ const thermodynamicsData = {
             'Increases linearly with thermal conductivity k, surface area A, and temperature difference (T_H - T_C). Decreases inversely with wall thickness L.',
         },
         {
+          symbol: 'Q, t',
+          name: 'Conducted Heat Energy & Time Interval',
+          unit: '\\text{J}, \\; \\text{s}',
+          description: 'Total thermal energy Q transferred over elapsed time t (Q̇ = Q / t).',
+          connections:
+            'In steady state, total heat conducted grows linearly with time: Q = Q̇ · t.',
+        },
+        {
           symbol: 'k',
           name: 'Thermal Conductivity',
           unit: '\\text{W}/(\\text{m}\\cdot\\text{K})',
@@ -251,6 +260,14 @@ const thermodynamicsData = {
             'Doubling the wall or bar area doubles the number of parallel microscopic heat conduction paths, doubling heat flow rate.',
         },
         {
+          symbol: 'dT / dx',
+          name: 'Spatial Temperature Gradient',
+          unit: '\\text{K/m}',
+          description: 'Rate of change of temperature with respect to distance x along the heat flow path.',
+          connections:
+            'The minus sign in -kA(dT/dx) reflects the Second Law: heat flows spontaneously downhill from higher to lower temperature (where dT/dx < 0).',
+        },
+        {
           symbol: 'L',
           name: 'Conduction Path Length (Thickness)',
           unit: '\\text{m}',
@@ -259,10 +276,10 @@ const thermodynamicsData = {
             'Defines thermal resistance R_th = L / (kA). Doubling the insulation thickness halves the steady-state heat loss rate.',
         },
         {
-          symbol: 'T_H - T_C',
-          name: 'Thermal Driving Potential (Temperature Difference)',
+          symbol: 'T_H, T_C',
+          name: 'Hot and Cold Face Temperatures',
           unit: '\\text{K}',
-          description: 'The temperature difference between the hot and cold faces of the material.',
+          description: 'Temperatures at the hot boundary (T_H) and cold boundary (T_C), creating driving potential ΔT = T_H - T_C.',
           connections:
             'Acts analogously to electric voltage in Ohm’s law (ΔV = I·R ↔ ΔT = Q_dot · R_th). Without a temperature difference (T_H = T_C), conduction ceases completely.',
         },
@@ -303,11 +320,11 @@ const thermodynamicsData = {
             'This is why radiators, heatsinks, and car engines use thin protruding fins: adding fins multiplies the effective area A by 5× to 20×, massively accelerating heat dissipation without changing overall volume.',
         },
         {
-          symbol: 'T_s - T_\\infty',
-          name: 'Surface-to-Fluid Temperature Gradient',
+          symbol: 'T_s, T_\\infty',
+          name: 'Surface & Ambient Fluid Temperatures',
           unit: '\\text{K}',
           description:
-            'The difference between the surface temperature T_s and the free-stream ambient fluid temperature T_∞.',
+            'The solid boundary temperature T_s and the free-stream ambient fluid temperature T_∞ far from the surface.',
           connections:
             'As heat transfers, if the fluid is not continuously renewed or the surface cools down, (T_s - T_∞) decays exponentially toward zero (thermal equilibrium).',
         },
@@ -351,6 +368,14 @@ const thermodynamicsData = {
             'Derived from quantum mechanics and Planck’s blackbody radiation law integrated across all photon wavelengths from zero to infinity.',
         },
         {
+          symbol: 'A',
+          name: 'Radiating Surface Area',
+          unit: '\\text{m}^2',
+          description: 'Total exterior surface area of the emitting body.',
+          connections:
+            'Radiated power scales linearly with surface area A (for example, a star with twice the radius has 4× the surface area and radiates 4× the power at the same temperature).',
+        },
+        {
           symbol: 'T',
           name: 'Absolute Temperature of Body',
           unit: '\\text{K}',
@@ -389,12 +414,44 @@ const thermodynamicsData = {
             'Equal to the shaded area under the hyperbolic curve P = nRT/V on a P-V diagram. Because ΔU = 0 for an isothermal process of an ideal gas, the heat absorbed from the thermal reservoir exactly equals the work performed: Q = W.',
         },
         {
-          symbol: 'V_f / V_i',
-          name: 'Expansion Ratio',
-          unit: '\\text{dimensionless}',
-          description: 'The ratio of final volume to initial volume.',
+          symbol: 'n',
+          name: 'Number of Moles',
+          unit: '\\text{mol}',
+          description: 'Quantity of enclosed ideal gas.',
           connections:
-            'If V_f > V_i, the ratio is greater than 1, so ln(V_f / V_i) > 0 and the gas does positive work (W > 0). If the gas is compressed (V_f < V_i), the ratio is less than 1, ln(V_f / V_i) < 0, and external work is done ON the gas (W < 0).',
+            'Scales the isothermal work output linearly.',
+        },
+        {
+          symbol: 'R',
+          name: 'Universal Gas Constant',
+          unit: '\\text{J}/(\\text{mol}\\cdot\\text{K})',
+          description: 'Ideal gas proportionality constant: R ≈ 8.314 J/(mol·K).',
+          connections:
+            'Combines with n and T to set the constant product PV = nRT along the isotherm.',
+        },
+        {
+          symbol: 'T',
+          name: 'Constant Isothermal Temperature',
+          unit: '\\text{K}',
+          description: 'Absolute temperature maintained by the thermal reservoir during expansion or compression.',
+          connections:
+            'Higher isothermal temperature shifts the hyperbola upward on the P-V diagram, yielding greater work for the same volume ratio.',
+        },
+        {
+          symbol: 'V_i, V_f',
+          name: 'Initial and Final Volumes',
+          unit: '\\text{m}^3',
+          description: 'The starting volume V_i and ending volume V_f of the gas cylinder.',
+          connections:
+            'If V_f > V_i, ln(V_f / V_i) > 0 and the gas does positive work (W > 0). If compressed (V_f < V_i), ln(V_f / V_i) < 0 and work is done ON the gas (W < 0).',
+        },
+        {
+          symbol: 'P_i, P_f',
+          name: 'Initial and Final Pressures',
+          unit: '\\text{Pa}',
+          description: 'The starting absolute pressure P_i and ending pressure P_f.',
+          connections:
+            'By Boyle’s Law at constant T, P_i V_i = P_f V_f, so the volume ratio V_f / V_i equals the inverse pressure ratio P_i / P_f.',
         },
       ],
     },
@@ -441,6 +498,262 @@ const thermodynamicsData = {
             'The useful shaft work produced in one full cycle: W_net = Q_H - Q_C, representing the enclosed area of the cycle on a P-V diagram.',
           connections:
             'Directly scales with the heat input Q_H and the temperature span (T_H - T_C).',
+        },
+        {
+          symbol: 'Q_H',
+          name: 'Heat Absorbed from Hot Reservoir',
+          unit: '\\text{J}',
+          description: 'Total thermal energy input drawn from the high-temperature source per cycle.',
+          connections:
+            'Divides W_net to define thermal efficiency η = W_net / Q_H.',
+        },
+      ],
+    },
+    {
+      name: 'Thermal Conduction in Radial Geometries (Cylinder & Sphere)',
+      latex: '\\text{Cylinder: } \\frac{Q}{t} = \\frac{2\\pi k L(T_1 - T_2)}{\\ln(r_2/r_1)}, \\quad \\text{Sphere: } \\frac{Q}{t} = 4\\pi k(T_1 - T_2)\\left[\\frac{r_1 r_2}{r_2 - r_1}\\right]',
+      summary:
+        'Calculates conductive heat flux through radial walls (such as insulated steam pipes and spherical storage tanks).',
+      conditions: ['Steady-state radial heat conduction', 'Uniform thermal conductivity k'],
+      variables: [
+        {
+          symbol: 'Q/t',
+          name: 'Radial Heat Transfer Rate',
+          unit: '\\text{W (J/s)}',
+          description: 'Power transmitted radially outward from inner radius r1 to outer radius r2.',
+          connections:
+            'In cylindrical pipes, heat loss drops logarithmically with insulation thickness r2/r1.',
+        },
+        {
+          symbol: 'k',
+          name: 'Thermal Conductivity',
+          unit: '\\text{W}/(\\text{m}\\cdot\\text{K})',
+          description: 'Thermal conductivity of the cylindrical or spherical insulation shell.',
+          connections:
+            'Directly proportional to radial heat transfer rate.',
+        },
+        {
+          symbol: 'L',
+          name: 'Cylinder Length',
+          unit: '\\text{m}',
+          description: 'Axial length of the cylindrical pipe.',
+          connections:
+            'Heat loss from a pipe scales linearly with pipe length L.',
+        },
+        {
+          symbol: 'T_1, T_2',
+          name: 'Inner and Outer Wall Temperatures',
+          unit: '\\text{K}',
+          description: 'Temperatures at the inner radius r₁ and outer radius r₂.',
+          connections:
+            'Drives radial heat conduction proportionally to (T₁ - T₂).',
+        },
+        {
+          symbol: 'r_1, r_2',
+          name: 'Inner and Outer Radii',
+          unit: '\\text{m}',
+          description: 'The geometric boundary radii of the cylinder or sphere.',
+          connections:
+            'Increasing outer radius r2 adds insulation thickness (r₂ - r₁).',
+        },
+      ],
+    },
+    {
+      name: 'Molar Heat Capacities & Ratio γ',
+      latex: '\\Delta U = n C_v \\Delta T, \\quad C_p - C_v = R, \\quad \\gamma = \\frac{C_p}{C_v}',
+      summary:
+        'Relates internal energy change to constant-volume molar heat capacity Cv, and defines constant-pressure capacity Cp and adiabatic index γ.',
+      conditions: [
+        'Monatomic gas: Cv = (3/2)R, Cp = (5/2)R, γ = 5/3 ≈ 1.67',
+        'Diatomic gas: Cv = (5/2)R, Cp = (7/2)R, γ = 7/5 = 1.40',
+      ],
+      variables: [
+        {
+          symbol: '\\Delta U',
+          name: 'Internal Energy Change',
+          unit: '\\text{J}',
+          description: 'Change in total microscopic thermal energy of the ideal gas.',
+          connections:
+            'Equals n C_v ΔT for ANY ideal gas process (isobaric, isochoric, isothermal, or adiabatic), because internal energy of an ideal gas is a function of temperature alone.',
+        },
+        {
+          symbol: 'n',
+          name: 'Number of Moles',
+          unit: '\\text{mol}',
+          description: 'Amount of gas in moles.',
+          connections:
+            'Scales internal energy change linearly.',
+        },
+        {
+          symbol: '\\Delta T',
+          name: 'Temperature Change',
+          unit: '\\text{K}',
+          description: 'Change in absolute temperature of the gas.',
+          connections:
+            'Zero temperature change (ΔT = 0) guarantees zero internal energy change (ΔU = 0).',
+        },
+        {
+          symbol: 'C_v',
+          name: 'Molar Heat Capacity at Constant Volume',
+          unit: '\\text{J}/(\\text{mol}\\cdot\\text{K})',
+          description: 'Heat required per mole to raise temperature by 1 K at constant volume.',
+          connections:
+            'Directly dictates internal energy for any process: ΔU = n Cv ΔT.',
+        },
+        {
+          symbol: 'C_p',
+          name: 'Molar Heat Capacity at Constant Pressure',
+          unit: '\\text{J}/(\\text{mol}\\cdot\\text{K})',
+          description: 'Heat required per mole at constant pressure, accounting for expansion work: Cp = Cv + R.',
+          connections:
+            'Always larger than Cv by exactly universal gas constant R (Mayer’s relation).',
+        },
+        {
+          symbol: 'R',
+          name: 'Universal Gas Constant',
+          unit: '\\text{J}/(\\text{mol}\\cdot\\text{K})',
+          description: 'Fundamental molar gas constant R ≈ 8.314 J/(mol·K).',
+          connections:
+            'Represents the extra expansion work per mole per Kelvin done at constant pressure: C_p - C_v = R.',
+        },
+        {
+          symbol: '\\gamma',
+          name: 'Heat Capacity Ratio (Adiabatic Index)',
+          unit: '\\text{dimensionless}',
+          description: 'The ratio γ = Cp / Cv governing sound speed and adiabatic processes.',
+          connections:
+            '1.67 for noble gases (monatomic), 1.40 for air/nitrogen (diatomic).',
+        },
+      ],
+    },
+    {
+      name: 'Reversible Adiabatic Process & Expansion Work',
+      latex: 'P_1 V_1^\\gamma = P_2 V_2^\\gamma, \\quad T_1 V_1^{\\gamma-1} = T_2 V_2^{\\gamma-1}, \\quad W = \\frac{P_2 V_2 - P_1 V_1}{1 - \\gamma} = \\frac{nR(T_2 - T_1)}{1 - \\gamma}',
+      summary:
+        'Governs thermally insulated (Q = 0) expansion and compression of ideal gases and computes boundary work.',
+      conditions: ['Reversible adiabatic (isentropic) process', 'Ideal gas with constant γ'],
+      variables: [
+        {
+          symbol: 'P_1, P_2',
+          name: 'Initial and Final Pressures',
+          unit: '\\text{Pa}',
+          description: 'Absolute gas pressures at state 1 and state 2.',
+          connections:
+            'Drops more rapidly during adiabatic expansion than during isothermal expansion because both volume increases and temperature drops.',
+        },
+        {
+          symbol: 'V_1, V_2',
+          name: 'Initial and Final Volumes',
+          unit: '\\text{m}^3',
+          description: 'Gas volumes at state 1 and state 2.',
+          connections:
+            'Raised to the power γ in P V^γ = const and power (γ - 1) in T V^(γ-1) = const.',
+        },
+        {
+          symbol: 'T_1, T_2',
+          name: 'Initial and Final Absolute Temperatures',
+          unit: '\\text{K}',
+          description: 'Kelvin temperatures at state 1 and state 2.',
+          connections:
+            'Adiabatic compression (V₂ < V₁) sharply raises temperature (T₂ > T₁), which is how a Diesel engine ignites fuel without spark plugs.',
+        },
+        {
+          symbol: 'n, R',
+          name: 'Moles of Gas & Universal Gas Constant',
+          unit: '\\text{mol}, \\; \\text{J}/(\\text{mol}\\cdot\\text{K})',
+          description: 'Amount of gas n and gas constant R ≈ 8.314 J/(mol·K).',
+          connections:
+            'Links P₂V₂ - P₁V₁ to nR(T₂ - T₁) via the Ideal Gas Law.',
+        },
+        {
+          symbol: 'W',
+          name: 'Adiabatic Boundary Work',
+          unit: '\\text{J}',
+          description: 'Mechanical work done during adiabatic expansion.',
+          connections:
+            'Since Q = 0, First Law gives W = -ΔU = -n Cv (T2 - T1). Expanding gas cools dramatically.',
+        },
+        {
+          symbol: '\\gamma',
+          name: 'Adiabatic Exponent',
+          unit: '\\text{dimensionless}',
+          description: 'Ratio of specific heats Cp / Cv.',
+          connections:
+            'Makes adiabatic curves steeper on a P-V diagram than isothermal curves (P ∝ V^(-γ) vs P ∝ V^(-1)).',
+        },
+      ],
+    },
+    {
+      name: 'Thermodynamic Entropy Definition',
+      latex: '\\Delta S = \\int \\frac{dQ}{T}',
+      summary:
+        'Defines the macroscopic change in entropy as the integral of reversible heat transfer divided by absolute temperature.',
+      conditions: ['Reversible path integration', 'T must strictly be in Kelvin (K)'],
+      variables: [
+        {
+          symbol: '\\Delta S',
+          name: 'Entropy Change',
+          unit: '\\text{J/K}',
+          description: 'The fundamental quantitative measure of thermal energy dispersal and microscopic state multiplicity.',
+          connections:
+            'For isolated systems, ΔS ≥ 0 (Second Law of Thermodynamics). For a reversible isothermal process, ΔS = Q / T.',
+        },
+        {
+          symbol: 'dQ',
+          name: 'Infinitesimal Reversible Heat Transfer',
+          unit: '\\text{J}',
+          description: 'Differential amount of thermal energy added reversibly to the system.',
+          connections:
+            'Positive when heat enters the system (increasing entropy); negative when heat leaves (decreasing system entropy).',
+        },
+        {
+          symbol: 'T',
+          name: 'Absolute Temperature',
+          unit: '\\text{K}',
+          description: 'Kelvin temperature at which the heat transfer dQ occurs.',
+          connections:
+            'Adding the same amount of heat dQ at a lower temperature T produces a larger entropy increase than at a higher temperature.',
+        },
+      ],
+    },
+    {
+      name: 'Refrigerators & Heat Pumps Coefficient of Performance (C.O.P.)',
+      latex: '\\text{COP}_{\\text{ref}} = \\frac{Q_2}{W} = \\frac{Q_2}{Q_1 - Q_2}, \\quad \\text{COP}_{\\text{hp}} = \\frac{Q_1}{W} = \\frac{Q_1}{Q_1 - Q_2}',
+      summary:
+        'Measures thermal efficiency for cooling (refrigerators, extracting heat Q2 from cold space) and heating (heat pumps, delivering heat Q1 to warm space).',
+      conditions: ['Cyclic refrigeration or heat pump cycle', 'W = Q1 - Q2 is input shaft work'],
+      variables: [
+        {
+          symbol: '\\text{COP}_{\\text{ref}}',
+          name: 'Refrigerator Coefficient of Performance',
+          unit: '\\text{dimensionless}',
+          description: 'Heat extracted from the cold compartment per unit of work consumed.',
+          connections:
+            'Higher COP reduces electricity consumption: COP_hp = COP_ref + 1.',
+        },
+        {
+          symbol: '\\text{COP}_{\\text{hp}}',
+          name: 'Heat Pump Coefficient of Performance',
+          unit: '\\text{dimensionless}',
+          description: 'Heat delivered to the indoor space per unit of electrical work.',
+          connections:
+            'Always exceeds 1.0 (typically 3.0 to 4.5), delivering much more heat energy than direct resistive electric heating!',
+        },
+        {
+          symbol: 'Q_1, Q_2',
+          name: 'Hot & Cold Reservoir Heat Transfers',
+          unit: '\\text{J}',
+          description: 'Q1 is heat discharged to the hot sink; Q2 is heat absorbed from the cold source.',
+          connections:
+            'Energy conservation ensures Q1 = Q2 + W.',
+        },
+        {
+          symbol: 'W',
+          name: 'Work Input to Compressor',
+          unit: '\\text{J}',
+          description: 'External mechanical or electrical work required to drive heat from cold to hot: W = Q₁ - Q₂.',
+          connections:
+            'Without work input (W = 0), heat cannot flow spontaneously from a cold reservoir to a hot reservoir (Clausius statement of the Second Law).',
         },
       ],
     },

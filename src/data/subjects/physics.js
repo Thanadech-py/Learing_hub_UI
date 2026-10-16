@@ -67,6 +67,12 @@ const physics = {
       level: 'Advanced',
     },
     {
+      id: 'fluid-mechanics',
+      title: 'Fluid Mechanics',
+      description: 'Hydrostatic pressure, Archimedes buoyant force, volumetric continuity, and Bernoulli principle.',
+      level: 'Intermediate',
+    },
+    {
       id: 'thermodynamics',
       title: 'Heat Transfer & Thermodynamics',
       description: 'Thermal physics, conduction, convection, radiation, ideal gas laws, and the four laws of thermodynamics.',

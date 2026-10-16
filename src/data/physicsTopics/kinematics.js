@@ -15,17 +15,17 @@ const kinematicsData = {
     {
       title: 'Displacement vs. Distance',
       content:
-        'Distance is a scalar quantity measuring the total path length traversed regardless of direction. Displacement (Δx or Δr) is a vector pointing from the initial coordinate to the final coordinate. An object running in a full 400 m loop covers 400 m of distance but has 0 m of displacement.',
+        'Displacement (s or Δx) is the net vector change in position from start to finish. Distance is the total scalar path length traversed.',
     },
     {
-      title: 'Velocity vs. Speed & Acceleration',
+      title: 'Velocity vs. Acceleration',
       content:
-        'Speed is the scalar rate of distance accumulation. Velocity is the vector rate of displacement change (v = dx/dt). Acceleration (a = dv/dt) occurs whenever velocity changes in magnitude, direction, or both. A car moving at constant speed around a curved track is accelerating because its velocity direction is continuously turning.',
+        'Velocity is the time derivative of position (v = ds/dt). Acceleration is the time derivative of velocity (a = dv/dt). Any turn at constant speed still accelerates.',
     },
     {
-      title: '2D Projectile Independence',
+      title: 'Independence of 2D Motion',
       content:
-        'A projectile flying in a uniform gravitational field experiences zero horizontal acceleration (ax = 0) and constant downward vertical acceleration (ay = -g). Because orthogonal vector components are mathematically independent, horizontal velocity vx remains constant throughout flight while vertical velocity vy changes linearly.',
+        'Orthogonal x and y motions are completely independent. In projectile flight, horizontal speed vx remains constant while vertical speed vy accelerates under gravity (ay = -g).',
     },
   ],
   equations: [
@@ -72,16 +72,16 @@ const kinematicsData = {
     },
     {
       name: 'Second Kinematic Equation (Displacement-Time Relation)',
-      latex: '\\Delta x = v_0 t + \\frac{1}{2}at^2',
+      latex: 's = v_0 t + \\frac{1}{2}at^2',
       summary:
         'Computes total displacement resulting from initial velocity combined with uniform acceleration over time t.',
       conditions: ['Acceleration a must be constant', '1D straight-line motion'],
       variables: [
         {
-          symbol: '\\Delta x',
+          symbol: 's',
           name: 'Displacement',
           unit: '\\text{m}',
-          description: 'The net vector change in position (x_final - x_initial).',
+          description: 'The net vector change in position (s = \\Delta x).',
           connections:
             'Composed of two additive terms: the linear drift (v0 · t) and the quadratic accelerated gain (½ a t²). Over short times, v0 · t dominates; over long times, t² causes the quadratic term to overwhelm the displacement.',
         },
@@ -113,7 +113,7 @@ const kinematicsData = {
     },
     {
       name: 'Third Kinematic Equation (Torricelli’s Timeless Formula)',
-      latex: 'v^2 = v_0^2 + 2a\\Delta x',
+      latex: 'v^2 = v_0^2 + 2as',
       summary:
         'Relates final velocity directly to displacement without requiring knowledge of elapsed time.',
       conditions: ['Constant acceleration', 'Eliminates time variable t via substitution'],
@@ -122,7 +122,7 @@ const kinematicsData = {
           symbol: 'v',
           name: 'Final Velocity',
           unit: '\\text{m/s}',
-          description: 'The velocity after traversing displacement Δx.',
+          description: 'The velocity after traversing displacement s.',
           connections:
             'Squared in the equation. Doubling the terminal speed requires 4 times the stopping or accelerating distance for the same acceleration magnitude.',
         },
@@ -140,15 +140,97 @@ const kinematicsData = {
           unit: '\\text{m/s}^2',
           description: 'Constant acceleration along the displacement vector.',
           connections:
-            'Inversely connected to displacement Δx for a given velocity change: a = (v² - v0²) / (2Δx). Greater deceleration stops an object in shorter distance.',
+            'Inversely connected to displacement s for a given velocity change: a = (v² - v0²) / (2s). Greater deceleration stops an object in shorter distance.',
         },
         {
-          symbol: '\\Delta x',
+          symbol: 's',
           name: 'Displacement',
           unit: '\\text{m}',
           description: 'Distance traversed during acceleration.',
           connections:
-            'Directly scales the energy-equivalent quantity 2aΔx, corresponding directly to the work-energy theorem (W = F·d = m·a·d = ½mv² - ½mv0²).',
+            'Directly scales the energy-equivalent quantity 2as, corresponding directly to the work-energy theorem (W = F·s = m·a·s = ½mv² - ½mv0²).',
+        },
+      ],
+    },
+    {
+      name: 'Fourth Kinematic Equation (Average Velocity Relation)',
+      latex: 's = \\frac{1}{2}(v_0 + v)t',
+      summary:
+        'Calculates displacement as the product of average velocity and elapsed time under constant acceleration.',
+      conditions: ['Constant acceleration a', 'Valid when acceleration magnitude is unknown'],
+      variables: [
+        {
+          symbol: 's',
+          name: 'Displacement',
+          unit: '\\text{m}',
+          description: 'Net straight-line displacement covered during time interval t.',
+          connections:
+            'Directly proportional to both elapsed time t and average velocity (v0 + v)/2.',
+        },
+        {
+          symbol: 'v_0',
+          name: 'Initial Velocity',
+          unit: '\\text{m/s}',
+          description: 'Velocity at the beginning of the motion window.',
+          connections:
+            'Averaged with final velocity v to yield the constant effective travel speed.',
+        },
+        {
+          symbol: 'v',
+          name: 'Final Velocity',
+          unit: '\\text{m/s}',
+          description: 'Velocity at the end of elapsed time t.',
+          connections:
+            'Increases displacement linearly when final speed is higher.',
+        },
+        {
+          symbol: 't',
+          name: 'Elapsed Time',
+          unit: '\\text{s}',
+          description: 'Total duration of motion.',
+          connections:
+            'Linear multiplier: traversing at average speed for twice as long doubles displacement.',
+        },
+      ],
+    },
+    {
+      name: 'Fifth Kinematic Equation (Displacement from Final Velocity)',
+      latex: 's = vt - \\frac{1}{2}at^2',
+      summary:
+        'Computes displacement using final velocity, acceleration, and time without needing initial velocity.',
+      conditions: ['Constant acceleration a', 'Useful when initial velocity v0 is unknown'],
+      variables: [
+        {
+          symbol: 's',
+          name: 'Displacement',
+          unit: '\\text{m}',
+          description: 'The net vector displacement traversed.',
+          connections:
+            'Equals the displacement if moving at final velocity vt minus the acceleration overshoot ½at².',
+        },
+        {
+          symbol: 'v',
+          name: 'Final Velocity',
+          unit: '\\text{m/s}',
+          description: 'The terminal velocity at timestamp t.',
+          connections:
+            'Sets the linear projection term vt.',
+        },
+        {
+          symbol: 'a',
+          name: 'Constant Acceleration',
+          unit: '\\text{m/s}^2',
+          description: 'Uniform acceleration rate.',
+          connections:
+            'Enters with a minus sign because it subtracts the velocity gained over time to reference back to starting conditions.',
+        },
+        {
+          symbol: 't',
+          name: 'Elapsed Time',
+          unit: '\\text{s}',
+          description: 'Duration over which acceleration acts.',
+          connections:
+            'Appears linearly in vt and quadratically in ½at².',
         },
       ],
     },
