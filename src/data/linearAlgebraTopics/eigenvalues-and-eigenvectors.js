@@ -5,38 +5,56 @@ const eigenvaluesData = {
   id: 'eigenvalues-and-eigenvectors',
   title: 'Eigenvalues & Eigenvectors',
   subtitle:
-    'The invariant directions of linear transformations: vectors that never rotate, characteristic equations, and diagonalization.',
+    'The invariant directions of linear transformations: vectors that never rotate, characteristic polynomials, and diagonalization.',
   level: 'Advanced',
   estimatedTime: '28 min read + interactive lab',
   overview: [
-    'When a matrix transforms space, it typically rotates, stretches, and skews vectors in complicated directions. However, almost every matrix possesses a few privileged, special directions where vectors do NOT rotate at all—they remain along their original line, merely stretching, shrinking, or reversing in place.',
-    'These invariant directions are called Eigenvectors (from the German "eigen" meaning "characteristic" or "own"). The scalar factor by which an eigenvector is stretched or shrunk is called its Eigenvalue λ: Av = λv.',
-    'Finding eigenvalues and eigenvectors diagonalizes the matrix into A = P Λ P⁻¹, turning complicated coupled interactions into independent, uncoupled 1D scalings. This concept underpins quantum mechanics (energy levels are eigenvalues of the Hamiltonian), facial recognition (Eigenfaces), Google’s PageRank algorithm, bridge resonance frequencies, and Principal Component Analysis (PCA).',
+    'When a matrix A transforms space, almost all vectors get knocked off their span. However, special non-zero vectors called Eigenvectors remain on their exact same line through the origin—they only get stretched, shrunk, or reversed by a scalar factor λ called the Eigenvalue: Av = λv.',
+    'To calculate eigenvalues and eigenvectors systematically: first solve the Characteristic Equation det(A − λI) = 0 to find the scalar roots λ, and then for each λ solve the homogeneous matrix system (A − λI)v = 0 to find the eigenvector column v.',
+    'Assembling n linearly independent eigenvectors as columns of matrix P diagonalizes the matrix into A = PΛP⁻¹, making matrix powers Aᵏ = PΛᵏP⁻¹ and differential equations effortless to compute.',
   ],
   keyConcepts: [
     {
-      title: 'The Fundamental Eigen-Equation: Av = λv',
+      title: 'Step 1: Finding Eigenvalues via det(A − λI) = 0',
       content:
-        'A non-zero vector v is an eigenvector of matrix A with eigenvalue λ if transforming v with A is identical to simply multiplying v by the scalar number λ. If λ > 1, the vector stretches; if 0 < λ < 1, it shrinks; if λ < 0, it reverses direction; if λ = 0, the vector lies in the null space of A.',
+        'Subtract λ from the main diagonal entries of A and set the determinant to zero. The roots of the resulting characteristic polynomial λ² − tr(A)λ + det(A) = 0 are the eigenvalues.',
+      exampleLabel: 'Worked Characteristic Polynomial Calculation for A = [[4, 1], [2, 3]]',
+      latex:
+        '\\det(A - \\lambda I) = \\det\\begin{bmatrix} 4 - \\lambda & 1 \\\\ 2 & 3 - \\lambda \\end{bmatrix} = (4-\\lambda)(3-\\lambda) - (1)(2) = \\lambda^2 - 7\\lambda + 10 = (\\lambda - 5)(\\lambda - 2) = 0 \\implies \\lambda_1 = 5, \\; \\lambda_2 = 2',
+      exampleNote:
+        'Quick check: λ₁ + λ₂ = 5 + 2 = 7 = tr(A) (4+3), and λ₁ · λ₂ = 5 × 2 = 10 = det(A) (12−2)!',
     },
     {
-      title: 'The Characteristic Equation: det(A - λI) = 0',
+      title: 'Step 2: Finding Eigenvectors by Solving (A − λI)v = 0',
       content:
-        'Rearranging Av = λv gives: (A - λI)v = 0. For this homogeneous system to have non-zero solutions for v, the matrix (A - λI) must squash space and be non-invertible! Therefore, its determinant must be zero: det(A - λI) = 0. This produces an n-th degree polynomial in λ whose roots are the eigenvalues of A.',
+        'Substitute each eigenvalue λ_i back into (A − λ_i I)v = 0 and solve for a non-zero column vector v in the null space.',
+      exampleLabel: 'Worked Eigenvector Calculation for λ₁ = 5 and λ₂ = 2',
+      latex:
+        '\\begin{aligned} &\\text{For } \\lambda_1 = 5: \\quad (A - 5I)\\mathbf{v}_1 = \\begin{bmatrix} -1 & 1 \\\\ 2 & -2 \\end{bmatrix}\\begin{bmatrix} v_x \\\\ v_y \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix} \\implies v_x = v_y \\implies \\mathbf{v}_1 = \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} \\\\[6pt] &\\text{For } \\lambda_2 = 2: \\quad (A - 2I)\\mathbf{v}_2 = \\begin{bmatrix} 2 & 1 \\\\ 2 & 1 \\end{bmatrix}\\begin{bmatrix} v_x \\\\ v_y \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix} \\implies 2v_x + v_y = 0 \\implies \\mathbf{v}_2 = \\begin{bmatrix} 1 \\\\ -2 \\end{bmatrix} \\end{aligned}',
+      exampleNote:
+        'Verify Av₁ = λ₁v₁: [[4, 1], [2, 3]][1, 1]ᵀ = [5, 5]ᵀ = 5[1, 1]ᵀ! And [[4, 1], [2, 3]][1, -2]ᵀ = [2, -4]ᵀ = 2[1, -2]ᵀ!',
     },
     {
-      title: 'Matrix Diagonalization: A = P Λ P⁻¹',
+      title: 'Step 3: Matrix Diagonalization A = PΛP⁻¹ & Powers Aᵏ',
       content:
-        'If an n × n matrix has n linearly independent eigenvectors, we can assemble them as the columns of matrix P. Then A = P Λ P⁻¹, where Λ is a diagonal matrix containing the eigenvalues. Computing high powers of A becomes trivial: Aᵏ = P Λᵏ P⁻¹, where Λᵏ simply raises each individual eigenvalue to the k-th power!',
+        'Place eigenvectors v₁ and v₂ as columns of P and eigenvalues λ₁, λ₂ on the diagonal of Λ. Then A = PΛP⁻¹ and Aᵏ = PΛᵏP⁻¹.',
+      exampleLabel: 'Worked Diagonalization Decomposition in Matrix Form',
+      latex:
+        'A = P\\Lambda P^{-1} = \\begin{bmatrix} 1 & 1 \\\\ 1 & -2 \\end{bmatrix} \\begin{bmatrix} 5 & 0 \\\\ 0 & 2 \\end{bmatrix} \\begin{bmatrix} 1 & 1 \\\\ 1 & -2 \\end{bmatrix}^{-1} \\implies A^k = \\begin{bmatrix} 1 & 1 \\\\ 1 & -2 \\end{bmatrix} \\begin{bmatrix} 5^k & 0 \\\\ 0 & 2^k \\end{bmatrix} \\left(-\\frac{1}{3}\\begin{bmatrix} -2 & -1 \\\\ -1 & 1 \\end{bmatrix}\\right)',
+      exampleNote:
+        'Instead of multiplying A by itself 100 times, A¹⁰⁰ is computed immediately by replacing 5ᵏ and 2ᵏ with 5¹⁰⁰ and 2¹⁰⁰!',
     },
   ],
   equations: [
     {
-      name: 'Eigenvalue-Eigenvector Definition',
+      name: 'Eigenvalue-Eigenvector Matrix Equation',
       latex: 'A\\mathbf{v} = \\lambda \\mathbf{v} \\iff (A - \\lambda I)\\mathbf{v} = \\mathbf{0}',
       summary:
-        'The condition where matrix transformation A acts on vector v as pure scalar scaling by factor λ.',
-      conditions: ['v must be a non-zero vector (v ≠ 0)'],
+        'The condition where matrix transformation A acts on column vector v as pure scalar scaling by factor λ.',
+      exampleDescription: 'Direct verification that v = [1, 1]ᵀ is an eigenvector of A with λ = 5',
+      exampleLatex:
+        '\\begin{bmatrix} 4 & 1 \\\\ 2 & 3 \\end{bmatrix} \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} 4(1) + 1(1) \\\\ 2(1) + 3(1) \\end{bmatrix} = \\begin{bmatrix} 5 \\\\ 5 \\end{bmatrix} = 5 \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} = \\lambda \\mathbf{v}',
+      conditions: ['v must be a non-zero column vector (v ≠ 0)'],
       variables: [
         {
           symbol: 'A',
@@ -50,7 +68,7 @@ const eigenvaluesData = {
           name: 'Eigenvector',
           unit: '\\mathbb{R}^n \\setminus \\{\\mathbf{0}\\}',
           description: 'A special direction vector that remains collinear with its transformed image Av.',
-          connections: 'Any scalar multiple c·v is also an eigenvector with the same eigenvalue.',
+          connections: 'Any non-zero scalar multiple c·v is also an eigenvector with the same eigenvalue.',
         },
         {
           symbol: '\\lambda',
@@ -66,7 +84,10 @@ const eigenvaluesData = {
       latex: '\\det(A - \\lambda I) = 0 \\iff \\lambda^2 - \\text{tr}(A)\\lambda + \\det(A) = 0 \\quad (\\text{for } 2 \\times 2)',
       summary:
         'The polynomial equation whose roots are the exact eigenvalues of matrix A.',
-      conditions: ['A is a 2×2 square matrix'],
+      exampleDescription: 'Eigenvalues of a 3×3 Triangular or Diagonal Matrix lie directly on the diagonal',
+      exampleLatex:
+        'A = \\begin{bmatrix} 3 & 4 & -1 \\\\ 0 & -2 & 5 \\\\ 0 & 0 & 7 \\end{bmatrix} \\implies \\det(A - \\lambda I) = (3-\\lambda)(-2-\\lambda)(7-\\lambda) = 0 \\implies \\lambda = 3, -2, 7',
+      conditions: ['A is a square matrix'],
       variables: [
         {
           symbol: '\\text{tr}(A)',
@@ -86,7 +107,7 @@ const eigenvaluesData = {
     },
   ],
   interactiveGuide:
-    'Rotate the test vector x around the coordinate plane. Watch where the transformed vector Ax lands. When x aligns with an Eigenvector, x and Ax become perfectly collinear (parallel) and glow bright green, revealing the eigenvalue λ = ||Ax|| / ||x||!',
+    'Rotate the test vector in 3D space and watch when x and Ax align along the invariant eigen-axes.',
 };
 
 export default eigenvaluesData;

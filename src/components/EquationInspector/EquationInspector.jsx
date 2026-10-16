@@ -11,7 +11,7 @@ export default function EquationInspector({ equation, index }) {
 
   if (!equation) return null;
 
-  const { name, latex, summary, variables = [], conditions = [] } = equation;
+  const { name, latex, summary, exampleLatex, exampleDescription, variables = [], conditions = [] } = equation;
 
   return (
     <article className="eq-card">
@@ -36,6 +36,16 @@ export default function EquationInspector({ equation, index }) {
       </div>
 
       {summary && <p className="eq-card__summary">{summary}</p>}
+
+      {exampleLatex && (
+        <div className="eq-card__example-box">
+          <div className="eq-card__example-header">
+            <span className="eq-card__example-badge">🧮 Worked Matrix / Vector Calculation</span>
+            {exampleDescription && <span className="eq-card__example-desc">{exampleDescription}</span>}
+          </div>
+          <MathView math={exampleLatex} block className="eq-card__example-math" />
+        </div>
+      )}
 
       {/* Variable Breakdown */}
       <div className="eq-card__variables-section">

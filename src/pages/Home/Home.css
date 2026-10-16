@@ -29,11 +29,15 @@
 
 /* Subjects */
 .home__subjects {
+  max-width: 1160px;
+  width: 100%;
+  margin: 0 auto;
   padding-bottom: 5rem;
 }
 
 .home__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
+  justify-content: center;
 }

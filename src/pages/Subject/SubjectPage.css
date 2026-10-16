@@ -1,5 +1,8 @@
 .subject-page {
   --accent: #38bdf8;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
   padding-bottom: 5rem;
 }
 

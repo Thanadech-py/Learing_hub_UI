@@ -69,9 +69,9 @@ export default function IntegralsViz() {
     ctx.fillRect(0, 0, width, height);
 
     const originX = 80;
-    const originY = height - 50;
-    const scaleX = 170;
-    const scaleY = 75;
+    const originY = height - 55;
+    const scaleX = 180;
+    const scaleY = 105;
 
     // Grid
     ctx.strokeStyle = '#1e293b';
@@ -216,8 +216,8 @@ export default function IntegralsViz() {
         <MetricBadge label="Error" value={approxError.toFixed(4)} unit="" />
       </div>
 
-      <div className="viz-canvas-area" style={{ height: '370px' }}>
-        <canvas ref={canvasRef} width={800} height={370} />
+      <div className="viz-canvas-area" style={{ height: '500px' }}>
+        <canvas ref={canvasRef} width={840} height={500} />
       </div>
 
       <div className="viz-controls-panel">

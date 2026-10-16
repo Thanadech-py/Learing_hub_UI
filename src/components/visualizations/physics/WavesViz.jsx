@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { PlaybackBar, SliderControl, MetricBadge } from '../shared/VizControls.jsx';
 
-export default function WavesViz() {
-  const [activeTab, setActiveTab] = useState('phase'); // 'anatomy' | 'phase' | 'pipes' | 'doppler' | 'superposition'
+export default function WavesViz({ initialTab = 'phase' }) {
+  const [activeTab, setActiveTab] = useState(initialTab); // 'anatomy' | 'phase' | 'pipes' | 'doppler' | 'superposition'
 
   // Tab 1: Anatomy & Sound Waves Parameters
   const [waveType, setWaveType] = useState('transverse'); // 'transverse' | 'longitudinal'

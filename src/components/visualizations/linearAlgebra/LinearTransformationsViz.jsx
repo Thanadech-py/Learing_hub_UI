@@ -238,7 +238,7 @@ export default function LinearTransformationsViz() {
         <MetricBadge label="Frobenius ||A||_F" value={frobNorm.toFixed(2)} unit="√(σ₁²+σ₂²+σ₃²)" />
       </div>
 
-      <div className="viz-canvas-area" style={{ height: '420px' }}>
+      <div className="viz-canvas-area" style={{ height: '500px' }}>
         <IsometricToolbar
           camera={camera}
           setPreset={setPreset}
@@ -261,7 +261,7 @@ export default function LinearTransformationsViz() {
             </>
           }
         />
-        <canvas ref={canvasRef} width={840} height={420} />
+        <canvas ref={canvasRef} width={840} height={500} />
       </div>
 
       <div className="viz-controls-panel">

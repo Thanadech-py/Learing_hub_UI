@@ -334,7 +334,7 @@ export default function LinearCombinationsViz() {
         />
       </div>
 
-      <div className="viz-canvas-area" style={{ height: '430px' }}>
+      <div className="viz-canvas-area" style={{ height: '500px' }}>
         <IsometricToolbar
           camera={camera}
           setPreset={setPreset}
@@ -357,7 +357,7 @@ export default function LinearCombinationsViz() {
             </>
           }
         />
-        <canvas ref={canvasRef} width={840} height={430} />
+        <canvas ref={canvasRef} width={840} height={500} />
       </div>
 
       <div className="viz-controls-panel">

@@ -8,6 +8,7 @@ import OscillationsViz from './OscillationsViz.jsx';
 import WavesViz from './WavesViz.jsx';
 import ThermodynamicsViz from './ThermodynamicsViz.jsx';
 import FluidMechanicsViz from './FluidMechanicsViz.jsx';
+import SoundWavesViz from './SoundWavesViz.jsx';
 
 const physicsVizMap = {
   'units-and-measurement': UnitsMeasurementViz,
@@ -18,11 +19,19 @@ const physicsVizMap = {
   'circular-motion': CircularMotionViz,
   oscillations: OscillationsViz,
   waves: WavesViz,
+  'sound-waves': SoundWavesViz,
+  'wave-foundations': WavesViz,
   'fluid-mechanics': FluidMechanicsViz,
   thermodynamics: ThermodynamicsViz,
 };
 
-export function getPhysicsVisualization(topicId) {
+export function getPhysicsVisualization(topicId, subTopicId) {
+  if (topicId === 'waves' && subTopicId === 'sound-waves') {
+    return SoundWavesViz;
+  }
+  if (subTopicId && physicsVizMap[subTopicId]) {
+    return physicsVizMap[subTopicId];
+  }
   return physicsVizMap[topicId] || null;
 }
 

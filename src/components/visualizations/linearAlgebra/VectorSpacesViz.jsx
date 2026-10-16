@@ -380,7 +380,7 @@ export default function VectorSpacesViz() {
         </div>
       )}
 
-      <div className="viz-canvas-area" style={{ height: '420px' }}>
+      <div className="viz-canvas-area" style={{ height: '500px' }}>
         <IsometricToolbar
           camera={camera}
           setPreset={setPreset}
@@ -405,7 +405,7 @@ export default function VectorSpacesViz() {
             ) : null
           }
         />
-        <canvas ref={canvasRef} width={840} height={420} />
+        <canvas ref={canvasRef} width={840} height={500} />
       </div>
 
       <div className="viz-controls-panel">

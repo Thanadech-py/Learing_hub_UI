@@ -5,32 +5,44 @@ const determinantsData = {
   id: 'determinants',
   title: 'Determinants: Area, Volume & Scaling',
   subtitle:
-    'Geometric meaning of determinants as area and volume scaling factors, orientation preservation, and invertibility testing.',
+    'Geometric meaning of determinants as area and volume scaling factors, cofactor expansion, orientation, and Cramer’s Rule.',
   level: 'Intermediate',
   estimatedTime: '24 min read + interactive lab',
   overview: [
-    'The determinant of a square matrix is a single scalar value that reveals the geometric soul of the transformation. Rather than being just a tedious formula with pluses and minuses, the determinant has a direct physical meaning: it is the factor by which the transformation scales areas in 2D or volumes in 3D!',
-    'Consider the unit square spanned by basis vectors î = [1, 0]ᵀ and ĵ = [0, 1]ᵀ, which has an area of 1. When a matrix A = [[a, b], [c, d]] transforms space, the unit square becomes a tilted parallelogram spanned by the columns [a, c]ᵀ and [b, d]ᵀ. The area of this parallelogram is exactly |det(A)| = |ad - bc|.',
-    'The sign of the determinant indicates orientation. If det(A) > 0, the space preserves its clockwise/counterclockwise orientation. If det(A) < 0, the space has been flipped inside out (reflected like in a mirror). If det(A) = 0, the space has collapsed into a flat 1D line or point (loss of a dimension), meaning the transformation cannot be inverted!',
+    'The determinant of a square matrix is a single scalar number that reveals the geometric soul of the transformation: it is the exact factor by which the matrix scales 2D areas or 3D volumes!',
+    'When a 2×2 matrix A = [v₁  v₂] transforms the unit square, it becomes a parallelogram spanned by column vectors v₁ and v₂ with area |det(A)| = |ad - bc|. In 3D, a 3×3 matrix A = [v₁  v₂  v₃] transforms the unit cube into a 3D parallelepiped of volume |det(A)| = |v₁ · (v₂ × v₃)|.',
+    'If det(A) < 0, space reverses orientation (mirror flip). If det(A) = 0, the columns are linearly dependent, squashing volume down to zero and making the matrix non-invertible.',
   ],
   keyConcepts: [
     {
-      title: 'Determinant as Area / Volume Scaling Factor',
+      title: '2×2 Determinant & Parallelogram Area from Column Vectors',
       content:
-        'Every region in the 2D plane has its area scaled by exactly |det(A)| under linear transformation A. If a circle of area 10 is transformed by a matrix with determinant 3, the resulting ellipse will have area exactly 10 × 3 = 30.',
+        'Given two column vectors v₁ = [a, c]ᵀ and v₂ = [b, d]ᵀ, assembling them into a 2×2 matrix and taking ad - bc gives the signed area of the parallelogram they span.',
+      exampleLabel: 'Worked 2×2 Determinant & Area Calculation',
+      latex:
+        '\\mathbf{v}_1 = \\begin{bmatrix} 4 \\\\ 1 \\end{bmatrix}, \\; \\mathbf{v}_2 = \\begin{bmatrix} 2 \\\\ 3 \\end{bmatrix} \\implies \\det(A) = \\det\\begin{bmatrix} 4 & 2 \\\\ 1 & 3 \\end{bmatrix} = (4)(3) - (2)(1) = 12 - 2 = 10',
+      exampleNote:
+        'The parallelogram spanned by [4, 1]ᵀ and [2, 3]ᵀ has an exact area of 10 square units, and preserves counterclockwise orientation (+10 > 0).',
     },
     {
-      title: 'Why det(A) = 0 Means Non-Invertible',
+      title: '3×3 Determinant via Cofactor Expansion & 3D Parallelepiped Volume',
       content:
-        'If det(A) = 0, the transformation squashes the entire 2D plane onto a 1D line or a single point (the origin). Because infinite original points are compressed onto the same destination coordinate, information is permanently lost. You cannot un-squash a line back into a 2D plane, which is why a matrix is invertible if and only if det(A) ≠ 0.',
+        'To compute the determinant of a 3×3 matrix across Row 1, multiply each entry by its 2×2 minor determinant with alternating signs (+, −, +): det(A) = a₁₁M₁₁ − a₁₂M₁₂ + a₁₃M₁₃.',
+      exampleLabel: 'Worked 3×3 Cofactor Expansion Calculation',
+      latex:
+        '\\det\\begin{bmatrix} 2 & 1 & 3 \\\\ 0 & 4 & -1 \\\\ 1 & 2 & 0 \\end{bmatrix} = +2\\det\\begin{bmatrix} 4 & -1 \\\\ 2 & 0 \\end{bmatrix} - 1\\det\\begin{bmatrix} 0 & -1 \\\\ 1 & 0 \\end{bmatrix} + 3\\det\\begin{bmatrix} 0 & 4 \\\\ 1 & 2 \\end{bmatrix} = 2(2) - 1(1) + 3(-4) = -9',
+      exampleNote:
+        'The 3D parallelepiped spanned by the 3 column vectors has volume |-9| = 9 cubic units, with inverted handedness (negative sign).',
     },
     {
-      title: 'Key Determinant Algebraic Properties',
+      title: 'Singular Matrix Calculation: Why det(A) = 0 Collapses Space',
       content:
-        '• Multiplicative property: det(AB) = det(A) · det(B) (scaling space by A then by B multiplies their area scaling factors!).\n' +
-        '• Transpose property: det(Aᵀ) = det(A).\n' +
-        '• Inverse matrix determinant: det(A⁻¹) = 1 / det(A).\n' +
-        '• Scalar multiplication: For an n × n matrix, det(c · A) = cⁿ · det(A) (doubling all dimensions of a 2D square multiplies its area by 2² = 4).',
+        'When one column (or row) of a matrix is a linear combination of the others, the determinant evaluates to zero and no inverse A⁻¹ exists.',
+      exampleLabel: 'Worked Singular Matrix Calculation (Col₂ = 3 × Col₁)',
+      latex:
+        'A = \\begin{bmatrix} 2 & 6 \\\\ -3 & -9 \\end{bmatrix} \\implies \\det(A) = (2)(-9) - (6)(-3) = -18 + 18 = 0 \\implies A^{-1} \\text{ does not exist}',
+      exampleNote:
+        'Because column 2 is [6, -9]ᵀ = 3 × [2, -3]ᵀ, both columns lie on the same 1D line and enclose zero 2D area.',
     },
   ],
   equations: [
@@ -38,7 +50,10 @@ const determinantsData = {
       name: 'Formula for 2×2 Determinant and Signed Area',
       latex: '\\det(A) = \\det\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} = ad - bc',
       summary:
-        'Computes the signed area of the parallelogram formed by the column vectors of matrix A.',
+        'Computes the signed area of the parallelogram formed by the column vectors [a, c]ᵀ and [b, d]ᵀ.',
+      exampleDescription: 'Computing determinant and inverse of a 2×2 matrix',
+      exampleLatex:
+        'A = \\begin{bmatrix} 5 & 3 \\\\ 2 & 2 \\end{bmatrix} \\implies \\det(A) = (5)(2) - (3)(2) = 4, \\qquad A^{-1} = \\frac{1}{4}\\begin{bmatrix} 2 & -3 \\\\ -2 & 5 \\end{bmatrix}',
       conditions: ['A is a 2×2 square matrix'],
       variables: [
         {
@@ -53,16 +68,19 @@ const determinantsData = {
           name: 'Cross-Product Formula',
           unit: '\\text{area units}',
           description: 'The algebraic expansion of the 2D determinant.',
-          connections: 'Equals the 2D cross product of column 1 and column 2: [a, c]ᵀ × [b, d]ᵀ.',
+          connections: 'Equals the 2D exterior product of column 1 and column 2.',
         },
       ],
     },
     {
-      name: 'Determinant Product Theorem',
-      latex: '\\det(AB) = \\det(A) \\cdot \\det(B), \\quad \\det(A^{-1}) = \\frac{1}{\\det(A)}',
+      name: 'Determinant Product & Inverse Theorems',
+      latex: '\\det(AB) = \\det(A) \\cdot \\det(B), \\quad \\det(A^{-1}) = \\frac{1}{\\det(A)}, \\quad \\det(cA) = c^n \\det(A)',
       summary:
-        'Demonstrates that the area scaling of a composite transformation is the product of individual scaling factors.',
-      conditions: ['A and B are square n × n matrices with det(A) ≠ 0'],
+        'Demonstrates that the volume scaling of a composite transformation is the product of the individual determinant scaling factors.',
+      exampleDescription: 'Verifying det(AB) = det(A) · det(B) with explicit 2×2 matrices',
+      exampleLatex:
+        '\\det\\!\\left(\\begin{bmatrix} 2 & 1 \\\\ 0 & 3 \\end{bmatrix} \\begin{bmatrix} 1 & 4 \\\\ 2 & 3 \\end{bmatrix}\\right) = \\det\\begin{bmatrix} 4 & 11 \\\\ 6 & 9 \\end{bmatrix} = 36 - 66 = -30 = (6)(-5) = \\det(A)\\det(B)',
+      conditions: ['A and B are square n × n matrices'],
       variables: [
         {
           symbol: '\\det(AB)',
@@ -75,7 +93,7 @@ const determinantsData = {
     },
   ],
   interactiveGuide:
-    'Adjust matrix entries a, b, c, d. Watch the unit square transform into a parallelogram. Notice how its area matches |ad - bc| and watch the color switch when det(A) turns negative (orientation flip) or zero (space collapse).',
+    'Adjust the 3D column vectors in the visualizer. Watch the 3D parallelepiped volume match |det(A)| and observe what happens when the vectors become coplanar (det(A) = 0).',
 };
 
 export default determinantsData;

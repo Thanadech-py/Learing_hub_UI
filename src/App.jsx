@@ -21,6 +21,7 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="subjects/:subjectId" element={<SubjectPage />} />
           <Route path="subjects/:subjectId/:topicId" element={<TopicPage />} />
+          <Route path="subjects/:subjectId/:topicId/:subTopicId" element={<TopicPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

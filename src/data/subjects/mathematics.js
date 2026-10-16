@@ -6,7 +6,7 @@ const mathematics = {
   id: 'mathematics',
   title: 'Mathematics',
   description:
-    'Build intuition for functions, calculus, and the patterns behind numbers.',
+    'Build intuition for functions, calculus, integration techniques, and the patterns behind numbers.',
   icon: 'sigma',
   accent: '#a78bfa',
   topics: [
@@ -48,8 +48,9 @@ const mathematics = {
     },
     {
       id: 'integrals',
-      title: 'Integrals',
-      description: 'Area under curves, antiderivatives, and the fundamental theorem.',
+      title: 'Integrals & Integration Techniques',
+      description:
+        'Riemann sums, FTC, u-substitution, integration by parts, trig integrals, trig substitution, partial fractions, and improper integrals.',
       level: 'Advanced',
     },
   ],

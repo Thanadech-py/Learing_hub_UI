@@ -1,17 +1,26 @@
-/**
- * Math Topic: Integrals & The Fundamental Theorem of Calculus
- */
-const integralsData = {
-  id: 'integrals',
-  title: 'Integrals & The Fundamental Theorem of Calculus',
+import uSubstitutionData from './u-substitution.js';
+import integrationByPartsData from './integration-by-parts.js';
+import trigonometricIntegralsData from './trigonometric-integrals.js';
+import trigonometricSubstitutionData from './trigonometric-substitution.js';
+import partialFractionsData from './partial-fractions.js';
+import improperIntegralsData from './improper-integrals.js';
+import areaBetweenCurvesData from './area-between-curves.js';
+import volumeSolidsRevolutionData from './volume-solids-revolution.js';
+import arcLengthSurfaceAreaData from './arc-length-surface-area.js';
+
+const foundationsSubPage = {
+  id: 'foundations',
+  title: 'Foundations & FTC',
+  icon: '🏛️',
+  tag: 'Riemann & FTC',
   subtitle:
     'Accumulation of quantities, Riemann sums, net area under curves, antiderivatives, and the bridge between differentiation and integration.',
-  level: 'Advanced',
-  estimatedTime: '28 min read + interactive lab',
+  estimatedTime: '24 min read + interactive lab',
   overview: [
     'Integral calculus solves the general problem of accumulation. While multiplication calculates area for simple flat rectangles (Area = Base × Height), real-world boundaries are curved. Integration slices a continuous region into thousands of infinitesimally thin vertical strips, computes their rectangular areas, and sums them together.',
     'The crowning glory of calculus is the Fundamental Theorem of Calculus (FTC), discovered independently by Isaac Newton and Gottfried Wilhelm Leibniz. The FTC demonstrates that differentiation and integration are exact inverse operations—unveiling an unexpected bridge between the slope of a tangent line and the area under a curve.',
     'Integrals are ubiquitous across science: accumulating velocity gives displacement, accumulating power gives energy consumed, accumulating probability density gives probabilities, and accumulating mass density gives total mass and center of gravity.',
+    'This topic houses the complete suite of Finals Exam Integration Chapters: select any technique or application from the chapter ribbon above to explore its derivations, governing equations, and dedicated interactive visualizer!',
   ],
   keyConcepts: [
     {
@@ -95,7 +104,38 @@ const integralsData = {
     },
   ],
   interactiveGuide:
-    'Select a function and adjust the partition slider n from 2 up to 100 slices. Switch between Left, Right, Midpoint, and Trapezoid sums to watch the Riemann rectangles converge onto the analytical area under the curve.',
+    'Select a function and adjust the partition slider n from 2 up to 60 slices. Switch between Left, Right, Midpoint, and Trapezoid sums to watch the Riemann rectangles converge onto the analytical area under the curve.',
+};
+
+const subPages = [
+  foundationsSubPage,
+  { ...uSubstitutionData, icon: '🔄', tag: 'Chain Rule Reverse' },
+  { ...integrationByPartsData, icon: '✂️', tag: 'Product Rule & DI' },
+  { ...trigonometricIntegralsData, icon: '📐', tag: 'Powers of Sin/Cos' },
+  { ...trigonometricSubstitutionData, icon: '🔺', tag: 'Radicals & Triangles' },
+  { ...partialFractionsData, icon: '🧩', tag: 'Rational Functions' },
+  { ...improperIntegralsData, icon: '♾️', tag: 'Infinite & Singular' },
+  { ...areaBetweenCurvesData, icon: '📊', tag: 'Area Between Curves' },
+  { ...volumeSolidsRevolutionData, icon: '🌪️', tag: 'Volume of Solids' },
+  { ...arcLengthSurfaceAreaData, icon: '📏', tag: 'Arc Length & Surface' },
+];
+
+/**
+ * Math Topic: Integrals & Integration Techniques (Multi-Page Chapter Hub)
+ */
+const integralsData = {
+  id: 'integrals',
+  title: 'Integrals & Integration Techniques',
+  subtitle:
+    'The complete guide to integration: Riemann sums, FTC, u-substitution, integration by parts, trig integrals, trig substitution, partial fractions, improper integrals, and geometric applications.',
+  level: 'Advanced',
+  estimatedTime: '10 Connected Chapters (Finals Exam Series)',
+  subPages,
+  // Default to foundations
+  overview: foundationsSubPage.overview,
+  keyConcepts: foundationsSubPage.keyConcepts,
+  equations: foundationsSubPage.equations,
+  interactiveGuide: foundationsSubPage.interactiveGuide,
 };
 
 export default integralsData;

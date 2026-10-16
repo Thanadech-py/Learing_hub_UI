@@ -1,46 +1,45 @@
 /**
- * Physics Topic: Waves, Sound & Acoustic Resonance
+ * Physics Topic: Waves & Acoustics (Multi-Page Chapter Hub)
  */
-const wavesData = {
-  id: 'waves',
-  title: 'Waves: Anatomy, Sound, Standing Waves & Doppler Effect',
-  subtitle: 'Energy transport through oscillatory disturbances: wave anatomy, acoustic pipe resonance, longitudinal compressions, and relativistic/acoustic Doppler shifts.',
-  level: 'Advanced',
-  estimatedTime: '26 min read + interactive lab',
+
+const waveFoundationsSubPage = {
+  id: "wave-foundations",
+  title: "Wave Foundations & Mechanical Waves",
+  icon: "🌊",
+  tag: "Transverse & Longitudinal",
+  subtitle:
+    "Energy transport through oscillatory disturbances: wave anatomy, wavelength, frequency, wave speed on strings, phase, and linear superposition.",
+  level: "Advanced",
+  estimatedTime: "20 min read + interactive 3D lab",
   overview: [
-    'A mechanical wave is a propagating disturbance through a material medium that transports energy and momentum from one location to another without transporting net matter. Individual particles of the medium oscillate about their local equilibrium coordinates, while the wave profile, carrying kinetic and potential energy, travels through space.',
-    'Waves manifest as either transverse (oscillations perpendicular to propagation, such as ripples on water or waves on a guitar string) or longitudinal (oscillations parallel to propagation, such as sound waves forming alternating compressions and rarefactions in air).',
-    'When waves encounter boundaries or overlap with other waves, they exhibit unique phenomena: constructive and destructive interference, standing wave boundary resonance (crucial to musical wind and string instruments), and Doppler frequency shifts when sources and observers move relative to the medium.',
+    "A mechanical wave is a propagating disturbance through an elastic material medium that transports energy and momentum from one coordinate to another without transporting net matter. Individual particles of the medium oscillate about their local equilibrium positions, while the disturbance profile travels through space.",
+    "Transverse waves oscillate perpendicular to the direction of wave travel (such as waves on guitar strings and seismic S-waves). Longitudinal waves oscillate parallel to the direction of propagation (such as sound waves and seismic P-waves).",
+    "When two traveling waves overlap in space, their displacements add linearly by the principle of superposition, producing constructive interference, destructive cancellation, and standing wave modes.",
   ],
   keyConcepts: [
     {
-      title: 'Wave Anatomy & Propagation',
+      title: "Wave Anatomy & Propagation",
       content:
-        'Waves transport energy without net matter transfer. Governed by amplitude (A), wavelength (λ), period (T), and frequency (f = 1/T), linked via v = fλ.',
+        "Waves transport energy without net matter transfer. Governed by amplitude (A), wavelength (λ), period (T), and frequency (f = 1/T), linked via v = fλ.",
     },
     {
-      title: 'Sound as Longitudinal Pressure Waves',
+      title: "Wave Speed on Stretched Strings",
       content:
-        'Sound propagates via alternating compressions (high pressure) and rarefactions (low pressure) at speed v = √(B/ρ), independent of frequency.',
+        "Wave speed is determined by tension T and linear mass density μ: v = √(T/μ). Increasing tension increases wave speed; heavier strings slow it down.",
     },
     {
-      title: 'Boundary Resonance & Standing Waves',
+      title: "Phase Angle & Unit Circle Projection",
       content:
-        'Open-open pipes support all harmonics: fn = n(v/2L). Open-closed pipes enforce a displacement node and support only odd harmonics: fm = m(v/4L).',
+        "A sinusoidal wave is parameterized as y = A sin(kx - ωt + φ0). A spatial shift Δx corresponds to an angular phase difference Δφ = 2π(Δx/λ).",
     },
     {
-      title: 'Doppler Shift & Mach Shockwaves',
+      title: "Standing Waves & Resonant Nodes",
       content:
-        'Motion shifts perceived frequency: approaching raises pitch, receding lowers it. When vs > v, overlapping wavefronts form a conical supersonic Mach cone.',
-    },
-    {
-      title: 'Phase Angle & Unit Circle Projection',
-      content:
-        'A sine wave projects uniform circular motion: y = A sin(kx - ωt + φ0). A spatial shift Δx corresponds to phase offset Δφ = 2π(Δx/λ).',
+        "Two counter-propagating waves of equal amplitude and frequency form a standing wave y = [2A sin(kx)] cos(ωt). Nodes remain permanently stationary (zero displacement), while antinodes oscillate with maximum amplitude 2A.",
     },
   ],
   equations: [
-    {
+{
       name: 'Universal Wave Equation & Anatomy Relation',
       latex: 'v = f \\lambda = \\frac{\\lambda}{T} = \\frac{\\omega}{k}',
       summary:
@@ -97,215 +96,7 @@ const wavesData = {
         },
       ],
     },
-    {
-      name: 'Open–Open Pipe Resonant Frequencies (Both Ends Open)',
-      latex: 'f_n = n \\left( \\frac{v}{2L} \\right) = n f_1, \\quad \\lambda_n = \\frac{2L}{n} \\quad (n = 1, 2, 3, 4, \\dots)',
-      summary:
-        'Predicts resonant standing wave frequencies in an organ pipe or acoustic tube open at both ends.',
-      conditions: ['Both ends open to atmosphere (Displacement Antinodes at x = 0 and x = L)', 'Negligible end correction (pipe diameter << length L)'],
-      variables: [
-        {
-          symbol: 'f_n',
-          name: 'n-th Harmonic Frequency',
-          unit: '\\text{Hz}',
-          description: 'The resonant acoustic frequency producing standing wave patterns in the tube.',
-          connections:
-            'Supports ALL integer multiples of the fundamental frequency f1 (f1, 2f1, 3f1, 4f1...). The second harmonic (n = 2) produces the octave above the fundamental.',
-        },
-        {
-          symbol: 'f_1',
-          name: 'Fundamental Frequency (First Harmonic)',
-          unit: '\\text{Hz}',
-          description: 'The lowest resonant frequency (n = 1) of the open pipe: f₁ = v / (2L).',
-          connections:
-            'Defines the musical pitch perceived by the ear; higher harmonics n·f₁ add overtone timbre.',
-        },
-        {
-          symbol: '\\lambda_n',
-          name: 'n-th Harmonic Wavelength',
-          unit: '\\text{m}',
-          description: 'The spatial wavelength of the n-th standing wave mode: λₙ = 2L / n.',
-          connections:
-            'For the fundamental mode (n = 1), λ₁ = 2L (exactly half a wavelength fits inside the pipe length L).',
-        },
-        {
-          symbol: 'n',
-          name: 'Harmonic Number',
-          unit: '\\text{integer } (1, 2, 3, \\dots)',
-          description: 'The mode index indicating the number of displacement nodes inside the tube (n nodes, n + 1 antinodes).',
-          connections:
-            'Increments by 1 for each harmonic. Each higher harmonic fits an extra half-wavelength (λ/2) into the pipe length L.',
-        },
-        {
-          symbol: 'L',
-          name: 'Pipe Length',
-          unit: '\\text{m}',
-          description: 'The physical length of the acoustic tube.',
-          connections:
-            'Inversely proportional to frequency: f ∝ 1/L. Doubling the length of the pipe lowers the fundamental pitch by an exact octave (halves the frequency).',
-        },
-        {
-          symbol: 'v',
-          name: 'Speed of Sound in Gas',
-          unit: '\\text{m/s} \\approx 343\\,\\text{m/s at 20}^\\circ\\text{C in air}',
-          description: 'The speed of sound in the gas filling the pipe.',
-          connections:
-            'Directly scales all resonant frequencies. Filling a pipe with helium (where v ≈ 965 m/s, nearly 3× faster than air) raises the pitch of every harmonic by nearly a factor of 3!',
-        },
-      ],
-    },
-    {
-      name: 'Open–Closed Pipe Resonant Frequencies (One End Closed)',
-      latex: 'f_m = m \\left( \\frac{v}{4L} \\right) = m f_1, \\quad \\lambda_m = \\frac{4L}{m} \\quad (m = 1, 3, 5, 7, \\dots)',
-      summary:
-        'Predicts resonant standing wave frequencies in a tube closed at one end and open at the other (e.g. clarinet, pan flute).',
-      conditions: ['Displacement Node at closed end, Displacement Antinode at open end', 'Odd harmonics ONLY (m = 1, 3, 5...)'],
-      variables: [
-        {
-          symbol: 'f_m',
-          name: 'm-th Harmonic Frequency',
-          unit: '\\text{Hz}',
-          description: 'The resonant frequency of the closed pipe.',
-          connections:
-            'Notice the denominator has 4L instead of 2L! For the same physical length L, a closed pipe sounds an entire octave LOWER than an open pipe (f_1,closed = ½ f_1,open). Furthermore, even harmonics (2, 4, 6...) cannot form because boundary conditions cannot be satisfied.',
-        },
-        {
-          symbol: 'f_1',
-          name: 'Fundamental Frequency (First Harmonic)',
-          unit: '\\text{Hz}',
-          description: 'The lowest resonant frequency (m = 1) of the closed-end pipe: f₁ = v / (4L).',
-          connections:
-            'One octave lower than an open-open pipe of the same physical length L.',
-        },
-        {
-          symbol: '\\lambda_m',
-          name: 'm-th Harmonic Wavelength',
-          unit: '\\text{m}',
-          description: 'The spatial wavelength of the m-th standing wave mode: λₘ = 4L / m.',
-          connections:
-            'At m = 1, λ₁ = 4L; at m = 3, λ₃ = 4L/3 (three-quarters of a wavelength fits inside the tube).',
-        },
-        {
-          symbol: 'm',
-          name: 'Odd Harmonic Index',
-          unit: '\\text{odd integer } (1, 3, 5, 7, \\dots)',
-          description: 'The harmonic mode number. Strictly restricted to odd integers.',
-          connections:
-            'The first overtone is the 3rd harmonic (m = 3), sounding a musical twelfth (octave + fifth) above the fundamental, rather than an octave. This gives closed pipes their signature hollow, warm timbre.',
-        },
-        {
-          symbol: 'v',
-          name: 'Speed of Sound in Gas',
-          unit: '\\text{m/s}',
-          description: 'Propagation speed of acoustic waves inside the tube medium.',
-          connections:
-            'Directly proportional to all harmonic frequencies f_m.',
-        },
-        {
-          symbol: 'L',
-          name: 'Pipe Length',
-          unit: '\\text{m}',
-          description: 'The length of the tube from closed bottom to open mouth.',
-          connections:
-            'The fundamental wavelength is λ₁ = 4L (the pipe holds only one quarter of a wavelength).',
-        },
-      ],
-    },
-    {
-      name: 'General Doppler Effect (Moving Source & Observer)',
-      latex: "f' = f \\left( \\frac{v \\pm v_o}{v \\mp v_s} \\right)",
-      summary:
-        'Calculates the shifted frequency f’ observed when sound source and observer move relative to the air.',
-      conditions: [
-        'Motion along line connecting source and observer',
-        'Top signs (+ vo, - vs) apply when observer/source move TOWARD each other (frequency increases)',
-        'Bottom signs (- vo, + vs) apply when observer/source move AWAY from each other (frequency decreases)',
-      ],
-      variables: [
-        {
-          symbol: "f'",
-          name: 'Observed Frequency',
-          unit: '\\text{Hz}',
-          description: 'The perceived pitch detected by the listener.',
-          connections:
-            'Elevated (f’ > f) when source and observer approach each other; depressed (f’ < f) when receding from each other. When an ambulance passes a stationary listener at 30 m/s (~108 km/h), the siren pitch suddenly drops by over 16% as it transitions from approaching to receding.',
-        },
-        {
-          symbol: 'f',
-          name: 'Emitted Source Frequency',
-          unit: '\\text{Hz}',
-          description: 'The true frequency emitted by the sound source in its own reference frame.',
-          connections:
-            'Baseline multiplier for all observed frequencies.',
-        },
-        {
-          symbol: 'v',
-          name: 'Speed of Sound in Medium',
-          unit: '\\text{m/s}',
-          description: 'Velocity of sound through the undisturbed air.',
-          connections:
-            'Constitutes the velocity reference frame of the medium.',
-        },
-        {
-          symbol: 'v_s',
-          name: 'Source Speed relative to Medium',
-          unit: '\\text{m/s}',
-          description: 'Speed of the emitting sound source.',
-          connections:
-            'Enters in the denominator (v - vs for approaching source). As source speed vs approaches sound speed v, the denominator approaches zero and f’ approaches infinity—producing the extreme acoustic pressure wave of the sound barrier.',
-        },
-        {
-          symbol: 'v_o',
-          name: 'Observer Speed relative to Medium',
-          unit: '\\text{m/s}',
-          description: 'Speed of the receiving listener.',
-          connections:
-            'Enters in the numerator (v + vo for approaching observer). Moving toward a sound source increases the rate of wavefront interception.',
-        },
-      ],
-    },
-    {
-      name: 'Supersonic Mach Cone & Shockwave Angle',
-      latex: '\\sin\\theta_M = \\frac{v}{v_s} = \\frac{1}{M}',
-      summary:
-        'Determines the half-angle θ_M of the conical shockwave envelope produced by a supersonic source moving faster than sound.',
-      conditions: ['Source speed exceeds speed of sound (v_s > v, Mach M > 1)'],
-      variables: [
-        {
-          symbol: '\\theta_M',
-          name: 'Mach Angle',
-          unit: '^\\circ \\text{ or radians}',
-          description: 'The half-angle of the conical shock wave envelope trailing behind the supersonic aircraft.',
-          connections:
-            'Inversely related to Mach number: as speed increases (e.g. Mach 2, Mach 3), the shock cone becomes narrower and sharper (sin θ_M = 1/2 ⟹ θ_M = 30° at Mach 2; sin θ_M = 1/3 ⟹ θ_M = 19.5° at Mach 3).',
-        },
-        {
-          symbol: 'v',
-          name: 'Speed of Sound in Medium',
-          unit: '\\text{m/s}',
-          description: 'The speed at which spherical acoustic wavefronts expand outward.',
-          connections:
-            'Forms the opposite leg of the right triangle of the Mach cone after time t (radius r = v·t).',
-        },
-        {
-          symbol: 'v_s',
-          name: 'Supersonic Source Speed',
-          unit: '\\text{m/s}',
-          description: 'The velocity of the supersonic object (where v_s > v).',
-          connections:
-            'Forms the hypotenuse of the Mach cone right triangle after time t (distance d = v_s·t).',
-        },
-        {
-          symbol: 'M',
-          name: 'Mach Number',
-          unit: '\\text{dimensionless} = v_s / v',
-          description: 'The ratio of source speed to the speed of sound.',
-          connections:
-            'Defines flight regimes: Subsonic (M < 1), Transonic (M ≈ 1), Supersonic (M > 1), Hypersonic (M > 5).',
-        },
-      ],
-    },
-    {
+{
       name: 'Wave Phase & Phase Difference Equation',
       latex: '\\phi(x,t) = kx - \\omega t + \\phi_0, \\quad \\Delta\\phi = 2\\pi \\left(\\frac{\\Delta x}{\\lambda}\\right) = 2\\pi \\left(\\frac{\\Delta t}{T}\\right)',
       summary:
@@ -394,7 +185,7 @@ const wavesData = {
         },
       ],
     },
-    {
+{
       name: 'Harmonic Traveling Wave Function',
       latex: 'y(x,t) = A\\sin(kx \\pm \\omega t), \\quad k = \\frac{2\\pi}{\\lambda}, \\quad \\omega = 2\\pi f = \\frac{2\\pi}{T}',
       summary:
@@ -475,7 +266,7 @@ const wavesData = {
         },
       ],
     },
-    {
+{
       name: 'Wave Speed on a Stretched String',
       latex: 'v = \\sqrt{\\frac{T_{\\text{tension}}}{\\mu}}, \\quad \\mu = \\frac{m}{L}',
       summary:
@@ -524,7 +315,7 @@ const wavesData = {
         },
       ],
     },
-    {
+{
       name: 'Standing Wave Product Form',
       latex: 'y(x,t) = 2A\\sin(kx)\\cos(\\omega t)',
       summary:
@@ -596,8 +387,331 @@ const wavesData = {
             'All particles pass through equilibrium simultaneously every half period.',
         },
       ],
+    }
+  ],
+  interactiveGuide:
+    "Explore the 3D Traveling Wave Surface Mesh. Orbit in 3D to observe wave height z(x,y,t), manipulate frequency and wave speed, and observe harmonic oscillations.",
+};
+
+const soundWavesSubPage = {
+  id: "sound-waves",
+  title: "Sound Waves & Acoustics",
+  icon: "🔊",
+  tag: "Pressure & Resonance",
+  subtitle:
+    "Longitudinal acoustic pressure waves, speed of sound in media, decibel intensity scale, open/closed pipe resonance, Doppler shift, and supersonic shockwaves.",
+  level: "Advanced",
+  estimatedTime: "24 min read + interactive 3D lab",
+  overview: [
+    "Sound is a longitudinal mechanical wave composed of alternating high-pressure compressions and low-pressure rarefactions propagating through a compressible fluid or solid.",
+    "The speed of sound depends on the elastic bulk modulus and inertial density of the medium: v = √(B/ρ). In dry air at 20°C, sound propagates at approximately 343 m/s.",
+    "When sound waves encounter open or closed pipe boundaries, acoustic reflection sets up resonant standing waves. Open-open pipes support all integer harmonics fn = n(v/2L), while open-closed pipes enforce a displacement node at the closed end, supporting only odd harmonics fm = m(v/4L).",
+    "Relative motion between a sound source and observer alters the rate of wavefront interception, causing the Doppler frequency shift. If the source exceeds the speed of sound (Mach > 1), overlapping spherical wavefronts coalesce into a conical supersonic Mach shockwave.",
+  ],
+  keyConcepts: [
+    {
+      title: "Sound as Longitudinal Pressure Oscillations",
+      content:
+        "Sound propagates via compressions (high pressure) and rarefactions (low pressure) at speed v = √(B/ρ) = √(γRT/M), independent of frequency.",
     },
     {
+      title: "Acoustic Pipe Resonance",
+      content:
+        "Open-open pipes support all harmonics: fn = n(v/2L). Open-closed pipes enforce a displacement node at the closed wall and support only odd harmonics: fm = m(v/4L).",
+    },
+    {
+      title: "Doppler Shift & Mach Cone",
+      content:
+        "Motion shifts perceived pitch: approaching elevates frequency, receding depresses it. Supersonic motion (vs > v) forms a conical shock envelope with sin(θ) = v/vs = 1/M.",
+    },
+    {
+      title: "Logarithmic Decibel Scale",
+      content:
+        "Human ear loudness follows a logarithmic response: β = 10 log10(I / I0). Every +10 dB increment represents a 10-fold increase in sound intensity.",
+    },
+  ],
+  equations: [
+    {
+      name: "Speed of Sound in Fluid Medium & Ideal Gas",
+      latex: "v = \\sqrt{\\frac{B}{\\rho}} = \\sqrt{\\frac{\\gamma R T}{M}}",
+      summary: "Calculates the propagation velocity of acoustic compression waves through compressible liquids or gases based on elasticity and inertia.",
+      conditions: ["Small-amplitude longitudinal acoustic oscillations (linear acoustics)", "Ideal gas in adiabatic thermodynamic equilibrium"],
+      variables: [
+        {
+          symbol: "v",
+          name: "Speed of Sound",
+          unit: "\\text{m/s}",
+          description: "The propagation velocity of acoustic longitudinal pressure perturbations through the medium.",
+          connections: "Independent of wave frequency f and amplitude A; depends strictly on bulk modulus B and density \\rho. In dry air at 20°C, v \\approx 343 m/s; in water, v \\approx 1480 m/s; in steel, v \\approx 5960 m/s."
+        },
+        {
+          symbol: "B",
+          name: "Bulk Modulus of Elasticity",
+          unit: "\\text{Pa = N/m}^2",
+          description: "Measure of the medium's resistance to uniform compression: B = -V (dP/dV).",
+          connections: "Stiffer materials have higher bulk modulus and propagate sound significantly faster."
+        },
+        {
+          symbol: "\\rho",
+          name: "Mass Density of Medium",
+          unit: "\\text{kg/m}^3",
+          description: "The inertial mass per unit volume of the medium resisting acceleration.",
+          connections: "Inversely proportional to the square root of velocity: v \\propto 1/\\sqrt{\\rho}."
+        },
+        {
+          symbol: "\\gamma",
+          name: "Heat Capacity Ratio (Adiabatic Index)",
+          unit: "\\text{dimensionless (}\\approx 1.40 \\text{ for diatomic air)}",
+          description: "Ratio of specific heats \\gamma = C_p / C_v governing adiabatic compression.",
+          connections: "Acoustic compressions are rapid and adiabatic (no time for heat exchange)."
+        },
+        {
+          symbol: "T",
+          name: "Absolute Temperature",
+          unit: "\\text{K (Kelvin)}",
+          description: "Thermodynamic absolute temperature of the gas.",
+          connections: "Sound speed in air scales with \\sqrt{T}: v(T) \\approx 331.3 \\sqrt{1 + T_C / 273.15} \\approx 331.3 + 0.606 T_C."
+        },
+        {
+          symbol: "M",
+          name: "Molar Mass of Gas",
+          unit: "\\text{kg/mol}",
+          description: "Molar mass of the gaseous molecules (M \\approx 0.02897 kg/mol for air).",
+          connections: "Lighter gases (e.g. Helium, M = 0.004 kg/mol) propagate sound nearly 3 times faster (v \\approx 965 m/s)."
+        }
+      ]
+    },
+{
+      name: 'Open–Open Pipe Resonant Frequencies (Both Ends Open)',
+      latex: 'f_n = n \\left( \\frac{v}{2L} \\right) = n f_1, \\quad \\lambda_n = \\frac{2L}{n} \\quad (n = 1, 2, 3, 4, \\dots)',
+      summary:
+        'Predicts resonant standing wave frequencies in an organ pipe or acoustic tube open at both ends.',
+      conditions: ['Both ends open to atmosphere (Displacement Antinodes at x = 0 and x = L)', 'Negligible end correction (pipe diameter << length L)'],
+      variables: [
+        {
+          symbol: 'f_n',
+          name: 'n-th Harmonic Frequency',
+          unit: '\\text{Hz}',
+          description: 'The resonant acoustic frequency producing standing wave patterns in the tube.',
+          connections:
+            'Supports ALL integer multiples of the fundamental frequency f1 (f1, 2f1, 3f1, 4f1...). The second harmonic (n = 2) produces the octave above the fundamental.',
+        },
+        {
+          symbol: 'f_1',
+          name: 'Fundamental Frequency (First Harmonic)',
+          unit: '\\text{Hz}',
+          description: 'The lowest resonant frequency (n = 1) of the open pipe: f₁ = v / (2L).',
+          connections:
+            'Defines the musical pitch perceived by the ear; higher harmonics n·f₁ add overtone timbre.',
+        },
+        {
+          symbol: '\\lambda_n',
+          name: 'n-th Harmonic Wavelength',
+          unit: '\\text{m}',
+          description: 'The spatial wavelength of the n-th standing wave mode: λₙ = 2L / n.',
+          connections:
+            'For the fundamental mode (n = 1), λ₁ = 2L (exactly half a wavelength fits inside the pipe length L).',
+        },
+        {
+          symbol: 'n',
+          name: 'Harmonic Number',
+          unit: '\\text{integer } (1, 2, 3, \\dots)',
+          description: 'The mode index indicating the number of displacement nodes inside the tube (n nodes, n + 1 antinodes).',
+          connections:
+            'Increments by 1 for each harmonic. Each higher harmonic fits an extra half-wavelength (λ/2) into the pipe length L.',
+        },
+        {
+          symbol: 'L',
+          name: 'Pipe Length',
+          unit: '\\text{m}',
+          description: 'The physical length of the acoustic tube.',
+          connections:
+            'Inversely proportional to frequency: f ∝ 1/L. Doubling the length of the pipe lowers the fundamental pitch by an exact octave (halves the frequency).',
+        },
+        {
+          symbol: 'v',
+          name: 'Speed of Sound in Gas',
+          unit: '\\text{m/s} \\approx 343\\,\\text{m/s at 20}^\\circ\\text{C in air}',
+          description: 'The speed of sound in the gas filling the pipe.',
+          connections:
+            'Directly scales all resonant frequencies. Filling a pipe with helium (where v ≈ 965 m/s, nearly 3× faster than air) raises the pitch of every harmonic by nearly a factor of 3!',
+        },
+      ],
+    },
+{
+      name: 'Open–Closed Pipe Resonant Frequencies (One End Closed)',
+      latex: 'f_m = m \\left( \\frac{v}{4L} \\right) = m f_1, \\quad \\lambda_m = \\frac{4L}{m} \\quad (m = 1, 3, 5, 7, \\dots)',
+      summary:
+        'Predicts resonant standing wave frequencies in a tube closed at one end and open at the other (e.g. clarinet, pan flute).',
+      conditions: ['Displacement Node at closed end, Displacement Antinode at open end', 'Odd harmonics ONLY (m = 1, 3, 5...)'],
+      variables: [
+        {
+          symbol: 'f_m',
+          name: 'm-th Harmonic Frequency',
+          unit: '\\text{Hz}',
+          description: 'The resonant frequency of the closed pipe.',
+          connections:
+            'Notice the denominator has 4L instead of 2L! For the same physical length L, a closed pipe sounds an entire octave LOWER than an open pipe (f_1,closed = ½ f_1,open). Furthermore, even harmonics (2, 4, 6...) cannot form because boundary conditions cannot be satisfied.',
+        },
+        {
+          symbol: 'f_1',
+          name: 'Fundamental Frequency (First Harmonic)',
+          unit: '\\text{Hz}',
+          description: 'The lowest resonant frequency (m = 1) of the closed-end pipe: f₁ = v / (4L).',
+          connections:
+            'One octave lower than an open-open pipe of the same physical length L.',
+        },
+        {
+          symbol: '\\lambda_m',
+          name: 'm-th Harmonic Wavelength',
+          unit: '\\text{m}',
+          description: 'The spatial wavelength of the m-th standing wave mode: λₘ = 4L / m.',
+          connections:
+            'At m = 1, λ₁ = 4L; at m = 3, λ₃ = 4L/3 (three-quarters of a wavelength fits inside the tube).',
+        },
+        {
+          symbol: 'm',
+          name: 'Odd Harmonic Index',
+          unit: '\\text{odd integer } (1, 3, 5, 7, \\dots)',
+          description: 'The harmonic mode number. Strictly restricted to odd integers.',
+          connections:
+            'The first overtone is the 3rd harmonic (m = 3), sounding a musical twelfth (octave + fifth) above the fundamental, rather than an octave. This gives closed pipes their signature hollow, warm timbre.',
+        },
+        {
+          symbol: 'v',
+          name: 'Speed of Sound in Gas',
+          unit: '\\text{m/s}',
+          description: 'Propagation speed of acoustic waves inside the tube medium.',
+          connections:
+            'Directly proportional to all harmonic frequencies f_m.',
+        },
+        {
+          symbol: 'L',
+          name: 'Pipe Length',
+          unit: '\\text{m}',
+          description: 'The length of the tube from closed bottom to open mouth.',
+          connections:
+            'The fundamental wavelength is λ₁ = 4L (the pipe holds only one quarter of a wavelength).',
+        },
+      ],
+    },
+{
+      name: 'General Doppler Effect (Moving Source & Observer)',
+      latex: "f' = f \\left( \\frac{v \\pm v_o}{v \\mp v_s} \\right)",
+      summary:
+        'Calculates the shifted frequency f’ observed when sound source and observer move relative to the air.',
+      conditions: [
+        'Motion along line connecting source and observer',
+        'Top signs (+ vo, - vs) apply when observer/source move TOWARD each other (frequency increases)',
+        'Bottom signs (- vo, + vs) apply when observer/source move AWAY from each other (frequency decreases)',
+      ],
+      variables: [
+        {
+          symbol: "f'",
+          name: 'Observed Frequency',
+          unit: '\\text{Hz}',
+          description: 'The perceived pitch detected by the listener.',
+          connections:
+            'Elevated (f’ > f) when source and observer approach each other; depressed (f’ < f) when receding from each other. When an ambulance passes a stationary listener at 30 m/s (~108 km/h), the siren pitch suddenly drops by over 16% as it transitions from approaching to receding.',
+        },
+        {
+          symbol: 'f',
+          name: 'Emitted Source Frequency',
+          unit: '\\text{Hz}',
+          description: 'The true frequency emitted by the sound source in its own reference frame.',
+          connections:
+            'Baseline multiplier for all observed frequencies.',
+        },
+        {
+          symbol: 'v',
+          name: 'Speed of Sound in Medium',
+          unit: '\\text{m/s}',
+          description: 'Velocity of sound through the undisturbed air.',
+          connections:
+            'Constitutes the velocity reference frame of the medium.',
+        },
+        {
+          symbol: 'v_s',
+          name: 'Source Speed relative to Medium',
+          unit: '\\text{m/s}',
+          description: 'Speed of the emitting sound source.',
+          connections:
+            'Enters in the denominator (v - vs for approaching source). As source speed vs approaches sound speed v, the denominator approaches zero and f’ approaches infinity—producing the extreme acoustic pressure wave of the sound barrier.',
+        },
+        {
+          symbol: 'v_o',
+          name: 'Observer Speed relative to Medium',
+          unit: '\\text{m/s}',
+          description: 'Speed of the receiving listener.',
+          connections:
+            'Enters in the numerator (v + vo for approaching observer). Moving toward a sound source increases the rate of wavefront interception.',
+        },
+      ],
+    },
+{
+      name: 'Supersonic Mach Cone & Shockwave Angle',
+      latex: '\\sin\\theta_M = \\frac{v}{v_s} = \\frac{1}{M}',
+      summary:
+        'Determines the half-angle θ_M of the conical shockwave envelope produced by a supersonic source moving faster than sound.',
+      conditions: ['Source speed exceeds speed of sound (v_s > v, Mach M > 1)'],
+      variables: [
+        {
+          symbol: '\\theta_M',
+          name: 'Mach Angle',
+          unit: '^\\circ \\text{ or radians}',
+          description: 'The half-angle of the conical shock wave envelope trailing behind the supersonic aircraft.',
+          connections:
+            'Inversely related to Mach number: as speed increases (e.g. Mach 2, Mach 3), the shock cone becomes narrower and sharper (sin θ_M = 1/2 ⟹ θ_M = 30° at Mach 2; sin θ_M = 1/3 ⟹ θ_M = 19.5° at Mach 3).',
+        },
+        {
+          symbol: 'v',
+          name: 'Speed of Sound in Medium',
+          unit: '\\text{m/s}',
+          description: 'The speed at which spherical acoustic wavefronts expand outward.',
+          connections:
+            'Forms the opposite leg of the right triangle of the Mach cone after time t (radius r = v·t).',
+        },
+        {
+          symbol: 'v_s',
+          name: 'Supersonic Source Speed',
+          unit: '\\text{m/s}',
+          description: 'The velocity of the supersonic object (where v_s > v).',
+          connections:
+            'Forms the hypotenuse of the Mach cone right triangle after time t (distance d = v_s·t).',
+        },
+        {
+          symbol: 'M',
+          name: 'Mach Number',
+          unit: '\\text{dimensionless} = v_s / v',
+          description: 'The ratio of source speed to the speed of sound.',
+          connections:
+            'Defines flight regimes: Subsonic (M < 1), Transonic (M ≈ 1), Supersonic (M > 1), Hypersonic (M > 5).',
+        },
+      ],
+    },
+    {
+      name: "Acoustic Beats & Beat Frequency",
+      latex: "f_{\\text{beat}} = |f_1 - f_2|, \quad y_{\\text{beat}}(t) = 2A\\cos\\left(2\\pi \\frac{f_1 - f_2}{2} t\\right) \\sin\\left(2\\pi \\frac{f_1 + f_2}{2} t\\right)",
+      summary: "Predicts the rhythmic periodic amplitude pulsing resulting from the interference of two sound waves of slightly differing frequencies.",
+      conditions: ["Two sound waves with equal or similar amplitudes and slight frequency detuning |f1 - f2| << f1"],
+      variables: [
+        {
+          symbol: "f_{\\text{beat}}",
+          name: "Beat Frequency",
+          unit: "\\text{Hz}",
+          description: "The rate at which the sound volume pulses between loudness and silence per second.",
+          connections: "Equal to the absolute difference: |f1 - f2|. Musicians tune instruments by adjusting strings until f_beat drops to 0 Hz."
+        },
+        {
+          symbol: "f_1, f_2",
+          name: "Individual Wave Frequencies",
+          unit: "\\text{Hz}",
+          description: "The primary frequencies of the two superimposed acoustic tones.",
+          connections: "The ear hears a perceived carrier pitch at the average frequency f_avg = (f1 + f2)/2, modulated at beat frequency |f1 - f2|."
+        }
+      ]
+    },
+{
       name: 'Sound Intensity & Inverse-Square Law',
       latex: 'I = \\frac{P}{A} = \\frac{P}{4\\pi r^2}',
       summary:
@@ -638,7 +752,7 @@ const wavesData = {
         },
       ],
     },
-    {
+{
       name: 'Sound Intensity Level (Decibels)',
       latex: '\\beta = 10\\log_{10}\\left(\\frac{I}{I_0}\\right), \\quad \\Delta\\beta = 10\\log_{10}\\left(\\frac{I_2}{I_1}\\right)',
       summary:
@@ -689,7 +803,24 @@ const wavesData = {
     },
   ],
   interactiveGuide:
-    'Use the interactive lab below to explore 5 distinct acoustic modes: (1) Wave Anatomy with dimensional brackets, (2) Unit Circle vs. Sine Wave Phase Angle comparator, (3) Pipe Resonance simulator comparing Open-Open and Open-Closed acoustic tubes, (4) 2D Doppler Effect & Sonic Boom Chamber, and (5) Wave Superposition & Interference.',
+    "Explore the 3D Sound Waves Lab. Toggle between 3D Acoustic Pipe Resonance (open-open vs open-closed with 3D oscillating air particles) and 3D Doppler Wavefronts with supersonic Mach shock cone.",
+};
+
+const subPages = [waveFoundationsSubPage, soundWavesSubPage];
+
+const wavesData = {
+  id: "waves",
+  title: "Waves & Sound Acoustics",
+  subtitle:
+    "Energy transport through mechanical waves: wave anatomy, transverse string vibrations, longitudinal sound pressure waves, pipe resonance, and Doppler effect.",
+  level: "Advanced",
+  estimatedTime: "2 Connected Sub-Topics",
+  subPages,
+  overview: waveFoundationsSubPage.overview,
+  keyConcepts: waveFoundationsSubPage.keyConcepts,
+  equations: waveFoundationsSubPage.equations,
+  interactiveGuide: waveFoundationsSubPage.interactiveGuide,
 };
 
 export default wavesData;
+export { waveFoundationsSubPage, soundWavesSubPage };
