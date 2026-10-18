@@ -1,0 +1,984 @@
+/* ============================================================================
+   ComProgDocView.css — W3Schools + Technical Handbook Documentation Layout
+   Dark Engineering Theme matching Learning Space & CLI_WS/Document PDFs
+   ============================================================================ */
+
+.w3doc-shell {
+  display: grid;
+  grid-template-columns: 275px minmax(0, 1fr);
+  gap: 1.75rem;
+  align-items: start;
+  margin-top: 0.75rem;
+}
+
+.w3doc-shell:has(.w3doc-sidebar--collapsed) {
+  grid-template-columns: 52px minmax(0, 1fr);
+}
+
+/* ============================================================================
+   Left W3Schools-Style Tutorial Chapter Sidebar
+   ============================================================================ */
+.w3doc-sidebar {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+  background: rgba(11, 18, 34, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px -12px rgba(0, 0, 0, 0.55);
+}
+
+.w3doc-sidebar__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.95rem 1rem;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.w3doc-sidebar--collapsed .w3doc-sidebar__brand {
+  display: none;
+}
+
+.w3doc-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.w3doc-sidebar__lang-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.w3doc-sidebar__title {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.w3doc-sidebar__sub {
+  display: block;
+  font-size: 0.68rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.w3doc-sidebar__toggle {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(15, 23, 42, 0.8);
+  color: #cbd5e1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.w3doc-sidebar__toggle:hover {
+  background: rgba(56, 189, 248, 0.16);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.w3doc-sidebar__nav {
+  overflow-y: auto;
+  padding: 0.75rem 0.65rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.w3doc-part-heading {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  padding: 0.25rem 0.55rem;
+  margin-bottom: 0.25rem;
+}
+
+.w3doc-chapter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.w3doc-chapter-link {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.48rem 0.65rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  border-left: 3px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.w3doc-chapter-link:hover {
+  background: rgba(148, 163, 184, 0.1);
+  color: #ffffff;
+}
+
+.w3doc-chapter-link--active {
+  background: rgba(16, 185, 129, 0.16);
+  color: #34d399;
+  font-weight: 700;
+  border-left-color: #10b981;
+}
+
+.w3doc-chapter-link__num {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+/* ============================================================================
+   Main Documentation Column & W3Schools Top/Bottom Nav Buttons
+   ============================================================================ */
+.w3doc-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.w3doc-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 12px;
+}
+
+.w3doc-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+.w3doc-nav-btn--prev {
+  background: rgba(30, 41, 59, 0.9);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.w3doc-nav-btn--prev:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.w3doc-nav-btn--next {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #042f2e;
+  border: 1px solid #34d399;
+  box-shadow: 0 4px 14px -3px rgba(16, 185, 129, 0.4);
+}
+
+.w3doc-nav-btn--next:hover {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  transform: translateY(-1px);
+}
+
+.w3doc-nav-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.w3doc-nav-meta__pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  background: rgba(30, 41, 59, 0.7);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.w3doc-show-chapters-btn {
+  background: rgba(56, 189, 248, 0.14);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 7px;
+  padding: 0.32rem 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ============================================================================
+   Document Hero Header (Matching CLI_WS/Document PDF Chapter Header)
+   ============================================================================ */
+.w3doc-hero {
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(11, 17, 32, 0.96));
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-bottom: 3px solid #2563eb;
+  border-radius: 16px;
+  padding: 1.65rem 1.85rem;
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.5);
+}
+
+.w3doc-hero__eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+
+.w3doc-hero__chapter-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #60a5fa;
+  background: rgba(37, 99, 235, 0.18);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  padding: 0.22rem 0.65rem;
+  border-radius: 6px;
+}
+
+.w3doc-hero__part-badge {
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.w3doc-hero__title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.55rem, 2.5vw, 2.15rem);
+  font-weight: 850;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.w3doc-hero__subtitle {
+  margin: 0 0 1.15rem;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+.w3doc-jump-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.w3doc-jump-bar__label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-right: 0.25rem;
+}
+
+.w3doc-jump-chip {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  padding: 0.28rem 0.68rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.w3doc-jump-chip:hover {
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.w3doc-jump-chip--ide {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* ============================================================================
+   Numbered Handbook Sections (1.1, 1.2, 1.3...)
+   ============================================================================ */
+.w3doc-sections-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.w3doc-section {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  padding: 1.6rem 1.85rem;
+  box-shadow: 0 8px 26px -10px rgba(0, 0, 0, 0.4);
+  scroll-margin-top: 1.2rem;
+}
+
+.w3doc-section__heading {
+  margin: 0 0 1rem;
+  padding-left: 0.85rem;
+  border-left: 4px solid #3b82f6;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #60a5fa;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  line-height: 1.3;
+}
+
+.w3doc-section__num {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.18);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.w3doc-paragraph {
+  margin: 0 0 0.9rem;
+  font-size: 0.96rem;
+  line-height: 1.72;
+  color: #e2e8f0;
+}
+
+.w3doc-bullet-list {
+  margin: 0.5rem 0 1.1rem;
+  padding-left: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.w3doc-bullet-item {
+  font-size: 0.93rem;
+  line-height: 1.65;
+  color: #cbd5e1;
+}
+
+/* Inline Code Badge (Matching the rose/cyan code pills in the PDF Handbook) */
+.w3doc-inline-code {
+  font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+  font-size: 0.84em;
+  font-weight: 600;
+  padding: 0.14rem 0.42rem;
+  border-radius: 5px;
+  background: rgba(244, 63, 94, 0.13);
+  color: #fda4af;
+  border: 1px solid rgba(244, 63, 94, 0.26);
+}
+
+/* ============================================================================
+   Structured Reference Tables (Matching PDF Blue-Header Tables in Dark Mode)
+   ============================================================================ */
+.w3doc-table-wrap {
+  margin: 1.15rem 0;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  overflow-x: auto;
+  background: #0b1222;
+}
+
+.w3doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+.w3doc-table thead tr {
+  background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+  color: #ffffff;
+}
+
+.w3doc-table th {
+  padding: 0.78rem 1rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.w3doc-table th:last-child {
+  border-right: none;
+}
+
+.w3doc-table td {
+  padding: 0.72rem 1rem;
+  color: #e2e8f0;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+  line-height: 1.5;
+}
+
+.w3doc-table td:last-child {
+  border-right: none;
+}
+
+.w3doc-table tbody tr:nth-child(even) {
+  background: rgba(30, 41, 59, 0.42);
+}
+
+.w3doc-table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* ============================================================================
+   W3Schools-Style "Example" Code Box + Try It Yourself + Sample Output
+   ============================================================================ */
+.w3doc-example-card {
+  margin: 1.25rem 0;
+  background: #0d1526;
+  border: 1px solid rgba(16, 185, 129, 0.32);
+  border-left: 4px solid #10b981;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 26px -10px rgba(0, 0, 0, 0.5);
+}
+
+.w3doc-example-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding: 0.7rem 1.1rem;
+  background: rgba(30, 41, 59, 0.9);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.w3doc-example-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.w3doc-example-card__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.w3doc-example-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.w3doc-copy-btn {
+  background: rgba(15, 23, 42, 0.8);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  padding: 0.34rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.w3doc-copy-btn:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.w3doc-try-btn {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #042f2e;
+  border: 1px solid #34d399;
+  padding: 0.36rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.w3doc-try-btn:hover {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+  transform: translateY(-1px);
+}
+
+.w3doc-example-card__code {
+  margin: 0;
+  padding: 1.05rem 1.2rem;
+  font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+  font-size: 0.86rem;
+  line-height: 1.62;
+  color: #e2e8f0;
+  background: #090e1a;
+  overflow-x: auto;
+}
+
+.w3doc-output-box {
+  background: #050811;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 0.75rem 1.2rem;
+}
+
+.w3doc-output-box__label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 0.35rem;
+}
+
+.w3doc-output-box__pre {
+  margin: 0;
+  font-family: var(--font-mono, 'JetBrains Mono', 'Fira Code', monospace);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #4ade80;
+  white-space: pre-wrap;
+}
+
+/* ============================================================================
+   Handbook Callout Boxes (Tip / Critical Concept / Warning)
+   ============================================================================ */
+.w3doc-callout {
+  margin-top: 1.1rem;
+  padding: 0.95rem 1.15rem;
+  border-radius: 10px;
+  border-left: 4px solid;
+}
+
+.w3doc-callout--tip {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+  border-top: 1px solid rgba(16, 185, 129, 0.25);
+  border-right: 1px solid rgba(16, 185, 129, 0.25);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.w3doc-callout--critical {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: #f59e0b;
+  border-top: 1px solid rgba(245, 158, 11, 0.25);
+  border-right: 1px solid rgba(245, 158, 11, 0.25);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.w3doc-callout--warning {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  border-top: 1px solid rgba(239, 68, 68, 0.25);
+  border-right: 1px solid rgba(239, 68, 68, 0.25);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.w3doc-callout__title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+  color: #f8fafc;
+}
+
+.w3doc-callout__body {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+/* ============================================================================
+   Visual Lecture Diagrams (Memory Cells, IPO/Flowchart, Strings, Py References)
+   ============================================================================ */
+.w3doc-diagram {
+  margin: 1.15rem 0;
+  background: #0b1120;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+}
+
+.w3doc-diagram__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.w3doc-diagram__badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.14);
+  color: #7dd3fc;
+}
+
+.w3doc-mem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 0.65rem;
+}
+
+.w3doc-mem-cell {
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.w3doc-mem-cell__addr {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.74rem;
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.w3doc-mem-cell__val {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.95rem;
+  color: #4ade80;
+}
+
+.w3doc-mem-cell__type {
+  font-size: 0.72rem;
+  color: #93c5fd;
+  font-weight: 600;
+}
+
+.w3doc-mem-cell__note {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+/* IPO & Flowchart Diagram */
+.w3doc-ipo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 0.95rem;
+}
+
+.w3doc-ipo-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  padding: 0.8rem 0.95rem;
+}
+
+.w3doc-ipo-card__title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 0.55rem;
+}
+
+.w3doc-ipo-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.w3doc-ipo-step {
+  flex: 1;
+  min-width: 80px;
+  padding: 0.45rem 0.55rem;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.75rem;
+}
+
+.w3doc-ipo-step span {
+  font-size: 0.62rem;
+  font-weight: 800;
+  opacity: 0.8;
+}
+
+.w3doc-ipo-step--in {
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #7dd3fc;
+}
+
+.w3doc-ipo-step--proc {
+  background: rgba(168, 85, 247, 0.14);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #d8b4fe;
+}
+
+.w3doc-ipo-step--out {
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #6ee7b7;
+}
+
+.w3doc-ipo-arrow {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.w3doc-flowchart-symbols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.5rem;
+}
+
+.w3doc-symbol-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.65rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 7px;
+  font-size: 0.78rem;
+}
+
+.w3doc-symbol-shape {
+  font-weight: 800;
+  color: #fbbf24;
+  white-space: nowrap;
+}
+
+.w3doc-symbol-desc {
+  color: #cbd5e1;
+}
+
+/* Null-terminated String Character Array Boxes */
+.w3doc-string-arrays {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.w3doc-string-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.w3doc-string-row__label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  color: #93c5fd;
+  min-width: 210px;
+}
+
+.w3doc-string-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.w3doc-char-box {
+  width: 44px;
+  padding: 0.35rem 0.25rem;
+  border-radius: 7px;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.w3doc-char-box--null {
+  background: rgba(244, 63, 94, 0.18);
+  border-color: rgba(244, 63, 94, 0.55);
+}
+
+.w3doc-char-box__idx {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.w3doc-char-box__ch {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88rem;
+  color: #f8fafc;
+}
+
+.w3doc-char-box--null .w3doc-char-box__ch {
+  color: #fda4af;
+}
+
+/* Python Reference Binding Diagram */
+.w3doc-pyref-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.w3doc-pyref-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.w3doc-pyref-name {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+}
+
+.w3doc-pyref-name span {
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.w3doc-pyref-name code {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.w3doc-pyref-arrow {
+  font-family: monospace;
+  color: #fbbf24;
+  font-weight: 800;
+}
+
+.w3doc-pyref-obj {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.38);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.w3doc-pyref-obj__meta {
+  font-size: 0.68rem;
+  color: #cbd5e1;
+}
+
+.w3doc-pyref-obj__val {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.94rem;
+  color: #4ade80;
+}
+
+/* Syntax Section Wrapper */
+.w3doc-syntax-section {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+}
+
+.w3doc-syntax-section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.w3doc-syntax-section__title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.w3doc-syntax-section__sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1080px) {
+  .w3doc-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .w3doc-sidebar {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .w3doc-hero,
+  .w3doc-section,
+  .w3doc-syntax-section {
+    padding: 1.15rem 1rem;
+  }
+
+  .w3doc-nav-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .w3doc-nav-btn {
+    justify-content: center;
+  }
+}

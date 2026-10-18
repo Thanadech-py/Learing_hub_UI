@@ -6,6 +6,7 @@ import { getSubjectVisualization } from '../../components/visualizations/index.j
 import Universal3DViz from '../../components/visualizations/shared/Universal3DViz.jsx';
 import EquationInspector from '../../components/EquationInspector/EquationInspector.jsx';
 import CodeSyntaxInspector from '../../components/CodeSyntaxInspector/CodeSyntaxInspector.jsx';
+import ComProgDocView from '../../components/ComProgDocView/ComProgDocView.jsx';
 import IntegratedIDE from '../../components/visualizations/comProg/IntegratedIDE.jsx';
 import { getCodeSyntaxForTopic } from '../../data/comProgTopics/codeSyntaxRegistry.js';
 import MathView from '../../components/MathView/MathView.jsx';
@@ -113,6 +114,145 @@ export default function TopicPage() {
   }
 
   const VizComponent = getSubjectVisualization(subjectId, topicId, activeSubPage?.id);
+
+  if (isComProg) {
+    return (
+      <div className="topic-page" style={{ '--accent': subject.accent }}>
+        {/* Breadcrumb Navigation */}
+        <nav className="topic-breadcrumb" aria-label="Breadcrumb">
+          <Link to="/">Home</Link>
+          <span aria-hidden="true">/</span>
+          <Link to={`/subjects/${subject.id}`}>{subject.title}</Link>
+          <span aria-hidden="true">/</span>
+          {hasSubPages && !isTopicHomePage ? (
+            <>
+              <Link to={`/subjects/${subject.id}/${topicId}`}>{rawTopicData.title}</Link>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page">{activeSubPage.title}</span>
+            </>
+          ) : (
+            <span aria-current="page">{rawTopicData.title}</span>
+          )}
+        </nav>
+
+        <ComProgDocView
+          subjectId={subjectId}
+          topicId={topicId}
+          rawTopicData={rawTopicData}
+          activeSubPage={activeSubPage}
+          isTopicHomePage={isTopicHomePage}
+          subCurrentIndex={subCurrentIndex}
+          prevSubPage={prevSubPage}
+          nextSubPage={nextSubPage}
+          syntaxItems={comProgSyntaxItems}
+          onTryCodeInIDE={(snippet, expectedOutput, title) => {
+            setComProgVizMode('ide');
+            window.dispatchEvent(
+              new CustomEvent('load-code-to-ide', {
+                detail: { code: snippet, expectedOutput, title },
+              })
+            );
+            setTimeout(() => {
+              const labElem = document.getElementById('interactive-lab');
+              if (labElem) labElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 60);
+          }}
+          renderInteractiveLab={() => (
+            <section id="interactive-lab" className="topic-section topic-section--viz">
+              <div className="topic-section__header topic-section__header--viz">
+                <div className="topic-section__header-left">
+                  <span className="topic-section__number">LAB</span>
+                  <div>
+                    <h2 className="topic-section__title">
+                      {comProgVizMode === 'ide'
+                        ? 'Try it Yourself — Integrated IDE & Code Execution Lab'
+                        : comProgVizMode === '3d'
+                        ? '3D System Architecture View'
+                        : 'Interactive Data & Memory Visualizer'}
+                    </h2>
+                    <p className="topic-section__desc">
+                      {comProgVizMode === 'ide'
+                        ? 'Write, test, and execute code or click any "Try it Yourself in IDE ❯" button above to load and run examples.'
+                        : comProgVizMode === '3d'
+                        ? 'Orbit in 3D space (drag to rotate, scroll to zoom) and inspect hardware architecture.'
+                        : 'Inspect contiguous byte addresses, pointer arrows, heap allocations, and object bindings in real time.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className="viz-dimension-switch viz-dimension-switch--comprog"
+                  role="group"
+                  aria-label="Toggle IDE, Data Viz, or 3D"
+                >
+                  <button
+                    type="button"
+                    className={`viz-dimension-btn ${comProgVizMode === 'ide' ? 'viz-dimension-btn--active' : ''}`}
+                    onClick={() => setComProgVizMode('ide')}
+                  >
+                    💻 Interactive IDE
+                  </button>
+                  <button
+                    type="button"
+                    className={`viz-dimension-btn ${comProgVizMode === '2d' ? 'viz-dimension-btn--active' : ''}`}
+                    onClick={() => setComProgVizMode('2d')}
+                  >
+                    📊 Data & Memory
+                  </button>
+                  <button
+                    type="button"
+                    className={`viz-dimension-btn ${comProgVizMode === '3d' ? 'viz-dimension-btn--active' : ''}`}
+                    onClick={() => setComProgVizMode('3d')}
+                  >
+                    🧊 3D System
+                  </button>
+                </div>
+              </div>
+
+              {comProgVizMode === 'ide' ? (
+                <IntegratedIDE topicId={topicId} subTopicId={activeSubPage?.id} />
+              ) : comProgVizMode === '3d' ? (
+                <Universal3DViz
+                  subjectId={subjectId}
+                  topicId={topicId}
+                  subTopicId={activeSubPage?.id}
+                />
+              ) : VizComponent ? (
+                <VizComponent />
+              ) : (
+                <div className="topic-viz-placeholder">Visualization for this topic is loading...</div>
+              )}
+            </section>
+          )}
+        />
+
+        {/* Bottom Topic Pagination (Prev / Next Subject Topic) */}
+        <footer className="topic-pagination">
+          {prevTopic && !prevTopic.inDevelopment ? (
+            <Link
+              to={`/subjects/${subject.id}/${prevTopic.id}`}
+              className="topic-pagination-link topic-pagination-link--prev"
+            >
+              <span className="topic-pagination-dir">← Previous Track</span>
+              <span className="topic-pagination-title">{prevTopic.title}</span>
+            </Link>
+          ) : (
+            <div />
+          )}
+
+          {nextTopic && !nextTopic.inDevelopment && (
+            <Link
+              to={`/subjects/${subject.id}/${nextTopic.id}`}
+              className="topic-pagination-link topic-pagination-link--next"
+            >
+              <span className="topic-pagination-dir">Next Track →</span>
+              <span className="topic-pagination-title">{nextTopic.title}</span>
+            </Link>
+          )}
+        </footer>
+      </div>
+    );
+  }
 
   return (
     <div className="topic-page" style={{ '--accent': subject.accent }}>

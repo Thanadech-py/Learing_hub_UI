@@ -180,6 +180,23 @@ export default function Layout() {
                                 {String(idx + 1).padStart(2, '0')}
                               </span>
                               <span className="sidebar-topic-name">{topic.title}</span>
+                              {topic.inDevelopment && (
+                                <span
+                                  style={{
+                                    marginLeft: 'auto',
+                                    fontSize: '0.62rem',
+                                    fontWeight: 700,
+                                    padding: '0.1rem 0.4rem',
+                                    borderRadius: '999px',
+                                    background: 'rgba(251, 191, 36, 0.14)',
+                                    color: '#fbbf24',
+                                    border: '1px solid rgba(251, 191, 36, 0.35)',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  In Dev
+                                </span>
+                              )}
                             </Link>
 
                             {/* Show sub-pages when topic is active or has subPages matching filter */}

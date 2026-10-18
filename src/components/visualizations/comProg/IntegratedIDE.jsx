@@ -784,6 +784,7 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
     (subTopicId && topicTemplates[subTopicId]) || topicTemplates.default || topicTemplates['foundations'];
 
   const [code, setCode] = useState(template.code);
+  const [customMeta, setCustomMeta] = useState(null); // { code, expectedOutput, title }
   const [isRunning, setIsRunning] = useState(false);
   const [terminalLogs, setTerminalLogs] = useState([]);
   const [activeTab, setActiveTab] = useState('terminal'); // 'terminal' | 'memory'
@@ -796,6 +797,7 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
   // Sync template when topic or subTopic changes
   useEffect(() => {
     setCode(template.code);
+    setCustomMeta(null);
     setTerminalLogs([
       `[Workspace Loaded] Target: ${template.file} (${template.title})`,
       `[Ready] Press "Run & Test Code" or Ctrl+Enter to compile and execute.`,
@@ -804,23 +806,48 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
     setExecStatus('idle');
   }, [topicId, subTopicId]);
 
-  // Handle external load requests via custom event
+  // Handle external load requests via custom event ("Try it Yourself in IDE")
   useEffect(() => {
     const handleLoadSnippet = (e) => {
       if (e.detail?.code) {
-        setCode(e.detail.code);
-        setTerminalLogs((prev) => [
-          ...prev,
-          `\n[Snippet Injected from Explanation] Loaded ${e.detail.code.split('\\n').length} lines.`,
-        ]);
+        const snippetCode = e.detail.code;
+        const expectedOut = e.detail.expectedOutput;
+        const snippetTitle = e.detail.title;
+        setCode(snippetCode);
+        setCustomMeta({
+          code: snippetCode,
+          expectedOutput: expectedOut || null,
+          title: snippetTitle || null,
+        });
+        setActiveTab('terminal');
+        if (expectedOut) {
+          const isPy = template.lang === 'python';
+          const headerCmd = isPy
+            ? `$ python3 ${template.file}`
+            : `$ gcc -Wall -Wextra -O2 ${template.file} -o main.out && ./main.out`;
+          setTerminalLogs([
+            `[Loaded Example] ${snippetTitle || 'Tutorial Code Example'} (${snippetCode.split('\n').length} lines)`,
+            headerCmd,
+            ...expectedOut.split('\n'),
+            `--------------------------------------------------`,
+            `[Telemetry] Example executed · Exit code: 0 · Modify code above and click "Run & Test Code"`,
+          ]);
+          setExecStatus('success');
+        } else {
+          setTerminalLogs((prev) => [
+            ...prev,
+            `\n[Snippet Injected from Documentation] Loaded ${snippetCode.split('\n').length} lines.`,
+          ]);
+        }
       }
     };
     window.addEventListener('load-code-to-ide', handleLoadSnippet);
     return () => window.removeEventListener('load-code-to-ide', handleLoadSnippet);
-  }, []);
+  }, [template.file, template.lang]);
 
   const handleReset = () => {
     setCode(template.code);
+    setCustomMeta(null);
     setTerminalLogs([`[Template Reset] Restored default code for ${template.title}.`]);
     setVariablesTrace([]);
     setExecStatus('idle');
@@ -872,12 +899,14 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
 
     setTimeout(() => {
       try {
+        const useExactHandbookOutput =
+          customMeta?.expectedOutput && code.trim() === customMeta.code.trim();
+
         if (isPython) {
           // Python execution simulation
           logs.push(`$ python3 ${template.file}`);
           logs.push(`[Interpreter] Python 3.12.3 runtime initialized.`);
 
-          // Execute safe JavaScript simulation for print and variables
           const lines = code.split('\n');
           let outputCount = 0;
 
@@ -886,7 +915,6 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
             const trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('#')) continue;
 
-            // Simple assignment detection
             const assignMatch = trimmed.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)$/);
             if (assignMatch && !trimmed.startsWith('def') && !trimmed.startsWith('class')) {
               const varName = assignMatch[1];
@@ -907,11 +935,9 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
               });
             }
 
-            // Print statement parser
-            if (trimmed.startsWith('print(') && trimmed.endsWith(')')) {
+            if (!useExactHandbookOutput && trimmed.startsWith('print(') && trimmed.endsWith(')')) {
               outputCount++;
               const content = trimmed.substring(6, trimmed.length - 1);
-              // Clean up f-string or literal
               let evaluated = content
                 .replace(/^f["']/, '')
                 .replace(/^["']/, '')
@@ -919,11 +945,9 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
                 .replace(/\\n/g, '\n')
                 .replace(/\\t/g, '    ');
 
-              // Substitute simple variables if present
               for (const v of vars) {
                 evaluated = evaluated.replace(new RegExp(`\\{${v.name}\\}`, 'g'), v.val);
               }
-              // Replace common expressions
               evaluated = evaluated.replace(/\{id\([^)]+\)\}/g, '140718429381504');
               evaluated = evaluated.replace(/\{len\([^)]+\)\}/g, '5');
               evaluated = evaluated.replace(/\{type\([^)]+\)\}/g, "<class 'object'>");
@@ -932,7 +956,9 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
             }
           }
 
-          if (outputCount === 0) {
+          if (useExactHandbookOutput) {
+            logs.push(...customMeta.expectedOutput.split('\n'));
+          } else if (outputCount === 0) {
             logs.push('(Code executed successfully with no print output)');
           }
         } else {
@@ -949,7 +975,6 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
             const trimmed = line.trim();
             if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('/*')) continue;
 
-            // Detect C variable declarations: int x = 42;
             const declMatch = trimmed.match(
               /^(int|double|float|char|uint8_t|uint32_t|unsigned char)\s+([*]?\s*[a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+);$/
             );
@@ -965,18 +990,15 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
               });
             }
 
-            // Parse printf statements
-            if (trimmed.startsWith('printf(')) {
+            if (!useExactHandbookOutput && trimmed.startsWith('printf(')) {
               outputCount++;
               const content = trimmed.substring(7, trimmed.lastIndexOf(')'));
-              // Extract format string and arguments
               const parts = content.split(/,\s*(?![^"]*"(?:(?:[^"]*"){2})*[^"]*$)/);
               let fmt = parts[0]?.replace(/^"/, '').replace(/"$/, '') || '';
               const args = parts.slice(1);
 
               fmt = fmt.replace(/\\n/g, '\n').replace(/\\t/g, '    ').replace(/%%/g, '%');
 
-              // Simple placeholder replacements
               let argIdx = 0;
               fmt = fmt.replace(/(%[dsuXpx]|%[0-9.]+[fe]|%zu)/g, () => {
                 const arg = args[argIdx++] || '0';
@@ -990,7 +1012,9 @@ export default function IntegratedIDE({ topicId = 'c-programming', subTopicId })
             }
           }
 
-          if (outputCount === 0) {
+          if (useExactHandbookOutput) {
+            logs.push(...customMeta.expectedOutput.split('\n'));
+          } else if (outputCount === 0) {
             logs.push('[Process exited with return code 0]');
           }
         }

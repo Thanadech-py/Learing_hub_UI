@@ -81,7 +81,7 @@
 }
 
 .eq-card__formula-box {
-  margin: 1rem 0;
+  margin: 2rem 0;
   padding: 1.3rem 1.5rem;
   border-radius: 14px;
   background: rgba(7, 11, 22, 0.72);
@@ -95,7 +95,7 @@
   height: auto;
   padding: 0;
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1rem;
 }
 
 .eq-card__summary {
