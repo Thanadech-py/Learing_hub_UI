@@ -313,6 +313,7 @@
 }
 
 .w3doc-jump-chip {
+  font-family: inherit;
   font-size: 0.76rem;
   font-weight: 600;
   color: #cbd5e1;
@@ -321,6 +322,7 @@
   padding: 0.28rem 0.68rem;
   border-radius: 999px;
   text-decoration: none;
+  cursor: pointer;
   transition: all 0.15s ease;
 }
 

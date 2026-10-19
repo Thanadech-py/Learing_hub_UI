@@ -945,57 +945,124 @@ node.publish_telemetry("cmd_vel", {"linear": 1.2, "angular": -0.4})`,
   },
 };
 
+import { THAI_COMPROG_SYNTAX } from '../../i18n/thaiEquationsLaComProg.js';
+
+function mergeThaiSyntaxItems(items, thItems) {
+  if (!Array.isArray(items) || !Array.isArray(thItems)) return items;
+  return items.map((item, idx) => {
+    const th = thItems[idx];
+    if (!th) return item;
+    return {
+      ...item,
+      title: th.title || item.title,
+      tag: th.tag || item.tag,
+      howItWorks: th.howItWorks?.length ? th.howItWorks : item.howItWorks,
+      howToProgram: th.howToProgram?.length ? th.howToProgram : item.howToProgram,
+      pitfalls: th.pitfalls?.length ? th.pitfalls : item.pitfalls,
+      tokens: Array.isArray(item.tokens)
+        ? item.tokens.map((tok, tIdx) => {
+            const thTok = th.tokens?.[tIdx];
+            if (!thTok) return tok;
+            return {
+              ...tok,
+              role: thTok.role || tok.role,
+              description: thTok.description || tok.description,
+              rules: thTok.rules || tok.rules,
+              pitfall: thTok.pitfall || tok.pitfall,
+            };
+          })
+        : item.tokens,
+    };
+  });
+}
+
 /**
  * Retrieves syntax items for a given subject/topic/subtopic.
- * Falls back gracefully if an exact subtopic entry is not specified.
+ * Localizes into Thai when lang === 'th' and falls back gracefully to subtopic equations.
  */
-export function getCodeSyntaxForTopic(topicId, subTopicId, existingContent) {
+export function getCodeSyntaxForTopic(topicId, subTopicId, existingContent, lang = 'en') {
+  const isThai = lang === 'th';
+
   // If content explicitly has codeSyntax array, use it
   if (existingContent?.codeSyntax?.length) {
     return existingContent.codeSyntax;
   }
 
-  // Check registry
+  // Check registry for exact subTopicId match
   const topicMap = CODE_SYNTAX_REGISTRY[topicId];
-  if (topicMap) {
-    if (subTopicId && topicMap[subTopicId]) {
-      return topicMap[subTopicId];
+  if (topicMap && subTopicId && topicMap[subTopicId]) {
+    const baseItems = topicMap[subTopicId];
+    if (isThai) {
+      return mergeThaiSyntaxItems(baseItems, THAI_COMPROG_SYNTAX?.[topicId]?.[subTopicId]);
     }
-    // Return first available or foundations
-    const firstKey = Object.keys(topicMap)[0];
-    if (firstKey && topicMap[firstKey]) {
-      return topicMap[firstKey];
-    }
+    return baseItems;
   }
 
-  // Gracefully adapt existing equations into code-syntax format if available
+  // Gracefully adapt existing subtopic equations into code-syntax format if available
   if (existingContent?.equations?.length) {
     return existingContent.equations.map((eq, i) => ({
-      title: eq.name || `Language Syntax #${i + 1}`,
-      tag: eq.conditions?.[0] || 'Language Mechanics',
+      title: eq.name || (isThai ? `ไวยากรณ์ของภาษา #${i + 1}` : `Language Syntax #${i + 1}`),
+      tag: eq.conditions?.[0] || (isThai ? 'กลไกของภาษา' : 'Language Mechanics'),
       language: topicId === 'py-programming' ? 'python' : 'c',
-      syntax: eq.latex ? eq.latex.replace(/\\text\{([^}]+)\}/g, '$1').replace(/\\mathtt\{([^}]+)\}/g, '$1').replace(/\\quad/g, ' ').replace(/\\to/g, '->').replace(/\\equiv/g, '==') : '// Code syntax pattern',
-      howItWorks: [
-        eq.summary || 'Under-the-hood language mechanics and runtime execution behavior.',
-        'Compiler translates this structure into low-level instructions following strict evaluation semantics.',
-      ],
-      howToProgram: [
-        'Declare variables with matching data types.',
-        'Adhere to language standards and prevent undefined behavior.',
-        'Verify preconditions and error bounds prior to execution.',
-      ],
+      syntax: eq.latex
+        ? eq.latex
+            .replace(/\\text\{([^}]+)\}/g, '$1')
+            .replace(/\\mathtt\{([^}]+)\}/g, '$1')
+            .replace(/\\quad/g, ' ')
+            .replace(/\\to/g, '->')
+            .replace(/\\equiv/g, '==')
+        : '// Code syntax pattern',
+      howItWorks: isThai
+        ? [
+            eq.summary || 'กลไกการทำงานเบื้องหลังของภาษาและพฤติกรรมขณะรันโปรแกรม (Runtime Execution)',
+            'คอมไพเลอร์หรืออินเทอร์พรีเตอร์จะแปลโครงสร้างไวยากรณ์นี้เป็นคำสั่งระดับต่ำตามกฎการประเมินค่าของภาษาอย่างเคร่งครัด',
+          ]
+        : [
+            eq.summary || 'Under-the-hood language mechanics and runtime execution behavior.',
+            'Compiler translates this structure into low-level instructions following strict evaluation semantics.',
+          ],
+      howToProgram: isThai
+        ? [
+            'ประกาศตัวแปรและพารามิเตอร์ให้ตรงกับชนิดข้อมูล (Data Types) ที่กำหนดในโครงสร้างไวยากรณ์',
+            'ปฏิบัติตามมาตรฐานของภาษาอย่างเคร่งครัดและป้องกันพฤติกรรมไม่นิยาม (Undefined Behavior)',
+            'ตรวจสอบเงื่อนไขเบื้องต้น ขอบเขตของข้อมูล และค่าส่งกลับก่อนนำไปใช้งานต่อ',
+          ]
+        : [
+            'Declare variables with matching data types.',
+            'Adhere to language standards and prevent undefined behavior.',
+            'Verify preconditions and error bounds prior to execution.',
+          ],
       tokens: (eq.variables || []).map((v) => ({
         token: v.symbol ? v.symbol.replace(/\\/g, '') : 'token',
-        role: v.name || 'Keyword / Operator',
-        description: v.description || 'Syntactic element in language grammar.',
-        rules: v.connections || 'Follows standard language evaluation rules.',
+        role: v.name || (isThai ? 'คีย์เวิร์ด / ตัวดำเนินการ' : 'Keyword / Operator'),
+        description: v.description || (isThai ? 'องค์ประกอบทางไวยากรณ์ในโครงสร้างภาษา' : 'Syntactic element in language grammar.'),
+        rules: v.connections || (isThai ? 'เป็นไปตามกฎการประเมินค่ามาตรฐานของภาษา' : 'Follows standard language evaluation rules.'),
       })),
-      pitfalls: [
-        'Ensure proper syntax scoping and avoid accessing uninitialized data.',
-      ],
-      codeExample: `// Verified implementation\\nprintf("Executing: %s\\n", "${eq.name}");`,
-      expectedOutput: `Executing: ${eq.name}`,
+      pitfalls: isThai
+        ? [
+            'ระวังขอบเขตของตัวแปร (Scope) และหลีกเลี่ยงการเข้าถึงหน่วยความจำหรือตัวแปรที่ยังไม่ได้กำหนดค่าเริ่มต้น',
+          ]
+        : [
+            'Ensure proper syntax scoping and avoid accessing uninitialized data.',
+          ],
+      codeExample:
+        topicId === 'py-programming'
+          ? `# Verified Python implementation\nprint("Executing:", ${JSON.stringify(eq.name || topicId)})`
+          : `// Verified C implementation\n#include <stdio.h>\nint main(void) {\n    printf("Executing: %s\\n", ${JSON.stringify(eq.name || topicId)});\n    return 0;\n}`,
+      expectedOutput: `Executing: ${eq.name || topicId}`,
     }));
+  }
+
+  // Fallback to first available entry in topicMap (e.g., foundations)
+  if (topicMap) {
+    const firstKey = Object.keys(topicMap)[0];
+    if (firstKey && topicMap[firstKey]) {
+      const baseItems = topicMap[firstKey];
+      if (isThai) {
+        return mergeThaiSyntaxItems(baseItems, THAI_COMPROG_SYNTAX?.[topicId]?.[firstKey]);
+      }
+      return baseItems;
+    }
   }
 
   return [];

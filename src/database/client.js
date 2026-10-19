@@ -68,11 +68,11 @@ export const db = {
           ...(rootRecord
             ? {
                 ...rootRecord,
-                overview: rootRecord.overview.length ? rootRecord.overview : legacyTopic.overview,
-                equations: rootRecord.equations.length ? rootRecord.equations : legacyTopic.equations,
-                keyConcepts: rootRecord.keyConcepts.length
-                  ? rootRecord.keyConcepts
-                  : legacyTopic.keyConcepts,
+                overview: legacyTopic.overview?.length ? legacyTopic.overview : rootRecord.overview,
+                equations: legacyTopic.equations?.length ? legacyTopic.equations : rootRecord.equations,
+                keyConcepts: legacyTopic.keyConcepts?.length
+                  ? legacyTopic.keyConcepts
+                  : rootRecord.keyConcepts,
                 subPages: legacyTopic.subPages,
               }
             : {}),
@@ -93,9 +93,9 @@ export const db = {
           id: sp.id,
           icon: subRec.icon || sp.icon,
           tag: subRec.tag || sp.tag,
-          overview: subRec.overview.length ? subRec.overview : sp.overview,
-          equations: subRec.equations.length ? subRec.equations : sp.equations,
-          keyConcepts: subRec.keyConcepts.length ? subRec.keyConcepts : sp.keyConcepts,
+          overview: sp.overview?.length ? sp.overview : subRec.overview,
+          equations: sp.equations?.length ? sp.equations : subRec.equations,
+          keyConcepts: sp.keyConcepts?.length ? sp.keyConcepts : subRec.keyConcepts,
         };
       });
     }

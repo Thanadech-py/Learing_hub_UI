@@ -1,5 +1,9 @@
 import { THAI_PHYSICS_TOPICS, THAI_MATH_TOPICS } from './thaiTopicsPhysicsMath.js';
 import { THAI_LINEAR_ALGEBRA_TOPICS, THAI_COMPROG_TOPICS } from './thaiTopicsLaComProg.js';
+import { THAI_EQUATIONS_PHYSICS_PART1 } from './thaiEquationsPhysicsPart1.js';
+import { THAI_EQUATIONS_PHYSICS_PART2 } from './thaiEquationsPhysicsPart2.js';
+import { THAI_EQUATIONS_MATH } from './thaiEquationsMath.js';
+import { THAI_EQUATIONS_LA, THAI_EQUATIONS_COMPROG } from './thaiEquationsLaComProg.js';
 
 export const THAI_SUBJECT_META = {
   physics: {
@@ -170,6 +174,45 @@ const ALL_THAI_TOPICS = {
   'com-prog': THAI_COMPROG_TOPICS,
 };
 
+const ALL_THAI_EQUATIONS = {
+  physics: {
+    ...THAI_EQUATIONS_PHYSICS_PART1,
+    ...THAI_EQUATIONS_PHYSICS_PART2,
+  },
+  mathematics: THAI_EQUATIONS_MATH,
+  'linear-algebra': THAI_EQUATIONS_LA,
+  'com-prog': THAI_EQUATIONS_COMPROG,
+};
+
+function mergeThaiEquations(baseEquations, thEquations) {
+  if (!Array.isArray(baseEquations) || !Array.isArray(thEquations)) {
+    return baseEquations;
+  }
+  return baseEquations.map((eq, idx) => {
+    const thEq = thEquations[idx];
+    if (!thEq) return eq;
+    return {
+      ...eq,
+      name: thEq.name || eq.name,
+      summary: thEq.summary || eq.summary,
+      exampleDescription: thEq.exampleDescription || eq.exampleDescription,
+      conditions: thEq.conditions?.length ? thEq.conditions : eq.conditions,
+      variables: Array.isArray(eq.variables)
+        ? eq.variables.map((v, vIdx) => {
+            const thVar = thEq.variables?.[vIdx];
+            if (!thVar) return v;
+            return {
+              ...v,
+              name: thVar.name || v.name,
+              description: thVar.description || v.description,
+              connections: thVar.connections || v.connections,
+            };
+          })
+        : eq.variables,
+    };
+  });
+}
+
 export function formatLevelBadge(level, lang) {
   if (lang !== 'th' || !level) return level;
   const normalized = level.toLowerCase();
@@ -205,7 +248,7 @@ export function localizeSubject(subject, lang) {
 }
 
 /**
- * Localizes a full topic data object (including overview, keyConcepts, markdownBody, and subPages)
+ * Localizes a full topic data object (including overview, equations, keyConcepts, markdownBody, and subPages)
  * when Thai ('th') language mode is active.
  */
 export function localizeTopicData(rawTopicData, subjectId, topicId, lang) {
@@ -213,18 +256,25 @@ export function localizeTopicData(rawTopicData, subjectId, topicId, lang) {
 
   const subjectDict = ALL_THAI_TOPICS[subjectId];
   const thEntry = subjectDict?.[topicId];
-  if (!thEntry) return rawTopicData;
+  const eqDict = ALL_THAI_EQUATIONS[subjectId];
+  const thEqEntry = eqDict?.[topicId];
+
+  if (!thEntry && !thEqEntry) return rawTopicData;
 
   const localized = {
     ...rawTopicData,
-    title: thEntry.title || rawTopicData.title,
-    subtitle: thEntry.subtitle || rawTopicData.subtitle,
-    estimatedTime: thEntry.estimatedTime || rawTopicData.estimatedTime,
-    overview: thEntry.overview?.length ? thEntry.overview : rawTopicData.overview,
-    markdownBody: thEntry.markdownBody || rawTopicData.markdownBody,
+    title: thEntry?.title || rawTopicData.title,
+    subtitle: thEntry?.subtitle || rawTopicData.subtitle,
+    estimatedTime: thEntry?.estimatedTime || rawTopicData.estimatedTime,
+    overview: thEntry?.overview?.length ? thEntry.overview : rawTopicData.overview,
+    markdownBody: thEntry?.markdownBody || rawTopicData.markdownBody,
+    equations: mergeThaiEquations(
+      rawTopicData.equations,
+      thEqEntry?.equations || thEntry?.equations
+    ),
   };
 
-  if (thEntry.keyConcepts?.length && Array.isArray(rawTopicData.keyConcepts)) {
+  if (thEntry?.keyConcepts?.length && Array.isArray(rawTopicData.keyConcepts)) {
     localized.keyConcepts = rawTopicData.keyConcepts.map((kc, idx) => {
       const thKc = thEntry.keyConcepts[idx];
       if (!thKc) return kc;
@@ -234,18 +284,24 @@ export function localizeTopicData(rawTopicData, subjectId, topicId, lang) {
         content: thKc.content || kc.content,
       };
     });
-  } else if (thEntry.keyConcepts?.length) {
+  } else if (thEntry?.keyConcepts?.length) {
     localized.keyConcepts = thEntry.keyConcepts;
   }
 
   // Localize subPages if present
-  if (Array.isArray(rawTopicData.subPages) && thEntry.subPages) {
+  if (Array.isArray(rawTopicData.subPages)) {
     localized.subPages = rawTopicData.subPages.map((sp) => {
-      const thSp = thEntry.subPages[sp.id];
-      if (!thSp) return sp;
+      const thSp = thEntry?.subPages?.[sp.id];
+      const thSpEq =
+        thEqEntry?.subPages?.[sp.id]?.equations ||
+        thEqEntry?.[sp.id]?.equations ||
+        eqDict?.[sp.id]?.equations ||
+        thSp?.equations;
+
+      if (!thSp && !thSpEq) return sp;
 
       const mergedKeyConcepts =
-        thSp.keyConcepts?.length && Array.isArray(sp.keyConcepts)
+        thSp?.keyConcepts?.length && Array.isArray(sp.keyConcepts)
           ? sp.keyConcepts.map((kc, idx) => {
               const thKc = thSp.keyConcepts[idx];
               if (!thKc) return kc;
@@ -255,15 +311,16 @@ export function localizeTopicData(rawTopicData, subjectId, topicId, lang) {
                 content: thKc.content || kc.content,
               };
             })
-          : thSp.keyConcepts || sp.keyConcepts;
+          : thSp?.keyConcepts || sp.keyConcepts;
 
       return {
         ...sp,
-        title: thSp.title || sp.title,
-        subtitle: thSp.subtitle || sp.subtitle,
-        overview: thSp.overview?.length ? thSp.overview : sp.overview,
+        title: thSp?.title || sp.title,
+        subtitle: thSp?.subtitle || sp.subtitle,
+        overview: thSp?.overview?.length ? thSp.overview : sp.overview,
         keyConcepts: mergedKeyConcepts,
-        markdownBody: thSp.markdownBody || sp.markdownBody,
+        markdownBody: thSp?.markdownBody || sp.markdownBody,
+        equations: mergeThaiEquations(sp.equations, thSpEq),
       };
     });
   }

@@ -64,7 +64,7 @@ export default function TopicPage() {
 
   const isComProg = subjectId === 'com-prog';
   const comProgSyntaxItems = isComProg
-    ? getCodeSyntaxForTopic(topicId, activeSubPage?.id, currentContent)
+    ? getCodeSyntaxForTopic(topicId, activeSubPage?.id, currentContent, lang)
     : [];
 
   // Other sub-topics to display as navigation cards
@@ -182,17 +182,29 @@ export default function TopicPage() {
                   <div>
                     <h2 className="topic-section__title">
                       {comProgVizMode === 'ide'
-                        ? 'Try it Yourself — Integrated IDE & Code Execution Lab'
+                        ? t(
+                            'Try it Yourself — Integrated IDE & Code Execution Lab',
+                            'ทดลองด้วยตัวเอง — ห้องปฏิบัติการรันโค้ดและ IDE แบบบูรณาการ'
+                          )
                         : comProgVizMode === '3d'
-                        ? '3D System Architecture View'
-                        : 'Interactive Data & Memory Visualizer'}
+                        ? t('3D System Architecture View', 'มุมมองสถาปัตยกรรมระบบ 3 มิติ')
+                        : t('Interactive Data & Memory Visualizer', 'จำลองโครงสร้างข้อมูลและหน่วยความจำเชิงโต้ตอบ')}
                     </h2>
                     <p className="topic-section__desc">
                       {comProgVizMode === 'ide'
-                        ? 'Write, test, and execute code or click any "Try it Yourself in IDE ❯" button above to load and run examples.'
+                        ? t(
+                            'Write, test, and execute code or click any "Try it Yourself in IDE ❯" button above to load and run examples.',
+                            'เขียน ทดสอบ และรันโค้ดได้ทันที หรือคลิกปุ่ม "ทดลองรันใน IDE ❯" จากตัวอย่างด้านบนเพื่อโหลดโค้ดมารัน'
+                          )
                         : comProgVizMode === '3d'
-                        ? 'Orbit in 3D space (drag to rotate, scroll to zoom) and inspect hardware architecture.'
-                        : 'Inspect contiguous byte addresses, pointer arrows, heap allocations, and object bindings in real time.'}
+                        ? t(
+                            'Orbit in 3D space (drag to rotate, scroll to zoom) and inspect hardware architecture.',
+                            'หมุนดูในปริภูมิ 3 มิติ (ลากเมาส์เพื่อหมุน เลื่อนลูกกลิ้งเพื่อซูม) เพื่อสำรวจสถาปัตยกรรมฮาร์ดแวร์'
+                          )
+                        : t(
+                            'Inspect contiguous byte addresses, pointer arrows, heap allocations, and object bindings in real time.',
+                            'ตรวจสอบที่อยู่ไบต์ในหน่วยความจำ ลูกศรตัวชี้ การจองหน่วยความจำ Heap และการอ้างอิงออบเจกต์แบบเรียลไทม์'
+                          )}
                     </p>
                   </div>
                 </div>
@@ -207,21 +219,21 @@ export default function TopicPage() {
                     className={`viz-dimension-btn ${comProgVizMode === 'ide' ? 'viz-dimension-btn--active' : ''}`}
                     onClick={() => setComProgVizMode('ide')}
                   >
-                    💻 Interactive IDE
+                    💻 {t('Interactive IDE', 'IDE ทดสอบโค้ด')}
                   </button>
                   <button
                     type="button"
                     className={`viz-dimension-btn ${comProgVizMode === '2d' ? 'viz-dimension-btn--active' : ''}`}
                     onClick={() => setComProgVizMode('2d')}
                   >
-                    📊 Data & Memory
+                    📊 {t('Data & Memory', 'ข้อมูลและหน่วยความจำ')}
                   </button>
                   <button
                     type="button"
                     className={`viz-dimension-btn ${comProgVizMode === '3d' ? 'viz-dimension-btn--active' : ''}`}
                     onClick={() => setComProgVizMode('3d')}
                   >
-                    🧊 3D System
+                    🧊 {t('3D System', 'ระบบ 3 มิติ')}
                   </button>
                 </div>
               </div>
@@ -237,7 +249,9 @@ export default function TopicPage() {
               ) : VizComponent ? (
                 <VizComponent />
               ) : (
-                <div className="topic-viz-placeholder">Visualization for this topic is loading...</div>
+                <div className="topic-viz-placeholder">
+                  {t('Visualization for this topic is loading...', 'กำลังโหลดภาพจำลองสำหรับบทเรียนนี้...')}
+                </div>
               )}
             </section>
           )}
@@ -250,7 +264,9 @@ export default function TopicPage() {
               to={`/subjects/${subject.id}/${prevTopic.id}`}
               className="topic-pagination-link topic-pagination-link--prev"
             >
-              <span className="topic-pagination-dir">← Previous Track</span>
+              <span className="topic-pagination-dir">
+                ← {t('Previous Track', 'หลักสูตรก่อนหน้า')}
+              </span>
               <span className="topic-pagination-title">{prevTopic.title}</span>
             </Link>
           ) : (
@@ -262,7 +278,9 @@ export default function TopicPage() {
               to={`/subjects/${subject.id}/${nextTopic.id}`}
               className="topic-pagination-link topic-pagination-link--next"
             >
-              <span className="topic-pagination-dir">Next Track →</span>
+              <span className="topic-pagination-dir">
+                {t('Next Track', 'หลักสูตรถัดไป')} →
+              </span>
               <span className="topic-pagination-title">{nextTopic.title}</span>
             </Link>
           )}
@@ -409,14 +427,14 @@ export default function TopicPage() {
             </div>
           ) : (
             <div className="topic-layout-toggle" role="group" aria-label="Visualization dimension mode">
-              <span className="topic-layout-toggle__label">Visualizer:</span>
+              <span className="topic-layout-toggle__label">{t('Visualizer:', 'โหมดแสดงผล:')}</span>
               <button
                 type="button"
                 className={`topic-layout-btn ${vizDimension === '2d' ? 'topic-layout-btn--active' : ''}`}
                 onClick={() => handleDimensionSwitch('2d')}
                 title="Switch to 2D Interactive View"
               >
-                <span aria-hidden="true">📊</span> 2D View
+                <span aria-hidden="true">📊</span> {t('2D View', 'มุมมอง 2D')}
               </button>
               <button
                 type="button"
@@ -424,7 +442,7 @@ export default function TopicPage() {
                 onClick={() => handleDimensionSwitch('3d')}
                 title="Switch to 3D Isometric View (Drag to Orbit)"
               >
-                <span aria-hidden="true">🧊</span> 3D View
+                <span aria-hidden="true">🧊</span> {t('3D View', 'มุมมอง 3D')}
               </button>
             </div>
           )}
@@ -444,17 +462,26 @@ export default function TopicPage() {
                     <div>
                       <h2 className="topic-section__title">
                         {comProgVizMode === 'ide'
-                          ? 'Integrated IDE & Code Execution Lab'
+                          ? t('Integrated IDE & Code Execution Lab', 'ห้องปฏิบัติการรันโค้ดและ IDE แบบบูรณาการ')
                           : comProgVizMode === '3d'
-                          ? '3D System Architecture View'
-                          : 'Interactive Data & Memory Visualizer'}
+                          ? t('3D System Architecture View', 'มุมมองสถาปัตยกรรมระบบ 3 มิติ')
+                          : t('Interactive Data & Memory Visualizer', 'จำลองโครงสร้างข้อมูลและหน่วยความจำเชิงโต้ตอบ')}
                       </h2>
                       <p className="topic-section__desc">
                         {comProgVizMode === 'ide'
-                          ? 'Write, test, and execute code in real-time with simulated compiler output, runtime telemetry, and live memory tracing.'
+                          ? t(
+                              'Write, test, and execute code in real-time with simulated compiler output, runtime telemetry, and live memory tracing.',
+                              'เขียน ทดสอบ และรันโค้ดแบบเรียลไทม์ พร้อมผลลัพธ์จำลองจากคอมไพเลอร์และการติดตามหน่วยความจำสด'
+                            )
                           : comProgVizMode === '3d'
-                          ? 'Orbit in 3D space (drag to rotate, scroll to zoom) and inspect hardware architecture.'
-                          : 'Inspect contiguous byte addresses, pointer arrows, heap allocations, and register bits in real time.'}
+                          ? t(
+                              'Orbit in 3D space (drag to rotate, scroll to zoom) and inspect hardware architecture.',
+                              'หมุนดูในปริภูมิ 3 มิติ (ลากเมาส์เพื่อหมุน เลื่อนลูกกลิ้งเพื่อซูม) เพื่อสำรวจสถาปัตยกรรมฮาร์ดแวร์'
+                            )
+                          : t(
+                              'Inspect contiguous byte addresses, pointer arrows, heap allocations, and register bits in real time.',
+                              'ตรวจสอบที่อยู่ไบต์ในหน่วยความจำ ลูกศรตัวชี้ การจองหน่วยความจำ Heap และบิตในรีจิสเตอร์แบบเรียลไทม์'
+                            )}
                       </p>
                     </div>
                   </div>
@@ -466,7 +493,7 @@ export default function TopicPage() {
                       onClick={() => setComProgVizMode('ide')}
                       title="Interactive IDE for testing code"
                     >
-                      💻 Interactive IDE
+                      💻 {t('Interactive IDE', 'IDE ทดสอบโค้ด')}
                     </button>
                     <button
                       type="button"
@@ -474,7 +501,7 @@ export default function TopicPage() {
                       onClick={() => setComProgVizMode('2d')}
                       title="Data & Memory Structure Visualizer"
                     >
-                      📊 Data & Memory
+                      📊 {t('Data & Memory', 'ข้อมูลและหน่วยความจำ')}
                     </button>
                     <button
                       type="button"
@@ -482,7 +509,7 @@ export default function TopicPage() {
                       onClick={() => setComProgVizMode('3d')}
                       title="3D Isometric Architecture View"
                     >
-                      🧊 3D System
+                      🧊 {t('3D System', 'ระบบ 3 มิติ')}
                     </button>
                   </div>
                 </div>
@@ -499,7 +526,7 @@ export default function TopicPage() {
                   <VizComponent />
                 ) : (
                   <div className="topic-viz-placeholder">
-                    Visualization for this topic is loading...
+                    {t('Visualization for this topic is loading...', 'กำลังโหลดภาพจำลองสำหรับบทเรียนนี้...')}
                   </div>
                 )}
               </>
@@ -510,12 +537,20 @@ export default function TopicPage() {
                     <span className="topic-section__number">01</span>
                     <div>
                       <h2 className="topic-section__title">
-                        {vizDimension === '3d' ? 'Interactive 3D Isometric Lab' : 'Interactive 2D Visualizer Lab'}
+                        {vizDimension === '3d'
+                          ? t('Interactive 3D Isometric Lab', 'ห้องปฏิบัติการจำลองภาพ 3 มิติ (3D Lab)')
+                          : t('Interactive 2D Visualizer Lab', 'ห้องปฏิบัติการจำลองภาพ 2 มิติ (2D Lab)')}
                       </h2>
                       <p className="topic-section__desc">
                         {vizDimension === '3d'
-                          ? 'Orbit in 3D space (drag to rotate, scroll to zoom) and manipulate live parameters.'
-                          : 'Manipulate mathematical & physical parameters in real time alongside the derivations.'}
+                          ? t(
+                              'Orbit in 3D space (drag to rotate, scroll to zoom) and manipulate live parameters.',
+                              'หมุนสำรวจในปริภูมิ 3 มิติ (คลิกค้างแล้วลากเพื่อหมุน เลื่อนลูกกลิ้งเพื่อซูม) และปรับค่าพารามิเตอร์แบบสด'
+                            )
+                          : t(
+                              'Manipulate mathematical & physical parameters in real time alongside the derivations.',
+                              'ปรับเปลี่ยนพารามิเตอร์ทางคณิตศาสตร์และฟิสิกส์แบบเรียลไทม์ควบคู่ไปกับสมการและคำอธิบาย'
+                            )}
                       </p>
                     </div>
                   </div>
@@ -526,14 +561,14 @@ export default function TopicPage() {
                       className={`viz-dimension-btn ${vizDimension === '2d' ? 'viz-dimension-btn--active' : ''}`}
                       onClick={() => handleDimensionSwitch('2d')}
                     >
-                      📊 2D Classic
+                      📊 {t('2D Classic', '2D มาตรฐาน')}
                     </button>
                     <button
                       type="button"
                       className={`viz-dimension-btn ${vizDimension === '3d' ? 'viz-dimension-btn--active' : ''}`}
                       onClick={() => handleDimensionSwitch('3d')}
                     >
-                      🧊 3D Isometric
+                      🧊 {t('3D Isometric', '3D สามมิติ')}
                     </button>
                   </div>
                 </div>
@@ -548,7 +583,7 @@ export default function TopicPage() {
                   <VizComponent />
                 ) : (
                   <div className="topic-viz-placeholder">
-                    Visualization for this topic is loading...
+                    {t('Visualization for this topic is loading...', 'กำลังโหลดภาพจำลองสำหรับบทเรียนนี้...')}
                   </div>
                 )}
               </>

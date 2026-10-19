@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import './CodeSyntaxInspector.css';
 
 /**
@@ -7,13 +8,14 @@ import './CodeSyntaxInspector.css';
  * step-by-step rules to program following the syntax, token breakdowns, and common pitfalls.
  */
 export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [selectedToken, setSelectedToken] = useState(null);
 
   if (!syntaxItem) return null;
 
   const {
-    title = 'Syntax Specification',
+    title = t('Syntax Specification', 'ข้อกำหนดไวยากรณ์ (Syntax Specification)'),
     tag,
     language = 'c',
     syntax = '',
@@ -40,7 +42,9 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
       {/* Header */}
       <header className="syntax-card__header">
         <div className="syntax-card__title-row">
-          <span className="syntax-card__badge">Syntax #{index != null ? index + 1 : 1}</span>
+          <span className="syntax-card__badge">
+            {t('Syntax', 'ไวยากรณ์ที่')} #{index != null ? index + 1 : 1}
+          </span>
           <h3 className="syntax-card__title">{title}</h3>
         </div>
         <div className="syntax-card__tags">
@@ -52,14 +56,16 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
       {/* Syntax Specification Box */}
       <div className="syntax-card__pattern-box">
         <div className="syntax-card__pattern-header">
-          <span className="syntax-card__pattern-label">Grammar / Syntax Pattern</span>
+          <span className="syntax-card__pattern-label">
+            {t('Grammar / Syntax Pattern', 'รูปแบบไวยากรณ์ (Grammar / Syntax Pattern)')}
+          </span>
           <button
             type="button"
             className="syntax-card__copy-btn"
             onClick={() => handleCopy(syntax)}
             title="Copy syntax template"
           >
-            {copied ? '✓ Copied' : '📋 Copy Pattern'}
+            {copied ? t('✓ Copied', '✓ คัดลอกแล้ว') : t('📋 Copy Pattern', '📋 คัดลอกรูปแบบ')}
           </button>
         </div>
         <pre className="syntax-card__code">
@@ -72,10 +78,14 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
         {/* Column 1: How Does This Syntax Work */}
         <section className="syntax-panel syntax-panel--mechanics">
           <h4 className="syntax-panel__heading">
-            <span aria-hidden="true">⚙️</span> How Does This Syntax Work?
+            <span aria-hidden="true">⚙️</span>{' '}
+            {t('How Does This Syntax Work?', 'ไวยากรณ์นี้ทำงานอย่างไรเบื้องหลัง?')}
           </h4>
           <p className="syntax-panel__subtext">
-            Compiler translation, machine execution, memory allocation, and runtime semantics:
+            {t(
+              'Compiler translation, machine execution, memory allocation, and runtime semantics:',
+              'การแปลภาษาของคอมไพเลอร์ การทำงานระดับเครื่อง การจัดสรรหน่วยความจำ และความหมายขณะรัน:'
+            )}
           </p>
           <ul className="syntax-panel__list">
             {workItems.map((item, i) => (
@@ -90,10 +100,14 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
         {/* Column 2: How to Program Following This Syntax */}
         <section className="syntax-panel syntax-panel--programming">
           <h4 className="syntax-panel__heading">
-            <span aria-hidden="true">📝</span> How to Program Following This Syntax
+            <span aria-hidden="true">📝</span>{' '}
+            {t('How to Program Following This Syntax', 'ขั้นตอนการเขียนโปรแกรมตามไวยากรณ์นี้')}
           </h4>
           <p className="syntax-panel__subtext">
-            Step-by-step programming guidelines, declaration rules, and standard idioms:
+            {t(
+              'Step-by-step programming guidelines, declaration rules, and standard idioms:',
+              'แนวทางการเขียนโปรแกรมทีละขั้นตอน กฎการประกาศตัวแปร และรูปแบบมาตรฐาน:'
+            )}
           </p>
           <ol className="syntax-panel__ordered-list">
             {progItems.map((item, i) => (
@@ -111,10 +125,16 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
         <section className="syntax-card__tokens-section">
           <div className="syntax-card__tokens-header">
             <h4 className="syntax-card__tokens-title">
-              <span>🔍 Syntax Anatomy & Token Breakdown</span>
-              <span className="syntax-card__tokens-count">{tokens.length} elements</span>
+              <span>
+                🔍 {t('Syntax Anatomy & Token Breakdown', 'การแยกส่วนประกอบโค้ดและโทเคน (Token Breakdown)')}
+              </span>
+              <span className="syntax-card__tokens-count">
+                {t(`${tokens.length} elements`, `${tokens.length} ส่วนประกอบ`)}
+              </span>
             </h4>
-            <span className="syntax-card__tokens-hint">Click any token to inspect constraints</span>
+            <span className="syntax-card__tokens-hint">
+              {t('Click any token to inspect constraints', 'คลิกที่แต่ละโทเคนเพื่อดูข้อกำหนด')}
+            </span>
           </div>
 
           <div className="syntax-card__tokens-grid">
@@ -136,12 +156,18 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
                   <p className="token-card__desc">{tok.description}</p>
                   {tok.rules && (
                     <div className="token-card__rules">
-                      <span className="token-card__rule-label">Valid Rules:</span> {tok.rules}
+                      <span className="token-card__rule-label">
+                        {t('Valid Rules:', 'กฎการใช้งานที่ถูกต้อง:')}
+                      </span>{' '}
+                      {tok.rules}
                     </div>
                   )}
                   {tok.pitfall && (
                     <div className="token-card__pitfall">
-                      <span className="token-card__pitfall-label">⚠️ Watch out:</span> {tok.pitfall}
+                      <span className="token-card__pitfall-label">
+                        {t('⚠️ Watch out:', '⚠️ ข้อควรระวัง:')}
+                      </span>{' '}
+                      {tok.pitfall}
                     </div>
                   )}
                 </div>
@@ -155,7 +181,11 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
       {pitfallItems.length > 0 && (
         <section className="syntax-card__pitfalls">
           <h4 className="syntax-card__pitfalls-title">
-            <span aria-hidden="true">⚠️</span> Common Mistakes & Undefined Behaviors to Avoid
+            <span aria-hidden="true">⚠️</span>{' '}
+            {t(
+              'Common Mistakes & Undefined Behaviors to Avoid',
+              'ข้อผิดพลาดที่พบบ่อยและพฤติกรรมไม่นิยามที่ควรหลีกเลี่ยง'
+            )}
           </h4>
           <ul className="syntax-card__pitfalls-list">
             {pitfallItems.map((p, i) => (
@@ -172,7 +202,9 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
       {codeExample && (
         <section className="syntax-card__example">
           <div className="syntax-card__example-header">
-            <span className="syntax-card__example-badge">💻 Verified Code Example</span>
+            <span className="syntax-card__example-badge">
+              {t('💻 Verified Code Example', '💻 ตัวอย่างโค้ดที่ใช้งานได้จริง')}
+            </span>
             <div className="syntax-card__example-actions">
               {onLoadToIDE && (
                 <button
@@ -181,7 +213,7 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
                   onClick={() => onLoadToIDE(codeExample)}
                   title="Load this code snippet directly into the Interactive IDE above"
                 >
-                  🚀 Test in IDE Above
+                  {t('🚀 Test in IDE Above', '🚀 ทดสอบใน IDE ด้านบน')}
                 </button>
               )}
               <button
@@ -189,7 +221,7 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
                 className="syntax-card__example-copy-btn"
                 onClick={() => handleCopy(codeExample)}
               >
-                📋 Copy Example
+                {t('📋 Copy Example', '📋 คัดลอกตัวอย่าง')}
               </button>
             </div>
           </div>
@@ -198,7 +230,9 @@ export default function CodeSyntaxInspector({ syntaxItem, index, onLoadToIDE }) 
           </pre>
           {expectedOutput && (
             <div className="syntax-card__example-output">
-              <span className="syntax-card__output-label">Expected Output:</span>
+              <span className="syntax-card__output-label">
+                {t('Expected Output:', 'ผลลัพธ์ที่คาดหวัง:')}
+              </span>
               <pre className="syntax-card__output-text">
                 <code>{expectedOutput}</code>
               </pre>

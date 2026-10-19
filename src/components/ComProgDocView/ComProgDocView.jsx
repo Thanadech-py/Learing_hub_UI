@@ -191,6 +191,13 @@ export default function ComProgDocView({
     setTimeout(() => setCopiedId(null), 1800);
   };
 
+  const scrollToSection = (elementId) => {
+    const el = document.getElementById(elementId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const getSubPageUrl = (spId, idx) =>
     idx === 0
       ? `/subjects/${subjectId}/${topicId}`
@@ -317,14 +324,18 @@ export default function ComProgDocView({
 
           {/* Thai Chapter Explanation Banner when Thai language is selected */}
           {isThai && activeSubPage?.overview && (
-            <div className="w3doc-callout w3doc-callout--tip" style={{ marginTop: '14px', marginBottom: '4px' }}>
+            <div className="w3doc-callout w3doc-callout--tip" style={{ marginTop: '14px', marginBottom: '12px' }}>
               <div className="w3doc-callout__title">
                 <span>🇹🇭</span>
                 <strong>คำอธิบายสรุปเนื้อหาประจำบท (Thai Chapter Overview)</strong>
               </div>
-              <p className="w3doc-callout__body">
-                {renderInlineCode(activeSubPage.overview)}
-              </p>
+              {(Array.isArray(activeSubPage.overview) ? activeSubPage.overview : [activeSubPage.overview]).map(
+                (para, idx) => (
+                  <p key={idx} className="w3doc-callout__body" style={{ marginTop: idx > 0 ? '8px' : 0 }}>
+                    {renderInlineCode(para)}
+                  </p>
+                )
+              )}
             </div>
           )}
 
@@ -333,20 +344,29 @@ export default function ComProgDocView({
             <div className="w3doc-jump-bar">
               <span className="w3doc-jump-bar__label">{t('On this page:', 'ในหน้านี้:')}</span>
               {docEntry.sections.map((sec) => (
-                <a
+                <button
                   key={sec.num}
-                  href={`#doc-sec-${sec.num}`}
+                  type="button"
+                  onClick={() => scrollToSection(`doc-sec-${sec.num}`)}
                   className="w3doc-jump-chip"
                 >
                   {sec.num} {sec.title.split('&')[0].trim()}
-                </a>
+                </button>
               ))}
-              <a href="#interactive-lab" className="w3doc-jump-chip w3doc-jump-chip--ide">
+              <button
+                type="button"
+                onClick={() => scrollToSection('interactive-lab')}
+                className="w3doc-jump-chip w3doc-jump-chip--ide"
+              >
                 💻 {t('Interactive IDE & Visualizer', 'IDE และจำลองหน่วยความจำโต้ตอบ')}
-              </a>
-              <a href="#equations-section" className="w3doc-jump-chip">
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToSection('equations-section')}
+                className="w3doc-jump-chip"
+              >
                 🔍 {t('Syntax Reference', 'อ้างอิงไวยากรณ์ (Syntax)')}
-              </a>
+              </button>
             </div>
           )}
         </header>
