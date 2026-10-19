@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import SubjectIcon from './SubjectIcon.jsx';
 import './SubjectCard.css';
 
@@ -6,6 +7,7 @@ import './SubjectCard.css';
 const PREVIEW_COUNT = 4;
 
 export default function SubjectCard({ subject }) {
+  const { t } = useLanguage();
   const { id, title, description, icon, accent, topics } = subject;
   const preview = topics.slice(0, PREVIEW_COUNT);
   const remaining = topics.length - preview.length;
@@ -29,12 +31,14 @@ export default function SubjectCard({ subject }) {
           <li key={topic.id}>{topic.title}</li>
         ))}
         {remaining > 0 && (
-          <li className="subject-card__more">+{remaining} more</li>
+          <li className="subject-card__more">
+            {t(`+${remaining} more`, `+อีก ${remaining} บทเรียน`)}
+          </li>
         )}
       </ul>
 
       <span className="subject-card__cta">
-        Start learning <span aria-hidden="true">→</span>
+        {t('Start learning', 'เข้าสู่บทเรียน')} <span aria-hidden="true">→</span>
       </span>
     </Link>
   );

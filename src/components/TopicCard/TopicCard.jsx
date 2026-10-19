@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
+import { formatLevelBadge } from '../../i18n/thaiTranslations.js';
 import './TopicCard.css';
 
 /**
@@ -6,6 +8,7 @@ import './TopicCard.css';
  * Clicking navigates to the dedicated topic page with explanations and interactive visualizations.
  */
 export default function TopicCard({ topic, index, subjectId = 'physics' }) {
+  const { lang, t } = useLanguage();
   const { id, title, description, level, inDevelopment, status } = topic;
   const number = String(index + 1).padStart(2, '0');
 
@@ -24,12 +27,12 @@ export default function TopicCard({ topic, index, subjectId = 'physics' }) {
           <h3 className="topic-card__title">{title}</h3>
           {inDevelopment ? (
             <span className="topic-card__dev-badge">
-              🚧 {status || 'In Development'}
+              🚧 {t(status || 'In Development', 'กำลังพัฒนา (In Development)')}
             </span>
           ) : (
             level && (
               <span className={`topic-card__level topic-card__level--${level.toLowerCase()}`}>
-                {level}
+                {formatLevelBadge(level, lang)}
               </span>
             )
           )}
@@ -38,7 +41,11 @@ export default function TopicCard({ topic, index, subjectId = 'physics' }) {
       </div>
 
       <div className="topic-card__action" aria-hidden="true">
-        <span>{inDevelopment ? 'In Development' : 'Explore'}</span>
+        <span>
+          {inDevelopment
+            ? t('In Development', 'กำลังพัฒนา')
+            : t('Explore', 'เริ่มเรียน')}
+        </span>
         <span className="topic-card__arrow">{inDevelopment ? '🚧' : '→'}</span>
       </div>
     </Link>

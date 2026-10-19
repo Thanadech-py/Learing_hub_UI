@@ -106,6 +106,7 @@ Learning_hub_UI/
 │   │   ├── ComProgDocView/     # W3Schools-style chapter documentation view
 │   │   ├── EquationInspector/  # Variable breakdown & dependency cards
 │   │   ├── Layout/             # Topbar, collapsible sidebar, footer
+│   │   ├── MarkdownReader/     # KaTeX + GFM Markdown article renderer
 │   │   ├── MathView/           # KaTeX LaTeX renderer wrapper
 │   │   ├── SubjectCard/        # Home page subject cards
 │   │   ├── TopicCard/          # Subject topic cards with status badges
@@ -115,13 +116,22 @@ Learning_hub_UI/
 │   │       ├── math/           # Integrals & Derivatives visualizers
 │   │       ├── physics/        # Projectile, Newton, Energy, Wave visualizers
 │   │       └── shared/         # Universal 3D isometric canvas engine
+│   ├── database/               # 🗄️ File-Based Mini-Database (Markdown + YAML)
+│   │   ├── content/            # Knowledge base .md records by subject
+│   │   │   ├── physics/        # e.g. kinematics.md
+│   │   │   ├── mathematics/    # e.g. derivatives.md, integrals/integration-by-parts.md
+│   │   │   ├── linear-algebra/ # e.g. vectors.md
+│   │   │   └── com-prog/       # e.g. c-programming/foundations.md
+│   │   ├── client.js           # In-memory query engine & indexer
+│   │   ├── parser.js           # YAML frontmatter + Markdown extractor
+│   │   └── schema.js           # Record normalizer & schema defaults
 │   ├── data/                   # Data registries & topic handbooks
 │   │   ├── comProgTopics/      # C & Python handbooks and syntax items
 │   │   ├── linearAlgebraTopics/# Linear algebra equations & concepts
 │   │   ├── mathTopics/         # Math topics (including integration-by-parts)
 │   │   ├── physicsTopics/      # Physics equations & concept derivations
 │   │   ├── subjects/           # Subject definitions & routes
-│   │   └── topicRegistry.js    # Unified registry resolving topic data
+│   │   └── topicRegistry.js    # Unified registry resolving DB & legacy data
 │   ├── pages/                  # Top-level view routes
 │   │   ├── Home/               # Main landing page
 │   │   ├── Subject/            # Subject overview & topic listings
@@ -137,22 +147,33 @@ Learning_hub_UI/
 
 ---
 
-## 🛠️ Adding or Customizing Topics
+## 🛠️ Adding or Customizing Topics in the Mini-Database
 
-### Adding or Modifying a Subject Topic
-1. Open the target subject file in `src/data/subjects/` (e.g., `physics.js`, `mathematics.js`).
-2. Add or edit an entry in the `topics` array:
-   ```javascript
-   {
-     id: 'new-topic-id',           // Unique URL slug
-     title: 'Topic Title',
-     description: 'Concise summary of the topic.',
-     level: 'Intermediate',        // Beginner | Intermediate | Advanced
-     estimatedTime: '25 min',
-   }
+### Creating a Knowledge Record (`src/database/content/`)
+1. Create a Markdown file with YAML frontmatter at `src/database/content/<subjectId>/<topicId>.md` (or `src/database/content/<subjectId>/<topicId>/<subTopicId>.md`):
+   ```markdown
+   ---
+   id: topic-slug
+   title: Topic Title
+   subtitle: Concise summary of the topic.
+   level: Intermediate
+   estimatedTime: 25 min read + interactive lab
+   equations:
+     - name: Governing Equation
+       latex: "E = mc^2"
+       summary: Relates mass and energy.
+       variables:
+         - symbol: E
+           name: Energy
+           unit: "\\text{J}"
+           description: Rest energy of the body.
+   ---
+
+   ## 1. Derivation & Theory
+   Write standard Markdown with inline LaTeX ($v = dx/dt$) and block formulas:
+   $$\int_a^b f(x)\,dx = F(b) - F(a)$$
    ```
-3. Add equation derivations, variables, and worked numerical examples in `src/data/<subject>Topics/`.
-4. Create or assign an interactive visualizer in `src/components/visualizations/<subject>/`.
+2. The mini-database client (`src/database/client.js`) automatically indexes all `.md` files via Vite's `import.meta.glob` and hot-reloads changes in real time.
 
 ---
 

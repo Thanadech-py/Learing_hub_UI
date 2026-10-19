@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from './i18n/LanguageContext.jsx';
 import Layout from './components/Layout/Layout.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import Home from './pages/Home/Home.jsx';
@@ -14,17 +15,19 @@ import NotFound from './pages/NotFound/NotFound.jsx';
  */
 export default function App() {
   return (
-    <HashRouter>
-      <ScrollToTop />
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="subjects/:subjectId" element={<SubjectPage />} />
-          <Route path="subjects/:subjectId/:topicId" element={<TopicPage />} />
-          <Route path="subjects/:subjectId/:topicId/:subTopicId" element={<TopicPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+    <LanguageProvider>
+      <HashRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="subjects/:subjectId" element={<SubjectPage />} />
+            <Route path="subjects/:subjectId/:topicId" element={<TopicPage />} />
+            <Route path="subjects/:subjectId/:topicId/:subTopicId" element={<TopicPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </HashRouter>
+    </LanguageProvider>
   );
 }

@@ -3,19 +3,16 @@ import { Link, useParams } from 'react-router-dom';
 import SubjectIcon from '../../components/SubjectCard/SubjectIcon.jsx';
 import TopicCard from '../../components/TopicCard/TopicCard.jsx';
 import { getSubjectById } from '../../data/subjects/index.js';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
+import { localizeSubject } from '../../i18n/thaiTranslations.js';
 import NotFound from '../NotFound/NotFound.jsx';
 import './SubjectPage.css';
 
-/**
- * Subject page — lists every topic of one subject.
- * URL: /subjects/:subjectId  (e.g. /subjects/physics)
- *
- * Content comes from src/data/subjects/<subject>.js, so editing topics
- * never requires touching this component.
- */
 export default function SubjectPage() {
   const { subjectId } = useParams();
-  const subject = getSubjectById(subjectId);
+  const { lang, t } = useLanguage();
+  const rawSubject = getSubjectById(subjectId);
+  const subject = localizeSubject(rawSubject, lang);
 
   useEffect(() => {
     document.title = subject
@@ -35,7 +32,7 @@ export default function SubjectPage() {
   return (
     <div className="subject-page" style={{ '--accent': accent }}>
       <nav className="subject-page__breadcrumb" aria-label="Breadcrumb">
-        <Link to="/">Home</Link>
+        <Link to="/">{t('Home', 'หน้าหลัก')}</Link>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{title}</span>
       </nav>
@@ -45,18 +42,21 @@ export default function SubjectPage() {
           <SubjectIcon name={icon} />
         </div>
         <div>
-          <p className="eyebrow">Subject</p>
+          <p className="eyebrow">{t('Subject', 'หมวดวิชา')}</p>
           <h1 className="subject-page__title">{title}</h1>
           <p className="subject-page__description">{description}</p>
           <p className="subject-page__meta">
-            {topics.length} {topics.length === 1 ? 'topic' : 'topics'}
+            {t(
+              `${topics.length} ${topics.length === 1 ? 'topic' : 'topics'}`,
+              `ทั้งหมด ${topics.length} บทเรียน`
+            )}
           </p>
         </div>
       </section>
 
       <section aria-labelledby="topics-heading" className="subject-page__topics">
         <h2 id="topics-heading" className="section-title">
-          Topics
+          {t('Topics', 'บทเรียนในรายวิชานี้')}
         </h2>
 
         {topics.length > 0 ? (
@@ -68,7 +68,9 @@ export default function SubjectPage() {
             ))}
           </ol>
         ) : (
-          <p className="subject-page__empty">No topics yet — coming soon.</p>
+          <p className="subject-page__empty">
+            {t('No topics yet — coming soon.', 'ยังไม่มีบทเรียน — กำลังจะมาเร็วๆ นี้')}
+          </p>
         )}
       </section>
     </div>

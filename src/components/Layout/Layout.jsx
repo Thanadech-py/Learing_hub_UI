@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import subjects from '../../data/subjects/index.js';
 import { getTopicData } from '../../data/topicRegistry.js';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
+import { localizeSubject, localizeTopicData } from '../../i18n/thaiTranslations.js';
+import LanguageSlider from '../LanguageSlider/LanguageSlider.jsx';
 import SubjectIcon from '../SubjectCard/SubjectIcon.jsx';
 import logoImg from '../logo/Logo.png';
 import './Layout.css';
@@ -10,10 +13,11 @@ import './Layout.css';
  * Shared application shell featuring:
  * - Collapsible Left Navigation Sidebar (with subject tree, sub-topics, and quick filter)
  * - Toggle button to hide/show the sidebar at any time
- * - Responsive top bar and main workspace container
+ * - Responsive top bar with ENG / ไทย sliding language switcher
  */
 export default function Layout() {
   const location = useLocation();
+  const { lang, t } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window !== 'undefined' && window.innerWidth < 960) {
       return false;
@@ -73,7 +77,9 @@ export default function Layout() {
             <img src={logoImg} alt="Learning Space Logo" className="layout__logo-img" />
             <div className="layout__logo-block">
               <span className="layout__logo-text">Learning Space</span>
-              <span className="layout__logo-sub">Interactive STEM Lab</span>
+              <span className="layout__logo-sub">
+                {t('Interactive STEM Lab', 'ห้องทดลอง STEM เชิงโต้ตอบ')}
+              </span>
             </div>
           </Link>
 
@@ -81,13 +87,13 @@ export default function Layout() {
             type="button"
             className="sidebar-hide-btn"
             onClick={() => setIsSidebarOpen(false)}
-            title="Hide navigation sidebar"
+            title={t('Hide navigation sidebar', 'ซ่อนแถบเมนูด้านข้าง')}
             aria-label="Hide navigation sidebar"
           >
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span>Hide</span>
+            <span>{t('Hide', 'ซ่อน')}</span>
           </button>
         </div>
 
@@ -96,7 +102,7 @@ export default function Layout() {
           <input
             type="search"
             className="app-sidebar__search-input"
-            placeholder="Filter topics or chapters..."
+            placeholder={t('Filter topics or chapters...', 'ค้นหาบทเรียนหรือหัวข้อ...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             aria-label="Filter topics"
@@ -111,17 +117,18 @@ export default function Layout() {
             onClick={handleMobileNavClick}
           >
             <span className="sidebar-home-link__icon" aria-hidden="true">🏠</span>
-            <span>All Subjects Home</span>
+            <span>{t('All Subjects Home', 'หน้าหลักรวมทุกวิชา')}</span>
           </Link>
 
           <div className="sidebar-subjects-list">
-            {subjects.map((subj) => {
+            {subjects.map((rawSubj) => {
+              const subj = localizeSubject(rawSubj, lang);
               const isSubjActive = location.pathname.startsWith(`/subjects/${subj.id}`);
               const filteredTopics = normalizedQuery
                 ? subj.topics.filter(
-                    (t) =>
-                      t.title.toLowerCase().includes(normalizedQuery) ||
-                      t.description?.toLowerCase().includes(normalizedQuery)
+                    (tp) =>
+                      tp.title.toLowerCase().includes(normalizedQuery) ||
+                      tp.description?.toLowerCase().includes(normalizedQuery)
                   )
                 : subj.topics;
 
@@ -166,7 +173,12 @@ export default function Layout() {
                         const isTopicActive =
                           location.pathname === topicPath ||
                           location.pathname.startsWith(`${topicPath}/`);
-                        const richTopic = getTopicData(subj.id, topic.id);
+                        const richTopic = localizeTopicData(
+                          getTopicData(subj.id, topic.id),
+                          subj.id,
+                          topic.id,
+                          lang
+                        );
                         const subPages = richTopic?.subPages || [];
 
                         return (
@@ -194,7 +206,7 @@ export default function Layout() {
                                     whiteSpace: 'nowrap',
                                   }}
                                 >
-                                  In Dev
+                                  {t('In Dev', 'กำลังพัฒนา')}
                                 </span>
                               )}
                             </Link>
@@ -263,7 +275,11 @@ export default function Layout() {
                 <rect x="3" y="3" width="18" height="18" rx="3" />
                 <line x1="9" y1="3" x2="9" y2="21" />
               </svg>
-              <span>{isSidebarOpen ? 'Hide Menu' : 'Show Menu'}</span>
+              <span>
+                {isSidebarOpen
+                  ? t('Hide Menu', 'ซ่อนเมนู')
+                  : t('Show Menu', 'เปิดเมนู')}
+              </span>
             </button>
 
             {!isSidebarOpen && (
@@ -275,7 +291,8 @@ export default function Layout() {
           </div>
 
           <div className="layout__nav-right">
-            {subjects.map((s) => {
+            {subjects.map((rawSubj) => {
+              const s = localizeSubject(rawSubj, lang);
               const active = location.pathname.startsWith(`/subjects/${s.id}`);
               return (
                 <Link
@@ -288,6 +305,9 @@ export default function Layout() {
                 </Link>
               );
             })}
+
+            {/* Top-of-page ENG / ไทย Slide Language Switcher */}
+            <LanguageSlider />
           </div>
         </header>
 
@@ -296,7 +316,11 @@ export default function Layout() {
         </main>
 
         <footer className="layout__footer">
-          © {new Date().getFullYear()} Learning Space by Thxncdzch · Interactive 2D & 3D STEM Visualizations
+          © {new Date().getFullYear()} Learning Space by Thxncdzch ·{' '}
+          {t(
+            'Interactive 2D & 3D STEM Visualizations',
+            'สื่อการเรียนรู้และจำลองภาพโต้ตอบ 2D & 3D ทางวิทยาศาสตร์และวิศวกรรม'
+          )}
         </footer>
       </div>
     </div>

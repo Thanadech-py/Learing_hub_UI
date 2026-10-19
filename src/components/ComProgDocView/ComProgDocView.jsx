@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { C_HANDBOOK_PARTS, C_HANDBOOK_DOCS } from '../../data/comProgTopics/cHandbookDocs.js';
 import { PY_HANDBOOK_PARTS, PY_HANDBOOK_DOCS } from '../../data/comProgTopics/pyHandbookDocs.js';
 import CodeSyntaxInspector from '../CodeSyntaxInspector/CodeSyntaxInspector.jsx';
+import MarkdownReader from '../MarkdownReader/MarkdownReader.jsx';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import './ComProgDocView.css';
 
 /**
@@ -171,6 +173,7 @@ export default function ComProgDocView({
   onTryCodeInIDE,
   renderInteractiveLab,
 }) {
+  const { t, isThai } = useLanguage();
   const [copiedId, setCopiedId] = useState(null);
   const [showChapterMenu, setShowChapterMenu] = useState(true);
 
@@ -210,7 +213,9 @@ export default function ComProgDocView({
             <div>
               <h2 className="w3doc-sidebar__title">{rawTopicData.title}</h2>
               <span className="w3doc-sidebar__sub">
-                {isPython ? 'Python 3.12 Tutorial & Reference' : 'ISO C99/C11 Tutorial & Reference'}
+                {isPython
+                  ? t('Python 3.12 Tutorial & Reference', 'บทเรียนและคู่มืออ้างอิง Python 3.12')
+                  : t('ISO C99/C11 Tutorial & Reference', 'บทเรียนและคู่มืออ้างอิง ISO C99/C11')}
               </span>
             </div>
           </div>
@@ -262,12 +267,12 @@ export default function ComProgDocView({
         {/* Top W3Schools Navigation Bar */}
         <div className="w3doc-nav-bar">
           <Link to={prevUrl} className="w3doc-nav-btn w3doc-nav-btn--prev">
-            ❮ {prevSubPage ? `Prev: ${prevSubPage.title}` : `Back to Com-Prog`}
+            ❮ {prevSubPage ? `${t('Prev', 'ก่อนหน้า')}: ${prevSubPage.title}` : t('Back to Com-Prog', 'กลับสู่การเขียนโปรแกรม')}
           </Link>
 
           <div className="w3doc-nav-meta">
             <span className="w3doc-nav-meta__pill">
-              Chapter {subCurrentIndex + 1} of {subPages.length}
+              {t(`Chapter ${subCurrentIndex + 1} of ${subPages.length}`, `บทที่ ${subCurrentIndex + 1} จาก ${subPages.length}`)}
             </span>
             {!showChapterMenu && (
               <button
@@ -275,18 +280,18 @@ export default function ComProgDocView({
                 className="w3doc-show-chapters-btn"
                 onClick={() => setShowChapterMenu(true)}
               >
-                📚 Show Tutorial Index
+                📚 {t('Show Tutorial Index', 'แสดงสารบัญบทเรียน')}
               </button>
             )}
           </div>
 
           {nextUrl ? (
             <Link to={nextUrl} className="w3doc-nav-btn w3doc-nav-btn--next">
-              Next: {nextSubPage.title} ❯
+              {t('Next', 'ถัดไป')}: {nextSubPage.title} ❯
             </Link>
           ) : (
             <Link to={`/subjects/${subjectId}`} className="w3doc-nav-btn w3doc-nav-btn--next">
-              All Com-Prog Topics ❯
+              {t('All Com-Prog Topics ❯', 'หัวข้อการเขียนโปรแกรมทั้งหมด ❯')}
             </Link>
           )}
         </div>
@@ -310,10 +315,23 @@ export default function ComProgDocView({
             <p className="w3doc-hero__subtitle">{activeSubPage.subtitle}</p>
           )}
 
+          {/* Thai Chapter Explanation Banner when Thai language is selected */}
+          {isThai && activeSubPage?.overview && (
+            <div className="w3doc-callout w3doc-callout--tip" style={{ marginTop: '14px', marginBottom: '4px' }}>
+              <div className="w3doc-callout__title">
+                <span>🇹🇭</span>
+                <strong>คำอธิบายสรุปเนื้อหาประจำบท (Thai Chapter Overview)</strong>
+              </div>
+              <p className="w3doc-callout__body">
+                {renderInlineCode(activeSubPage.overview)}
+              </p>
+            </div>
+          )}
+
           {/* Quick Jump to Sections on This Page */}
           {docEntry?.sections?.length > 0 && (
             <div className="w3doc-jump-bar">
-              <span className="w3doc-jump-bar__label">On this page:</span>
+              <span className="w3doc-jump-bar__label">{t('On this page:', 'ในหน้านี้:')}</span>
               {docEntry.sections.map((sec) => (
                 <a
                   key={sec.num}
@@ -324,10 +342,10 @@ export default function ComProgDocView({
                 </a>
               ))}
               <a href="#interactive-lab" className="w3doc-jump-chip w3doc-jump-chip--ide">
-                💻 Interactive IDE & Visualizer
+                💻 {t('Interactive IDE & Visualizer', 'IDE และจำลองหน่วยความจำโต้ตอบ')}
               </a>
               <a href="#equations-section" className="w3doc-jump-chip">
-                🔍 Syntax Reference
+                🔍 {t('Syntax Reference', 'อ้างอิงไวยากรณ์ (Syntax)')}
               </a>
             </div>
           )}
@@ -403,7 +421,7 @@ export default function ComProgDocView({
                         className="w3doc-copy-btn"
                         onClick={() => handleCopy(sec.example.code, sec.num)}
                       >
-                        {copiedId === sec.num ? '✓ Copied' : '📋 Copy'}
+                        {copiedId === sec.num ? t('✓ Copied', '✓ คัดลอกแล้ว') : t('📋 Copy', '📋 คัดลอก')}
                       </button>
                       <button
                         type="button"
@@ -416,7 +434,7 @@ export default function ComProgDocView({
                           )
                         }
                       >
-                        Try it Yourself in IDE ❯
+                        {t('Try it Yourself in IDE ❯', 'ทดลองรันใน IDE ❯')}
                       </button>
                     </div>
                   </div>
@@ -428,7 +446,7 @@ export default function ComProgDocView({
                   {sec.example.output && (
                     <div className="w3doc-output-box">
                       <div className="w3doc-output-box__label">
-                        SAMPLE EXECUTION OUTPUT
+                        {t('SAMPLE EXECUTION OUTPUT', 'ผลลัพธ์การรันตัวอย่าง (SAMPLE OUTPUT)')}
                       </div>
                       <pre className="w3doc-output-box__pre">
                         <code>{sec.example.output}</code>
@@ -460,6 +478,15 @@ export default function ComProgDocView({
           ))}
         </div>
 
+        {/* Markdown + YAML Mini-Database Notes when present */}
+        {activeSubPage?.markdownBody && (
+          <MarkdownReader
+            content={activeSubPage.markdownBody}
+            sourceFile={activeSubPage._dbMeta?.sourceFile}
+            onTryCodeInIDE={(snippet) => onTryCodeInIDE?.(snippet, null, activeSubPage.title)}
+          />
+        )}
+
         {/* Embedded Interactive IDE & Data/Memory Visualizer Workbench */}
         <div className="w3doc-lab-dock">
           {renderInteractiveLab?.()}
@@ -472,10 +499,13 @@ export default function ComProgDocView({
               <span className="w3doc-section__num">Syntax</span>
               <div>
                 <h2 className="w3doc-syntax-section__title">
-                  Grammar Rules, Compiler Mechanics & Token Breakdown
+                  {t('Grammar Rules, Compiler Mechanics & Token Breakdown', 'กฎไวยากรณ์ กลไกของคอมไพเลอร์ และการแยกส่วนประกอบโค้ด')}
                 </h2>
                 <p className="w3doc-syntax-section__sub">
-                  Detailed breakdown of syntax templates, under-the-hood execution, and token constraints.
+                  {t(
+                    'Detailed breakdown of syntax templates, under-the-hood execution, and token constraints.',
+                    'รายละเอียดโครงสร้างไวยากรณ์ การทำงานเบื้องหลังของระบบ และข้อกำหนดของแต่ละโทเคน'
+                  )}
                 </p>
               </div>
             </div>
@@ -498,20 +528,20 @@ export default function ComProgDocView({
         {/* Bottom W3Schools Prev / Next Chapter Navigation Bar */}
         <div className="w3doc-nav-bar w3doc-nav-bar--bottom">
           <Link to={prevUrl} className="w3doc-nav-btn w3doc-nav-btn--prev">
-            ❮ {prevSubPage ? `Previous: ${prevSubPage.title}` : `Back to Com-Prog`}
+            ❮ {prevSubPage ? `${t('Previous', 'บทก่อนหน้า')}: ${prevSubPage.title}` : t('Back to Com-Prog', 'กลับสู่การเขียนโปรแกรม')}
           </Link>
 
           <span className="w3doc-nav-meta__pill">
-            {rawTopicData.title} · Chapter {subCurrentIndex + 1} of {subPages.length}
+            {rawTopicData.title} · {t(`Chapter ${subCurrentIndex + 1} of ${subPages.length}`, `บทที่ ${subCurrentIndex + 1} จาก ${subPages.length}`)}
           </span>
 
           {nextUrl ? (
             <Link to={nextUrl} className="w3doc-nav-btn w3doc-nav-btn--next">
-              Next Chapter: {nextSubPage.title} ❯
+              {t('Next Chapter', 'บทถัดไป')}: {nextSubPage.title} ❯
             </Link>
           ) : (
             <Link to={`/subjects/${subjectId}`} className="w3doc-nav-btn w3doc-nav-btn--next">
-              Finish & Return to Com-Prog ❯
+              {t('Finish & Return to Com-Prog ❯', 'จบหลักสูตรและกลับสู่หน้าวิชา ❯')}
             </Link>
           )}
         </div>

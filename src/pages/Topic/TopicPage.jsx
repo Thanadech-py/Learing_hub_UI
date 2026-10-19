@@ -2,11 +2,18 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getSubjectById } from '../../data/subjects/index.js';
 import { getTopicData, getAllTopicsForSubject } from '../../data/topicRegistry.js';
+import { useLanguage } from '../../i18n/LanguageContext.jsx';
+import {
+  localizeSubject,
+  localizeTopicData,
+  formatLevelBadge,
+} from '../../i18n/thaiTranslations.js';
 import { getSubjectVisualization } from '../../components/visualizations/index.js';
 import Universal3DViz from '../../components/visualizations/shared/Universal3DViz.jsx';
 import EquationInspector from '../../components/EquationInspector/EquationInspector.jsx';
 import CodeSyntaxInspector from '../../components/CodeSyntaxInspector/CodeSyntaxInspector.jsx';
 import ComProgDocView from '../../components/ComProgDocView/ComProgDocView.jsx';
+import MarkdownReader from '../../components/MarkdownReader/MarkdownReader.jsx';
 import IntegratedIDE from '../../components/visualizations/comProg/IntegratedIDE.jsx';
 import { getCodeSyntaxForTopic } from '../../data/comProgTopics/codeSyntaxRegistry.js';
 import MathView from '../../components/MathView/MathView.jsx';
@@ -15,7 +22,9 @@ import './TopicPage.css';
 
 export default function TopicPage() {
   const { subjectId, topicId, subTopicId } = useParams();
-  const subject = getSubjectById(subjectId);
+  const { lang, t } = useLanguage();
+  const rawSubject = getSubjectById(subjectId);
+  const subject = localizeSubject(rawSubject, lang);
   const [layoutMode, setLayoutMode] = useState('split'); // 'split' (side-by-side) | 'stacked'
   // 2D vs 3D visualization option for standard topics
   const [vizDimension, setVizDimension] = useState(
@@ -35,9 +44,12 @@ export default function TopicPage() {
     setComProgVizMode('ide');
   }, [subjectId, topicId]);
 
-  // Load topic details from unified data registry
-  const rawTopicData = getTopicData(subjectId, topicId);
-  const allSubjectTopics = getAllTopicsForSubject(subjectId);
+  // Load topic details from unified data registry and localize for active language
+  const baseTopicData = getTopicData(subjectId, topicId);
+  const rawTopicData = localizeTopicData(baseTopicData, subjectId, topicId, lang);
+  const allSubjectTopics = getAllTopicsForSubject(subjectId).map((tp) =>
+    localizeTopicData(tp, subjectId, tp.id, lang)
+  );
 
   // Determine if topic has internal sub-pages (e.g. Integrals techniques, Waves)
   const hasSubPages = Boolean(rawTopicData?.subPages?.length);
@@ -71,7 +83,7 @@ export default function TopicPage() {
       : null;
 
   // Find index for overarching topic prev/next navigation
-  const currentIndex = allSubjectTopics.findIndex((t) => t.id === topicId);
+  const currentIndex = allSubjectTopics.findIndex((tp) => tp.id === topicId);
   const prevTopic = currentIndex > 0 ? allSubjectTopics[currentIndex - 1] : null;
   const nextTopic = currentIndex < allSubjectTopics.length - 1 ? allSubjectTopics[currentIndex + 1] : null;
 
@@ -93,20 +105,25 @@ export default function TopicPage() {
     return (
       <div className="topic-not-found">
         <nav className="topic-breadcrumb">
-          <Link to="/">Home</Link>
+          <Link to="/">{t('Home', 'หน้าหลัก')}</Link>
           <span aria-hidden="true">/</span>
           <Link to={`/subjects/${subject.id}`}>{subject.title}</Link>
           <span aria-hidden="true">/</span>
           <span>{topicId}</span>
         </nav>
         <section className="not-found">
-          <p className="eyebrow">Coming Soon</p>
-          <h1 className="not-found__title">Topic in development</h1>
+          <p className="eyebrow">{t('Coming Soon', 'กำลังพัฒนา')}</p>
+          <h1 className="not-found__title">
+            {t('Topic in development', 'บทเรียนนี้อยู่ระหว่างการพัฒนา')}
+          </h1>
           <p className="not-found__text">
-            The topic page for "{topicId}" is currently being prepared with interactive visualizations.
+            {t(
+              `The topic page for "${topicId}" is currently being prepared with interactive visualizations.`,
+              `หน้าบทเรียนสำหรับ "${topicId}" กำลังอยู่ระหว่างการจัดทำเนื้อหาและภาพจำลองเชิงโต้ตอบ`
+            )}
           </p>
           <Link to={`/subjects/${subject.id}`} className="not-found__link">
-            ← Back to {subject.title}
+            ← {t(`Back to ${subject.title}`, `กลับไปหน้า ${subject.title}`)}
           </Link>
         </section>
       </div>
@@ -120,7 +137,7 @@ export default function TopicPage() {
       <div className="topic-page" style={{ '--accent': subject.accent }}>
         {/* Breadcrumb Navigation */}
         <nav className="topic-breadcrumb" aria-label="Breadcrumb">
-          <Link to="/">Home</Link>
+          <Link to="/">{t('Home', 'หน้าหลัก')}</Link>
           <span aria-hidden="true">/</span>
           <Link to={`/subjects/${subject.id}`}>{subject.title}</Link>
           <span aria-hidden="true">/</span>
@@ -258,7 +275,7 @@ export default function TopicPage() {
     <div className="topic-page" style={{ '--accent': subject.accent }}>
       {/* Breadcrumb Navigation */}
       <nav className="topic-breadcrumb" aria-label="Breadcrumb">
-        <Link to="/">Home</Link>
+        <Link to="/">{t('Home', 'หน้าหลัก')}</Link>
         <span aria-hidden="true">/</span>
         <Link to={`/subjects/${subject.id}`}>{subject.title}</Link>
         <span aria-hidden="true">/</span>
@@ -277,10 +294,14 @@ export default function TopicPage() {
       {hasSubPages && !isTopicHomePage && (
         <div className="subtopic-return-bar">
           <Link to={`/subjects/${subject.id}/${topicId}`} className="subtopic-return-btn">
-            ← Back to {rawTopicData.title} Home Page
+            ← {t(`Back to ${rawTopicData.title} Home Page`, `กลับสู่หน้าหลัก ${rawTopicData.title}`)}
           </Link>
           <span className="subtopic-return-meta">
-            Chapter {subCurrentIndex + 1} of {rawTopicData.subPages.length} · {activeSubPage.tag || activeSubPage.title}
+            {t(
+              `Chapter ${subCurrentIndex + 1} of ${rawTopicData.subPages.length}`,
+              `บทที่ ${subCurrentIndex + 1} จาก ${rawTopicData.subPages.length}`
+            )}{' '}
+            · {activeSubPage.tag || activeSubPage.title}
           </span>
         </div>
       )}
@@ -291,7 +312,7 @@ export default function TopicPage() {
           <span className="eyebrow">{subject.title}</span>
           {rawTopicData.level && (
             <span className={`topic-level-badge topic-level-badge--${rawTopicData.level.toLowerCase()}`}>
-              {rawTopicData.level}
+              {formatLevelBadge(rawTopicData.level, lang)}
             </span>
           )}
           {currentContent.estimatedTime && (
@@ -318,10 +339,17 @@ export default function TopicPage() {
         <nav className="topic-subpages-bar" aria-label="Sub-topic chapters">
           <div className="topic-subpages-header">
             <span className="topic-subpages-header__title">
-              📚 Chapters & Techniques in {rawTopicData.title}
+              📚{' '}
+              {t(
+                `Chapters & Techniques in ${rawTopicData.title}`,
+                `บทเรียนย่อยและเทคนิคใน ${rawTopicData.title}`
+              )}
             </span>
             <span className="topic-subpages-header__counter">
-              {rawTopicData.subPages.length} Connected Sub-Topics
+              {t(
+                `${rawTopicData.subPages.length} Connected Sub-Topics`,
+                `ทั้งหมด ${rawTopicData.subPages.length} หัวข้อย่อย`
+              )}
             </span>
           </div>
           <div className="topic-subpages-tabs">
@@ -349,27 +377,6 @@ export default function TopicPage() {
 
       {/* Quick Nav Anchors + 2D/3D Switcher + Layout Mode Switcher */}
       <div className="topic-anchors-bar">
-        <div className="topic-anchors">
-          <a href="#interactive-lab" className="topic-anchor-btn">
-            {isComProg ? '💻 Interactive IDE Lab' : '🔭 Interactive Lab'}
-          </a>
-          <a href="#equations-section" className="topic-anchor-btn">
-            {isComProg
-              ? `📝 Code Syntax & Mechanics (${comProgSyntaxItems.length})`
-              : `📐 Equations & Variables (${currentContent.equations?.length || 0})`}
-          </a>
-          {currentContent.keyConcepts?.length > 0 && (
-            <a href="#concepts-section" className="topic-anchor-btn">
-              💡 Core Concepts ({currentContent.keyConcepts.length})
-            </a>
-          )}
-          {hasSubPages && otherSubTopicCards.length > 0 && (
-            <a href="#subtopics-cards-section" className="topic-anchor-btn topic-anchor-btn--highlight">
-              🗂️ {isTopicHomePage ? `Sub-Topic Cards (${otherSubTopicCards.length})` : 'Other Sub-Topics'}
-            </a>
-          )}
-        </div>
-
         <div className="topic-toolbar-controls">
           {/* Visualization Option Toggle */}
           {isComProg ? (
@@ -421,26 +428,6 @@ export default function TopicPage() {
               </button>
             </div>
           )}
-
-          <div className="topic-layout-toggle" role="group" aria-label="Layout mode">
-            <span className="topic-layout-toggle__label">Layout:</span>
-            <button
-              type="button"
-              className={`topic-layout-btn ${layoutMode === 'split' ? 'topic-layout-btn--active' : ''}`}
-              onClick={() => setLayoutMode('split')}
-              title="Side-by-side: Wide Visualizer stays visible while scrolling through explanations"
-            >
-              <span aria-hidden="true">◫</span> Split Workbench
-            </button>
-            <button
-              type="button"
-              className={`topic-layout-btn ${layoutMode === 'stacked' ? 'topic-layout-btn--active' : ''}`}
-              onClick={() => setLayoutMode('stacked')}
-              title="Stacked view: Full-width visualization box"
-            >
-              <span aria-hidden="true">▭</span> Full-Width
-            </button>
-          </div>
         </div>
       </div>
 
@@ -607,9 +594,17 @@ export default function TopicPage() {
               <div className="topic-section__header">
                 <span className="topic-section__number">02</span>
                 <div>
-                  <h2 className="topic-section__title">Governing Equations & Variable Analysis</h2>
+                  <h2 className="topic-section__title">
+                    {t(
+                      'Governing Equations & Variable Analysis',
+                      'สมการหลักและการวิเคราะห์ความหมายตัวแปร (Equations & Variables)'
+                    )}
+                  </h2>
                   <p className="topic-section__desc">
-                    Every variable broken down in detail: physical meaning, SI units, and how it directly or inversely connects to the other variables.
+                    {t(
+                      'Every variable broken down in detail: physical meaning, SI units, and how it directly or inversely connects to the other variables.',
+                      'แยกย่อยความหมายของทุกตัวแปรในสมการ หน่วยวัดมาตรฐาน SI และความสัมพันธ์แปรผันตรงหรือแปรผกผันกับตัวแปรอื่น'
+                    )}
                   </p>
                 </div>
               </div>
@@ -622,15 +617,51 @@ export default function TopicPage() {
             </section>
           )}
 
+          {/* Markdown + YAML Mini-Database Knowledge Article */}
+          {currentContent.markdownBody && (
+            <section id="markdown-knowledge-section" className="topic-section">
+              <div className="topic-section__header">
+                <span className="topic-section__number">DB</span>
+                <div>
+                  <h2 className="topic-section__title">
+                    {t(
+                      'Knowledge Base & Structured Derivations',
+                      'สรุปเนื้อหาและที่มาของสมการจากฐานข้อมูล (Markdown Knowledge Base)'
+                    )}
+                  </h2>
+                  <p className="topic-section__desc">
+                    {t(
+                      'Rendered directly from the Markdown & YAML frontmatter mini-database with KaTeX mathematical typesetting.',
+                      'แสดงผลจากฐานข้อมูลไฟล์ Markdown & YAML Frontmatter พร้อมสมการคณิตศาสตร์ KaTeX'
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              <MarkdownReader
+                content={currentContent.markdownBody}
+                sourceFile={currentContent._dbMeta?.sourceFile}
+              />
+            </section>
+          )}
+
           {/* Section 3: Core Concepts & Insights */}
           {currentContent.keyConcepts?.length > 0 && (
             <section id="concepts-section" className="topic-section">
               <div className="topic-section__header">
                 <span className="topic-section__number">03</span>
                 <div>
-                  <h2 className="topic-section__title">Core Concepts & Worked Examples</h2>
+                  <h2 className="topic-section__title">
+                    {t(
+                      'Core Concepts & Worked Examples',
+                      'แนวคิดหลักและตัวอย่างการคำนวณ (Core Concepts & Worked Examples)'
+                    )}
+                  </h2>
                   <p className="topic-section__desc">
-                    Foundational principles, step-by-step calculations, and key geometric insights.
+                    {t(
+                      'Foundational principles, step-by-step calculations, and key geometric insights.',
+                      'หลักการพื้นฐาน ตัวอย่างการคำนวณทีละขั้นตอน และความหมายเชิงเรขาคณิต'
+                    )}
                   </p>
                 </div>
               </div>
@@ -649,7 +680,11 @@ export default function TopicPage() {
                     {concept.latex && (
                       <div className="concept-card__calc-box">
                         <span className="concept-card__calc-label">
-                          {concept.exampleLabel || 'Worked Calculation (Matrix / Vector Form)'}
+                          {concept.exampleLabel ||
+                            t(
+                              'Worked Calculation (Matrix / Vector Form)',
+                              'ตัวอย่างการคำนวณ (รูปเมทริกซ์ / เวกเตอร์)'
+                            )}
                         </span>
                         <MathView math={concept.latex} block className="concept-card__formula" />
                         {concept.exampleNote && (
@@ -675,7 +710,7 @@ export default function TopicPage() {
                   }
                   className="subtopic-pagination__link"
                 >
-                  ← Previous: {prevSubPage.title}
+                  ← {t('Previous', 'ก่อนหน้า')}: {prevSubPage.title}
                 </Link>
               ) : (
                 <div />
@@ -686,7 +721,7 @@ export default function TopicPage() {
                   to={`/subjects/${subject.id}/${topicId}/${nextSubPage.id}`}
                   className="subtopic-pagination__link"
                 >
-                  Next: {nextSubPage.title} →
+                  {t('Next', 'ถัดไป')}: {nextSubPage.title} →
                 </Link>
               )}
             </nav>
@@ -702,11 +737,20 @@ export default function TopicPage() {
             <div>
               <h2 className="topic-section__title">
                 {isTopicHomePage
-                  ? `${rawTopicData.title} — Sub-Topics & Techniques`
-                  : `Explore More Chapters in ${rawTopicData.title}`}
+                  ? t(
+                      `${rawTopicData.title} — Sub-Topics & Techniques`,
+                      `${rawTopicData.title} — บทเรียนย่อยและเทคนิคทั้งหมด`
+                    )
+                  : t(
+                      `Explore More Chapters in ${rawTopicData.title}`,
+                      `เลือกศึกษาบทเรียนย่อยอื่นๆ ใน ${rawTopicData.title}`
+                    )}
               </h2>
               <p className="topic-section__desc">
-                Select any sub-topic card below to open its dedicated explanation, governing equations, and interactive 2D/3D visualization page.
+                {t(
+                  'Select any sub-topic card below to open its dedicated explanation, governing equations, and interactive 2D/3D visualization page.',
+                  'คลิกเลือกการ์ดหัวข้อย่อยด้านล่างเพื่อเปิดดูคำอธิบาย สมการหลัก และห้องทดลองจำลองภาพ 2D/3D ของหัวข้อนั้น'
+                )}
               </p>
             </div>
           </div>
@@ -718,7 +762,9 @@ export default function TopicPage() {
                 className="subtopic-nav-card subtopic-nav-card--home"
               >
                 <div className="subtopic-nav-card__top">
-                  <span className="subtopic-nav-card__badge">Chapter 1 · Home</span>
+                  <span className="subtopic-nav-card__badge">
+                    {t('Chapter 1 · Home', 'บทที่ 1 · หน้าหลัก')}
+                  </span>
                   <span className="subtopic-nav-card__tag">Foundations</span>
                 </div>
                 <h3 className="subtopic-nav-card__title">
@@ -726,8 +772,13 @@ export default function TopicPage() {
                 </h3>
                 <p className="subtopic-nav-card__desc">{rawTopicData.subPages[0].subtitle}</p>
                 <div className="subtopic-nav-card__footer">
-                  <span>{rawTopicData.subPages[0].equations?.length || 0} Core Formulas</span>
-                  <span className="subtopic-nav-card__cta">← Back to Main Topic</span>
+                  <span>
+                    {rawTopicData.subPages[0].equations?.length || 0}{' '}
+                    {t('Core Formulas', 'สมการหลัก')}
+                  </span>
+                  <span className="subtopic-nav-card__cta">
+                    ← {t('Back to Main Topic', 'กลับสู่หน้าหลัก')}
+                  </span>
                 </div>
               </Link>
             )}
@@ -742,7 +793,9 @@ export default function TopicPage() {
                   className="subtopic-nav-card"
                 >
                   <div className="subtopic-nav-card__top">
-                    <span className="subtopic-nav-card__badge">Chapter {chapNum}</span>
+                    <span className="subtopic-nav-card__badge">
+                      {t(`Chapter ${chapNum}`, `บทที่ ${chapNum}`)}
+                    </span>
                     {sp.tag && <span className="subtopic-nav-card__tag">{sp.tag}</span>}
                   </div>
                   <h3 className="subtopic-nav-card__title">
@@ -756,8 +809,13 @@ export default function TopicPage() {
                     </div>
                   )}
                   <div className="subtopic-nav-card__footer">
-                    <span>{sp.equations?.length || 0} Equations · 2D & 3D Lab</span>
-                    <span className="subtopic-nav-card__cta">Open Page →</span>
+                    <span>
+                      {sp.equations?.length || 0}{' '}
+                      {t('Equations · 2D & 3D Lab', 'สมการ · ห้องทดลอง 2D & 3D')}
+                    </span>
+                    <span className="subtopic-nav-card__cta">
+                      {t('Open Page →', 'เปิดบทเรียน →')}
+                    </span>
                   </div>
                 </Link>
               );
@@ -773,7 +831,9 @@ export default function TopicPage() {
             to={`/subjects/${subject.id}/${prevTopic.id}`}
             className="topic-pagination-link topic-pagination-link--prev"
           >
-            <span className="topic-pagination-dir">← Previous Topic</span>
+            <span className="topic-pagination-dir">
+              ← {t('Previous Topic', 'บทเรียนก่อนหน้า')}
+            </span>
             <span className="topic-pagination-title">{prevTopic.title}</span>
           </Link>
         ) : (
@@ -785,7 +845,9 @@ export default function TopicPage() {
             to={`/subjects/${subject.id}/${nextTopic.id}`}
             className="topic-pagination-link topic-pagination-link--next"
           >
-            <span className="topic-pagination-dir">Next Topic →</span>
+            <span className="topic-pagination-dir">
+              {t('Next Topic', 'บทเรียนถัดไป')} →
+            </span>
             <span className="topic-pagination-title">{nextTopic.title}</span>
           </Link>
         )}
