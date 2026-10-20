@@ -1,113 +1,124 @@
 /**
  * Linear Algebra Topic: Eigenvalues & Eigenvectors
+ * Synthesized from Gilbert Strang (5th Ed., Ch. 6) and Kenji Hiranabe (The Art of Linear Algebra)
  */
 const eigenvaluesData = {
   id: 'eigenvalues-and-eigenvectors',
   title: 'Eigenvalues & Eigenvectors',
   subtitle:
-    'The invariant directions of linear transformations: vectors that never rotate, characteristic polynomials, and diagonalization.',
+    'The invariant directions of linear transformations: characteristic equations, trace/det invariants, and 5-second hand calculation fast-tracks.',
   level: 'Advanced',
-  estimatedTime: '28 min read + interactive lab',
+  estimatedTime: '26 min read + interactive lab',
   overview: [
-    'When a matrix A transforms space, almost all vectors get knocked off their span. However, special non-zero vectors called Eigenvectors remain on their exact same line through the origin—they only get stretched, shrunk, or reversed by a scalar factor λ called the Eigenvalue: Av = λv.',
-    'To calculate eigenvalues and eigenvectors systematically: first solve the Characteristic Equation det(A − λI) = 0 to find the scalar roots λ, and then for each λ solve the homogeneous matrix system (A − λI)v = 0 to find the eigenvector column v.',
-    'Assembling n linearly independent eigenvectors as columns of matrix P diagonalizes the matrix into A = PΛP⁻¹, making matrix powers Aᵏ = PΛᵏP⁻¹ and differential equations effortless to compute.',
+    'While static linear algebra focuses on solving equilibrium systems Ax = b, eigenvalues and eigenvectors unlock dynamical behavior: matrix powers Aᵏ, Markov processes, and differential equations du/dt = Au.',
+    'When a square matrix A acts on space, almost all vectors rotate and stretch off their span. However, special non-zero vectors x remain strictly on their original line through the origin: Ax = λx. The scalar multiplier λ is the Eigenvalue, and x is the corresponding Eigenvector.',
+    'Eigenvalues satisfy two universal invariants: their sum equals the matrix trace (tr(A)), and their product equals the determinant (det(A)). Furthermore, for 2×2 matrices, eigenvalues can be solved mentally in 5 seconds via the Midpoint & Radius shortcut.',
   ],
   keyConcepts: [
     {
-      title: 'Step 1: Finding Eigenvalues via det(A − λI) = 0',
+      title: 'The Midpoint & Radius Shortcut for 2×2 Eigenvalues (5-Second Trick)',
       content:
-        'Subtract λ from the main diagonal entries of A and set the determinant to zero. The roots of the resulting characteristic polynomial λ² − tr(A)λ + det(A) = 0 are the eigenvalues.',
-      exampleLabel: 'Worked Characteristic Polynomial Calculation for A = [[4, 1], [2, 3]]',
+        'Instead of solving quadratic formulas with fractions, find the midpoint m = tr(A)/2 = (a + d)/2 and the determinant p = det(A) = ad − bc. The eigenvalues are immediately λ = m ± √(m² − p).',
+      exampleLabel: 'Fast-Track Mental Calculation for A = [[4, 1], [2, 3]]',
       latex:
-        '\\det(A - \\lambda I) = \\det\\begin{bmatrix} 4 - \\lambda & 1 \\\\ 2 & 3 - \\lambda \\end{bmatrix} = (4-\\lambda)(3-\\lambda) - (1)(2) = \\lambda^2 - 7\\lambda + 10 = (\\lambda - 5)(\\lambda - 2) = 0 \\implies \\lambda_1 = 5, \\; \\lambda_2 = 2',
+        'm = \\frac{4+3}{2} = 3.5, \\quad p = 12 - 2 = 10 \\implies m^2 - p = 12.25 - 10 = 2.25 \\implies \\lambda = 3.5 \\pm \\sqrt{2.25} = 3.5 \\pm 1.5 \\implies \\lambda_1 = 5, \\; \\lambda_2 = 2',
       exampleNote:
-        'Quick check: λ₁ + λ₂ = 5 + 2 = 7 = tr(A) (4+3), and λ₁ · λ₂ = 5 × 2 = 10 = det(A) (12−2)!',
+        'Golden Rules Verification: λ₁ + λ₂ = 5 + 2 = 7 = tr(A), and λ₁ · λ₂ = 5 × 2 = 10 = det(A)!',
     },
     {
-      title: 'Step 2: Finding Eigenvectors by Solving (A − λI)v = 0',
+      title: 'Instant 2×2 Eigenvectors (Zero Row Operations Needed)',
       content:
-        'Substitute each eigenvalue λ_i back into (A − λ_i I)v = 0 and solve for a non-zero column vector v in the null space.',
-      exampleLabel: 'Worked Eigenvector Calculation for λ₁ = 5 and λ₂ = 2',
+        'Since (A − λI) is singular, its rows are linearly dependent. Take the first row [(a − λ), b]. A perpendicular vector whose dot product is zero gives the eigenvector immediately: x = [−b, a − λ]ᵀ or [b, λ − a]ᵀ.',
+      exampleLabel: 'Zero-Step Eigenvectors for λ₁ = 5 and λ₂ = 2',
       latex:
-        '\\begin{aligned} &\\text{For } \\lambda_1 = 5: \\quad (A - 5I)\\mathbf{v}_1 = \\begin{bmatrix} -1 & 1 \\\\ 2 & -2 \\end{bmatrix}\\begin{bmatrix} v_x \\\\ v_y \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix} \\implies v_x = v_y \\implies \\mathbf{v}_1 = \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} \\\\[6pt] &\\text{For } \\lambda_2 = 2: \\quad (A - 2I)\\mathbf{v}_2 = \\begin{bmatrix} 2 & 1 \\\\ 2 & 1 \\end{bmatrix}\\begin{bmatrix} v_x \\\\ v_y \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix} \\implies 2v_x + v_y = 0 \\implies \\mathbf{v}_2 = \\begin{bmatrix} 1 \\\\ -2 \\end{bmatrix} \\end{aligned}',
+        '\\begin{aligned} &\\text{For } \\lambda_1 = 5: \\quad [4-5, \\; 1] = [-1, \\; 1] \\implies \\mathbf{x}_1 = \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} \\\\[6pt] &\\text{For } \\lambda_2 = 2: \\quad [4-2, \\; 1] = [2, \\; 1] \\implies \\mathbf{x}_2 = \\begin{bmatrix} 1 \\\\ -2 \\end{bmatrix} \\end{aligned}',
       exampleNote:
-        'Verify Av₁ = λ₁v₁: [[4, 1], [2, 3]][1, 1]ᵀ = [5, 5]ᵀ = 5[1, 1]ᵀ! And [[4, 1], [2, 3]][1, -2]ᵀ = [2, -4]ᵀ = 2[1, -2]ᵀ!',
+        'Check Av₁: [[4,1],[2,3]][1,1]ᵀ = [5,5]ᵀ = 5[1,1]ᵀ. Check Av₂: [[4,1],[2,3]][1,-2]ᵀ = [2,-4]ᵀ = 2[1,-2]ᵀ. Derived with zero row reduction!',
     },
     {
-      title: 'Step 3: Matrix Diagonalization A = PΛP⁻¹ & Powers Aᵏ',
+      title: 'Algebraic Multiplicity (AM) vs. Geometric Multiplicity (GM)',
       content:
-        'Place eigenvectors v₁ and v₂ as columns of P and eigenvalues λ₁, λ₂ on the diagonal of Λ. Then A = PΛP⁻¹ and Aᵏ = PΛᵏP⁻¹.',
-      exampleLabel: 'Worked Diagonalization Decomposition in Matrix Form',
+        'The Algebraic Multiplicity (AM) of λ is its multiplicity as a root of det(A − λI) = 0. The Geometric Multiplicity (GM) is the dimension of the nullspace dim N(A − λI), which is the number of linearly independent eigenvectors for that λ. Always GM ≤ AM. When GM < AM, the matrix is "defective" and cannot be diagonalized.',
+      exampleLabel: 'Defective Shear Matrix Example',
       latex:
-        'A = P\\Lambda P^{-1} = \\begin{bmatrix} 1 & 1 \\\\ 1 & -2 \\end{bmatrix} \\begin{bmatrix} 5 & 0 \\\\ 0 & 2 \\end{bmatrix} \\begin{bmatrix} 1 & 1 \\\\ 1 & -2 \\end{bmatrix}^{-1} \\implies A^k = \\begin{bmatrix} 1 & 1 \\\\ 1 & -2 \\end{bmatrix} \\begin{bmatrix} 5^k & 0 \\\\ 0 & 2^k \\end{bmatrix} \\left(-\\frac{1}{3}\\begin{bmatrix} -2 & -1 \\\\ -1 & 1 \\end{bmatrix}\\right)',
+        'A = \\begin{bmatrix} 3 & 1 \\\\ 0 & 3 \\end{bmatrix} \\implies \\det(A - \\lambda I) = (3-\\lambda)^2 = 0 \\implies \\lambda = 3 \\; (\\text{AM} = 2), \\quad \\text{N}(A - 3I) = \\text{span}\\left(\\begin{bmatrix} 1 \\\\ 0 \\end{bmatrix}\\right) \\; (\\text{GM} = 1)',
       exampleNote:
-        'Instead of multiplying A by itself 100 times, A¹⁰⁰ is computed immediately by replacing 5ᵏ and 2ᵏ with 5¹⁰⁰ and 2¹⁰⁰!',
+        'Because GM (1) < AM (2), this shear matrix lacks a complete basis of eigenvectors and is non-diagonalizable.',
+    },
+    {
+      title: 'Triangular & Diagonal Matrix Inspection Rule',
+      content:
+        'For any upper-triangular, lower-triangular, or diagonal matrix, det(A − λI) = (a₁₁ − λ)(a₂₂ − λ)...(aₙₙ − λ) = 0. Therefore, the eigenvalues are simply the entries along the main diagonal!',
+      exampleLabel: '1-Second Triangular Inspection',
+      latex:
+        'A = \\begin{bmatrix} 7 & -2 & 9 \\\\ 0 & -4 & 3 \\\\ 0 & 0 & 5 \\end{bmatrix} \\implies \\lambda_1 = 7, \\; \\lambda_2 = -4, \\; \\lambda_3 = 5',
+      exampleNote:
+        'No determinant expansion or polynomial factoring required whatsoever.',
     },
   ],
   equations: [
     {
-      name: 'Eigenvalue-Eigenvector Matrix Equation',
-      latex: 'A\\mathbf{v} = \\lambda \\mathbf{v} \\iff (A - \\lambda I)\\mathbf{v} = \\mathbf{0}',
+      name: 'The Fundamental Eigenvalue-Eigenvector Equation',
+      latex: 'A\\mathbf{x} = \\lambda \\mathbf{x} \\iff (A - \\lambda I)\\mathbf{x} = \\mathbf{0}, \\quad \\mathbf{x} \\neq \\mathbf{0}',
       summary:
-        'The condition where matrix transformation A acts on column vector v as pure scalar scaling by factor λ.',
-      exampleDescription: 'Direct verification that v = [1, 1]ᵀ is an eigenvector of A with λ = 5',
+        'Defines invariant directions x where matrix multiplication by A acts as pure scalar scaling by λ without changing the vector line.',
+      exampleDescription: 'Direct verification for A = [[4, 1], [2, 3]] and x = [1, 1]ᵀ',
       exampleLatex:
-        '\\begin{bmatrix} 4 & 1 \\\\ 2 & 3 \\end{bmatrix} \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} 4(1) + 1(1) \\\\ 2(1) + 3(1) \\end{bmatrix} = \\begin{bmatrix} 5 \\\\ 5 \\end{bmatrix} = 5 \\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} = \\lambda \\mathbf{v}',
-      conditions: ['v must be a non-zero column vector (v ≠ 0)'],
+        '\\begin{bmatrix} 4 & 1 \\\\ 2 & 3 \\end{bmatrix}\\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix} = \\begin{bmatrix} 5 \\\\ 5 \\end{bmatrix} = 5\\begin{bmatrix} 1 \\\\ 1 \\end{bmatrix}',
+      conditions: ['x must be a non-zero vector; A is an n × n square matrix'],
       variables: [
         {
           symbol: 'A',
           name: 'Transformation Matrix',
           unit: '\\mathbb{R}^{n \\times n}',
-          description: 'The square matrix acting on vector space ℝⁿ.',
-          connections: 'Symmetric matrices (A = Aᵀ) always have real eigenvalues and mutually orthogonal eigenvectors.',
+          description: 'Square linear operator acting on vector space ℝⁿ.',
+          connections: 'If A is symmetric (A = Aᵀ), all eigenvalues are real and eigenvectors are orthogonal.',
         },
         {
-          symbol: '\\mathbf{v}',
+          symbol: '\\mathbf{x}',
           name: 'Eigenvector',
           unit: '\\mathbb{R}^n \\setminus \\{\\mathbf{0}\\}',
-          description: 'A special direction vector that remains collinear with its transformed image Av.',
-          connections: 'Any non-zero scalar multiple c·v is also an eigenvector with the same eigenvalue.',
+          description: 'Direction vector invariant under transformation A.',
+          connections: 'Spans a 1D invariant subspace (eigenline) when GM = 1.',
         },
         {
           symbol: '\\lambda',
-          name: 'Eigenvalue (Scaling Factor)',
-          unit: '\\mathbb{C} \\text{ or } \\mathbb{R}',
-          description: 'The scalar multiplier along the eigenvector direction.',
-          connections: 'Found by solving the characteristic polynomial det(A - λI) = 0.',
+          name: 'Eigenvalue',
+          unit: '\\mathbb{R} \\text{ or } \\mathbb{C}',
+          description: 'The scalar dilation factor along the eigenvector direction.',
+          connections: 'A is invertible if and only if no eigenvalue is zero (λᵢ ≠ 0 for all i).',
         },
       ],
     },
     {
-      name: 'Characteristic Polynomial Equation',
-      latex: '\\det(A - \\lambda I) = 0 \\iff \\lambda^2 - \\text{tr}(A)\\lambda + \\det(A) = 0 \\quad (\\text{for } 2 \\times 2)',
+      name: 'Characteristic Equation & Trace / Determinant Invariants',
+      latex: '\\det(A - \\lambda I) = 0, \\qquad \\sum_{i=1}^n \\lambda_i = \\text{tr}(A), \\qquad \\prod_{i=1}^n \\lambda_i = \\det(A)',
       summary:
-        'The polynomial equation whose roots are the exact eigenvalues of matrix A.',
-      exampleDescription: 'Eigenvalues of a 3×3 Triangular or Diagonal Matrix lie directly on the diagonal',
+        'The algebraic determinant condition guaranteeing a non-trivial nullspace, tied directly to the sum and product invariant rules.',
+      exampleDescription: 'Midpoint & Radius shortcut for 2×2 characteristic roots',
       exampleLatex:
-        'A = \\begin{bmatrix} 3 & 4 & -1 \\\\ 0 & -2 & 5 \\\\ 0 & 0 & 7 \\end{bmatrix} \\implies \\det(A - \\lambda I) = (3-\\lambda)(-2-\\lambda)(7-\\lambda) = 0 \\implies \\lambda = 3, -2, 7',
-      conditions: ['A is a square matrix'],
+        '\\lambda^2 - \\text{tr}(A)\\lambda + \\det(A) = 0 \\implies \\lambda = m \\pm \\sqrt{m^2 - p}, \\quad m = \\frac{\\text{tr}(A)}{2}, \\; p = \\det(A)',
+      conditions: ['Valid for all square matrices A'],
       variables: [
         {
           symbol: '\\text{tr}(A)',
-          name: 'Trace of A',
+          name: 'Matrix Trace',
           unit: '\\mathbb{R}',
-          description: 'Sum of diagonal elements A₁₁ + A₂₂, which equals λ₁ + λ₂.',
-          connections: 'The coefficient of the linear term -tr(A)λ.',
+          description: 'Sum of main diagonal elements: tr(A) = ∑ aᵢᵢ.',
+          connections: 'Always invariant under similarity transformations: tr(M⁻¹AM) = tr(A).',
         },
         {
           symbol: '\\det(A)',
           name: 'Determinant of A',
           unit: '\\mathbb{R}',
-          description: 'The product of all eigenvalues: det(A) = λ₁ · λ₂.',
-          connections: 'If det(A) = 0, at least one eigenvalue is zero (non-invertible).',
+          description: 'Signed volume scaling factor, equal to the product of all eigenvalues.',
+          connections: 'If det(A) = 0, at least one eigenvalue is 0 and the matrix is singular.',
         },
       ],
     },
   ],
   interactiveGuide:
-    'Rotate the test vector in 3D space and watch when x and Ax align along the invariant eigen-axes.',
+    'Rotate or adjust vector x in 3D/2D space and watch the output vector Ax. Notice when x and Ax point along the exact same line, revealing the invariant eigen-axes.',
 };
 
 export default eigenvaluesData;

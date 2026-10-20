@@ -35,14 +35,33 @@ export function getCameraBasis(rx, ry) {
  * Project a 3D world point [x, y, z] to 2D canvas coordinates { x, y, depth, scale }.
  */
 export function project3D(pt, camera, width, height, baseScale = 44, centerOffset = { x: 0, y: 12 }) {
-  const { R, U, D } = getCameraBasis(camera.rx, camera.ry);
-  const scale = baseScale * (camera.zoom || 1);
-  const cx = width / 2 + centerOffset.x;
-  const cy = height / 2 + centerOffset.y;
+  // Gracefully handle both project3D([x, y, z], camera, width, height) and project3D(x, y, z, camera, width, height)
+  let point = pt;
+  let cam = camera;
+  let w = width;
+  let h = height;
+  let bScale = baseScale;
+  let cOffset = centerOffset;
 
-  const px = pt[0] * R[0] + pt[1] * R[1] + pt[2] * R[2];
-  const py = pt[0] * U[0] + pt[1] * U[1] + pt[2] * U[2];
-  const depth = pt[0] * D[0] + pt[1] * D[1] + pt[2] * D[2];
+  if (typeof pt === 'number' && typeof camera === 'number' && typeof width === 'number') {
+    point = [pt, camera, width];
+    cam = height;
+    w = baseScale;
+    h = centerOffset;
+    bScale = typeof arguments[6] === 'number' ? arguments[6] : 44;
+    cOffset = arguments[7] && typeof arguments[7] === 'object' ? arguments[7] : { x: 0, y: 12 };
+  }
+
+  if (!cam) return { x: 0, y: 0, depth: 0, scale: bScale };
+
+  const { R, U, D } = getCameraBasis(cam.rx || 0, cam.ry || 0);
+  const scale = bScale * (cam.zoom || 1);
+  const cx = (w || 0) / 2 + (cOffset?.x || 0);
+  const cy = (h || 0) / 2 + (cOffset?.y || 0);
+
+  const px = (point[0] || 0) * R[0] + (point[1] || 0) * R[1] + (point[2] || 0) * R[2];
+  const py = (point[0] || 0) * U[0] + (point[1] || 0) * U[1] + (point[2] || 0) * U[2];
+  const depth = (point[0] || 0) * D[0] + (point[1] || 0) * D[1] + (point[2] || 0) * D[2];
 
   return {
     x: cx + px * scale,

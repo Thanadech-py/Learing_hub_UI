@@ -4,6 +4,7 @@ import NewtonsLawsViz from './NewtonsLawsViz.jsx';
 import WorkEnergyViz from './WorkEnergyViz.jsx';
 import MomentumViz from './MomentumViz.jsx';
 import CircularMotionViz from './CircularMotionViz.jsx';
+import ElasticityViz from './ElasticityViz.jsx';
 import OscillationsViz from './OscillationsViz.jsx';
 import WavesViz from './WavesViz.jsx';
 import ThermodynamicsViz from './ThermodynamicsViz.jsx';
@@ -17,6 +18,7 @@ const physicsVizMap = {
   'work-and-energy': WorkEnergyViz,
   momentum: MomentumViz,
   'circular-motion': CircularMotionViz,
+  elasticity: ElasticityViz,
   oscillations: OscillationsViz,
   waves: WavesViz,
   'sound-waves': SoundWavesViz,

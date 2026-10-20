@@ -283,6 +283,51 @@ const kinematicsData = {
         },
       ],
     },
+    {
+      name: 'Projectile Parabolic Trajectory Equation',
+      latex: 'y(x) = x\\tan\\theta - \\frac{g}{2v_0^2 \\cos^2\\theta}x^2',
+      summary:
+        'Calculates the spatial vertical height y as a function of horizontal coordinate x by eliminating time parameter t.',
+      conditions: [
+        'Launch origin at (x0 = 0, y0 = 0)',
+        'Constant downward gravitational acceleration g and negligible air resistance',
+      ],
+      variables: [
+        {
+          symbol: 'y(x)',
+          name: 'Vertical Coordinate',
+          unit: '\\text{m}',
+          description: 'Elevation of the projectile at horizontal distance x.',
+          connections: 'Traces an inverted parabola opening downward.',
+        },
+        {
+          symbol: 'x',
+          name: 'Horizontal Coordinate',
+          unit: '\\text{m}',
+          description: 'Horizontal displacement from the launch position.',
+          connections: 'Governed by uniform motion x = (v0 cosθ) t.',
+        },
+      ],
+    },
+    {
+      name: 'Galilean Relative Velocity Transformation',
+      latex: '\\vec{v}_{A/B} = \\vec{v}_A - \\vec{v}_B',
+      summary:
+        'Calculates the relative velocity of object A observed from the reference frame of moving observer B.',
+      conditions: [
+        'Classical non-relativistic speeds (v << c)',
+        'Inertial reference frames with parallel spatial coordinate axes',
+      ],
+      variables: [
+        {
+          symbol: '\\vec{v}_{A/B}',
+          name: 'Relative Velocity of A with respect to B',
+          unit: '\\text{m/s}',
+          description: 'Velocity vector of body A observed from frame B.',
+          connections: 'Swapping observer reverses sign: v_B/A = -v_A/B.',
+        },
+      ],
+    },
   ],
   interactiveGuide:
     'Start with the 1D Linear Motion Lab to explore straight-line position, velocity, and acceleration with synchronized live graphs. Then progress to the 2D Projectile Cannon Lab to see how 1D horizontal motion and 1D vertical motion combine independently in two dimensions.',

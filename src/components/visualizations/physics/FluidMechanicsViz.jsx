@@ -308,28 +308,38 @@ export default function FluidMechanicsViz() {
   }, [tab, fluidDensity, objDensity, objVolume, depth, pipeArea1, pipeArea2, velocity1, fluidType, isPlaying, simSpeed]);
 
   return (
-    <div className="viz-card">
-      <div className="viz-tabs">
+    <div className="viz-container">
+      <header className="viz-header">
+        <div className="viz-header__title-block">
+          <h3 className="viz-header__title">Hydrodynamics & Fluid Mechanics Laboratory</h3>
+          <span className="viz-header__tag">Archimedes Buoyancy • Bernoulli & Venturi Flow</span>
+        </div>
+      </header>
+
+      <div className="viz-presets-bar">
+        <span className="viz-presets-bar__label">Simulation Mode:</span>
         <button
-          className={`viz-tab-btn ${tab === 'buoyancy' ? 'active' : ''}`}
+          type="button"
+          className={`viz-preset-chip ${tab === 'buoyancy' ? 'viz-preset-chip--active' : ''}`}
           onClick={() => setTab('buoyancy')}
         >
           🚢 Hydrostatic Tank & Buoyancy
         </button>
         <button
-          className={`viz-tab-btn ${tab === 'venturi' ? 'active' : ''}`}
+          type="button"
+          className={`viz-preset-chip ${tab === 'venturi' ? 'viz-preset-chip--active' : ''}`}
           onClick={() => setTab('venturi')}
         >
           🌊 Venturi Tube & Bernoulli Flow
         </button>
       </div>
 
-      <div className="viz-canvas-wrapper">
+      <div className="viz-canvas-area" style={{ height: '360px' }}>
         <canvas
           ref={canvasRef}
           width={800}
           height={360}
-          className="viz-canvas"
+          style={{ width: '100%', height: '100%', display: 'block' }}
         />
       </div>
 
@@ -358,22 +368,19 @@ export default function FluidMechanicsViz() {
             <MetricBadge
               label="Buoyant Force Fb"
               value={`${buoyantForce.toFixed(1)} N`}
-              color="emerald"
+              highlight
             />
             <MetricBadge
               label="Object Weight W"
               value={`${gravityForce.toFixed(1)} N`}
-              color="rose"
             />
             <MetricBadge
               label="Submerged Ratio"
               value={`${(submergedRatio * 100).toFixed(0)}%`}
-              color="amber"
             />
             <MetricBadge
               label="Base Gauge Pressure"
               value={`${(hydrostaticPressure / 1000).toFixed(1)} kPa`}
-              color="sky"
             />
           </>
         ) : (
@@ -381,115 +388,116 @@ export default function FluidMechanicsViz() {
             <MetricBadge
               label="Inlet Velocity v₁"
               value={`${velocity1.toFixed(2)} m/s`}
-              color="sky"
+              highlight
             />
             <MetricBadge
               label="Throat Velocity v₂"
               value={`${velocity2.toFixed(2)} m/s`}
-              color="amber"
             />
             <MetricBadge
               label="Flow Rate Q"
               value={`${(flowRate_Q * 1000).toFixed(1)} L/s`}
-              color="emerald"
             />
             <MetricBadge
               label="Venturi Pressure Drop"
               value={`${pressureDrop_Pa.toFixed(0)} Pa`}
-              color="rose"
             />
           </>
         )}
       </div>
 
-      <div className="viz-controls-grid">
-        {tab === 'buoyancy' ? (
-          <>
-            <SliderControl
-              label="Surrounding Fluid Density (ρ_fluid)"
-              value={fluidDensity}
-              min={700}
-              max={1400}
-              step={20}
-              unit=" kg/m³"
-              onChange={setFluidDensity}
-            />
-            <SliderControl
-              label="Object Density (ρ_obj)"
-              value={objDensity}
-              min={200}
-              max={1500}
-              step={25}
-              unit=" kg/m³"
-              onChange={setObjDensity}
-            />
-            <SliderControl
-              label="Object Volume (V)"
-              value={objVolume * 1000}
-              min={1}
-              max={20}
-              step={0.5}
-              unit=" Liters"
-              onChange={(val) => setObjVolume(val / 1000)}
-            />
-            <SliderControl
-              label="Tank Depth (h)"
-              value={depth}
-              min={0.5}
-              max={5}
-              step={0.25}
-              unit=" m"
-              onChange={setDepth}
-            />
-          </>
-        ) : (
-          <>
-            <SliderControl
-              label="Inlet Pipe Area (A₁)"
-              value={pipeArea1}
-              min={50}
-              max={150}
-              step={5}
-              unit=" cm²"
-              onChange={setPipeArea1}
-            />
-            <SliderControl
-              label="Throat Constriction Area (A₂)"
-              value={pipeArea2}
-              min={15}
-              max={pipeArea1 - 10}
-              step={5}
-              unit=" cm²"
-              onChange={setPipeArea2}
-            />
-            <SliderControl
-              label="Inlet Flow Velocity (v₁)"
-              value={velocity1}
-              min={0.2}
-              max={3.0}
-              step={0.1}
-              unit=" m/s"
-              onChange={setVelocity1}
-            />
-            <div className="viz-control-item">
-              <label className="viz-control-label">Fluid Medium</label>
-              <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
-                <button
-                  className={`viz-tab-btn ${fluidType === 'water' ? 'active' : ''}`}
-                  onClick={() => setFluidType('water')}
-                >
-                  💧 Water (1000 kg/m³)
-                </button>
-                <button
-                  className={`viz-tab-btn ${fluidType === 'air' ? 'active' : ''}`}
-                  onClick={() => setFluidType('air')}
-                >
-                  💨 Air (1.2 kg/m³)
-                </button>
+      <div className="viz-controls-panel">
+        <div className="viz-sliders-grid">
+          {tab === 'buoyancy' ? (
+            <>
+              <SliderControl
+                label="Surrounding Fluid Density (ρ_fluid)"
+                value={fluidDensity}
+                min={700}
+                max={1400}
+                step={20}
+                unit=" kg/m³"
+                onChange={setFluidDensity}
+              />
+              <SliderControl
+                label="Object Density (ρ_obj)"
+                value={objDensity}
+                min={200}
+                max={1500}
+                step={25}
+                unit=" kg/m³"
+                onChange={setObjDensity}
+              />
+              <SliderControl
+                label="Object Volume (V)"
+                value={objVolume * 1000}
+                min={1}
+                max={20}
+                step={0.5}
+                unit=" Liters"
+                onChange={(val) => setObjVolume(val / 1000)}
+              />
+              <SliderControl
+                label="Tank Depth (h)"
+                value={depth}
+                min={0.5}
+                max={5}
+                step={0.25}
+                unit=" m"
+                onChange={setDepth}
+              />
+            </>
+          ) : (
+            <>
+              <SliderControl
+                label="Inlet Pipe Area (A₁)"
+                value={pipeArea1}
+                min={50}
+                max={150}
+                step={5}
+                unit=" cm²"
+                onChange={setPipeArea1}
+              />
+              <SliderControl
+                label="Throat Constriction Area (A₂)"
+                value={pipeArea2}
+                min={15}
+                max={pipeArea1 - 10}
+                step={5}
+                unit=" cm²"
+                onChange={setPipeArea2}
+              />
+              <SliderControl
+                label="Inlet Flow Velocity (v₁)"
+                value={velocity1}
+                min={0.2}
+                max={3.0}
+                step={0.1}
+                unit=" m/s"
+                onChange={setVelocity1}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', justifyContent: 'center' }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>Fluid Medium</span>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    className={`viz-preset-chip ${fluidType === 'water' ? 'viz-preset-chip--active' : ''}`}
+                    onClick={() => setFluidType('water')}
+                  >
+                    💧 Water (1000 kg/m³)
+                  </button>
+                  <button
+                    type="button"
+                    className={`viz-preset-chip ${fluidType === 'air' ? 'viz-preset-chip--active' : ''}`}
+                    onClick={() => setFluidType('air')}
+                  >
+                    💨 Air (1.2 kg/m³)
+                  </button>
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

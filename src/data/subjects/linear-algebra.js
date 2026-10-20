@@ -60,12 +60,37 @@ const linearAlgebra = {
     {
       id: 'orthogonal',
       title: 'Projection & least Square',
-      description: 'Show how to solve the system, when Ax=b has no solution.'
+      description: 'Show how to solve the system, when Ax=b has no solution.',
+      level: 'Advanced',
     },
     {
       id: 'eigenvalues-and-eigenvectors',
       title: 'Eigenvalues & Eigenvectors',
       description: 'Directions that only stretch under a transformation.',
+      level: 'Advanced',
+    },
+    {
+      id: 'diagonalization',
+      title: 'Diagonalization & Powers',
+      description: 'Decomposing A = XΛX⁻¹, fast matrix powers Aᵏ, Fibonacci, and dynamic systems.',
+      level: 'Advanced',
+    },
+    {
+      id: 'symmetric-matrices',
+      title: 'Symmetric Matrices & Spectral Theorem',
+      description: 'Real symmetric matrices S = Sᵀ, orthogonal eigenvectors, and S = QΛQᵀ.',
+      level: 'Advanced',
+    },
+    {
+      id: 'positive-definite',
+      title: 'Positive Definite Matrices',
+      description: 'Energy tests xᵀSx > 0, eigenvalues, pivots, Sylvester minors, and Cholesky LLᵀ.',
+      level: 'Advanced',
+    },
+    {
+      id: 'svd',
+      title: 'Singular Value Decomposition (SVD)',
+      description: 'Universal factorization A = UΣVᵀ, singular values, pseudoinverse, and data compression.',
       level: 'Advanced',
     },
   ],

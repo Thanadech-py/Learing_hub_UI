@@ -32,8 +32,12 @@ export const THAI_SUBJECT_META = {
         description: 'การดล โมเมนตัมเชิงเส้น และกฎการอนุรักษ์โมเมนตัมในการชนแบบยืดหยุ่นและไม่ยืดหยุ่น',
       },
       'circular-motion': {
-        title: 'การเคลื่อนที่แบบวงกลม (Circular Motion)',
-        description: 'อัตราเร็วเชิงมุม ความเร่งสู่ศูนย์กลาง แรงสู่ศูนย์กลาง และความโน้มถ่วง',
+        title: 'พลศาสตร์การหมุนและการเคลื่อนที่แบบวงกลม (Rotational Dynamics & Circular Motion)',
+        description: 'จลนศาสตร์เชิงมุม โมเมนต์ความเฉื่อย ทอร์ก การกลิ้งโดยไม่ไถล และโมเมนตัมเชิงมุม',
+      },
+      elasticity: {
+        title: 'ความยืดหยุ่นและมอดุลัสของวัสดุ (Elasticity & Modulus of Materials)',
+        description: 'ความเค้น ความเครียด กฎของฮุก มอดุลัสของยัง มอดุลัสเฉือน มอดุลัสเชิงปริมาตร และความเค้นจากอุณหภูมิ',
       },
       oscillations: {
         title: 'การแกว่งกวัดและฮาร์มอนิกอย่างง่าย (Oscillations)',
@@ -134,6 +138,22 @@ export const THAI_SUBJECT_META = {
       'eigenvalues-and-eigenvectors': {
         title: 'ค่าไอเกนและเวกเตอร์ไอเกน (Eigenvalues & Eigenvectors)',
         description: 'ทิศทางแกนหลักที่ถูกยืดหรือหดโดยไม่เปลี่ยนแนวทิศทางภายใต้การแปลงเมทริกซ์',
+      },
+      diagonalization: {
+        title: 'การแปลงเมทริกซ์ทแยงมุมและเลขยกกำลัง (Diagonalization & Powers)',
+        description: 'การแยกตัวประกอบ A = XΛX⁻¹ การหาเลขยกกำลังเมทริกซ์ Aᵏ ลำดับฟีโบนัชชี และระบบไดนามิกส์',
+      },
+      'symmetric-matrices': {
+        title: 'เมทริกซ์สมมาตรและทฤษฎีบทสเปกตรัล (Symmetric Matrices & Spectral Theorem)',
+        description: 'เมทริกซ์สมมาตรจริง S = Sᵀ เวกเตอร์ไอเกนตั้งฉากซึ่งกันและกัน และการกระจาย S = QΛQᵀ',
+      },
+      'positive-definite': {
+        title: 'เมทริกซ์บวกแน่นอนและหลุมพลังงาน (Positive Definite Matrices)',
+        description: 'การทดสอบพลังงาน xᵀSx > 0 ทั้ง 5 แบบ เกณฑ์ดีเทอร์มิแนนต์ของซิลเวสเตอร์ และการแยกตัวประกอบ Cholesky',
+      },
+      svd: {
+        title: 'การแยกค่าเอกฐาน (Singular Value Decomposition - SVD)',
+        description: 'ทฤษฎีบทหลักของพีชคณิตเชิงเส้น A = UΣVᵀ การแปลงทรงกลมเป็นทรงรี การบีบอัดข้อมูล และเมทริกซ์ผกผันเทียม A⁺',
       },
     },
   },

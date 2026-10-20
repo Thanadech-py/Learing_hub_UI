@@ -8,6 +8,10 @@ import determinantsData from './determinants.js';
 import vectorSpacesData from './vector-spaces.js';
 import orthogonalData from './orthogonal.js';
 import eigenvaluesData from './eigenvalues-and-eigenvectors.js';
+import diagonalizationData from './diagonalization.js';
+import symmetricMatricesData from './symmetric-matrices.js';
+import positiveDefiniteData from './positive-definite.js';
+import svdData from './svd.js';
 
 const linearAlgebraTopics = [
   vectorsData,
@@ -20,6 +24,10 @@ const linearAlgebraTopics = [
   vectorSpacesData,
   orthogonalData,
   eigenvaluesData,
+  diagonalizationData,
+  symmetricMatricesData,
+  positiveDefiniteData,
+  svdData,
 ];
 
 const linearAlgebraTopicMap = new Map(linearAlgebraTopics.map((t) => [t.id, t]));

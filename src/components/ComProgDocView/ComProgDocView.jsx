@@ -4,6 +4,7 @@ import { C_HANDBOOK_PARTS, C_HANDBOOK_DOCS } from '../../data/comProgTopics/cHan
 import { PY_HANDBOOK_PARTS, PY_HANDBOOK_DOCS } from '../../data/comProgTopics/pyHandbookDocs.js';
 import CodeSyntaxInspector from '../CodeSyntaxInspector/CodeSyntaxInspector.jsx';
 import MarkdownReader from '../MarkdownReader/MarkdownReader.jsx';
+import TopicDownloadBtn from '../TopicDownloadBtn/TopicDownloadBtn.jsx';
 import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import './ComProgDocView.css';
 
@@ -338,6 +339,9 @@ export default function ComProgDocView({
               )}
             </div>
           )}
+
+          {/* Contextual Master Handbook Download Banner */}
+          <TopicDownloadBtn topicId={topicId} />
 
           {/* Quick Jump to Sections on This Page */}
           {docEntry?.sections?.length > 0 && (

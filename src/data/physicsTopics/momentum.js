@@ -242,6 +242,39 @@ const momentumData = {
         },
       ],
     },
+    {
+      name: 'Tsiolkovsky Variable-Mass Rocket Equation',
+      latex: '\\Delta v = v_{\\text{ex}} \\ln\\left(\\frac{m_0}{m_f}\\right)',
+      summary:
+        'Determines the velocity increment Δv acquired by a rocket expelling propellant gas at exhaust speed v_ex in zero-gravity space.',
+      conditions: [
+        'Variable-mass propulsion in field-free space (zero external gravity and drag)',
+        'Constant effective exhaust velocity v_ex relative to the rocket',
+      ],
+      variables: [
+        {
+          symbol: '\\Delta v',
+          name: 'Velocity Increment (Delta-v)',
+          unit: '\\text{m/s}',
+          description: 'Net velocity increase acquired during the burn.',
+          connections: 'Fundamental budget parameter in orbital mechanics and interplanetary spaceflight.',
+        },
+        {
+          symbol: 'v_{\\text{ex}}',
+          name: 'Effective Exhaust Velocity',
+          unit: '\\text{m/s}',
+          description: 'Speed of expelled propellant gases relative to rocket nozzle (I_sp × g0).',
+          connections: 'Higher exhaust speed dramatically reduces fuel mass needed to achieve a target delta-v.',
+        },
+        {
+          symbol: 'm_0 / m_f',
+          name: 'Mass Ratio (Initial / Final)',
+          unit: '\\text{dimensionless}',
+          description: 'Ratio of wet initial launch mass (including fuel) to dry burnout mass.',
+          connections: 'Enters logarithmically; exponential increases in initial fuel produce only linear gains in delta-v.',
+        },
+      ],
+    },
   ],
   interactiveGuide:
     'Run head-on collisions in the interactive Air Track Collision Chamber. Set cart masses, launch velocities, and drag the elasticity slider from e = 0 (sticky collision) to e = 1 (perfectly bouncy). Inspect momentum and kinetic energy balance live.',

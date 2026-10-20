@@ -5,11 +5,14 @@ import { normalizeDbRecord } from './schema.js';
  * File-based Mini-Database Client
  * Automatically indexes all `.md` files with YAML frontmatter inside `src/database/content/`.
  */
-const rawDocModules = import.meta.glob('./content/**/*.md', {
-  query: '?raw',
-  eager: true,
-  import: 'default',
-});
+const rawDocModules =
+  typeof import.meta !== 'undefined' && typeof import.meta.glob === 'function'
+    ? import.meta.glob('./content/**/*.md', {
+        query: '?raw',
+        eager: true,
+        import: 'default',
+      })
+    : {};
 
 // Map of key (`subjectId/topicId` or `subjectId/topicId/subTopicId`) -> normalized record
 const dbRecords = new Map();

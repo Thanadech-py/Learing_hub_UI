@@ -247,6 +247,80 @@ const fluidMechanicsData = {
         },
       ],
     },
+    {
+      name: "Torricelli's Law of Efflux",
+      latex: 'v_{\\text{efflux}} = \\sqrt{2gh}',
+      summary:
+        'Calculates the discharge velocity of an ideal liquid exiting through a small aperture at depth h below an open surface.',
+      conditions: [
+        'Open reservoir with surface area much larger than the orifice area (A_top >> A_hole)',
+        'Inviscid (non-viscous) and incompressible flow under gravity',
+      ],
+      variables: [
+        {
+          symbol: 'v_{\\text{efflux}}',
+          name: 'Efflux Velocity',
+          unit: '\\text{m/s}',
+          description: 'Speed of liquid jet discharging from the orifice.',
+          connections: 'Identical to the speed acquired by an object falling freely from rest through height h.',
+        },
+        {
+          symbol: 'h',
+          name: 'Liquid Depth Above Orifice',
+          unit: '\\text{m}',
+          description: 'Vertical distance between the free liquid surface and the orifice center.',
+          connections: 'Efflux speed scales with the square root of depth √h.',
+        },
+      ],
+    },
+    {
+      name: 'Hagen-Poiseuille Viscous Laminar Flow',
+      latex: 'Q = \\frac{\\pi R^4 \\Delta P}{8 \\eta L}, \\qquad \\Delta P = Q R_{\\text{hydraulic}}',
+      summary:
+        'Determines the volumetric flow rate of a viscous Newtonian fluid in laminar pipe flow driven by pressure gradient ΔP.',
+      conditions: [
+        'Laminar flow (Reynolds number Re < 2000)',
+        'Constant cross-section cylindrical pipe of radius R and length L',
+        'Newtonian fluid with constant dynamic viscosity η',
+      ],
+      variables: [
+        {
+          symbol: 'Q',
+          name: 'Volumetric Flow Rate',
+          unit: '\\text{m}^3/\\text{s}',
+          description: 'Volume of fluid passing per second.',
+          connections: 'Extreme 4th-power sensitivity to radius (R⁴); halving pipe radius decreases flow by 16 times!',
+        },
+        {
+          symbol: 'R',
+          name: 'Pipe Radius',
+          unit: '\\text{m}',
+          description: 'Internal radius of the cylindrical tube.',
+          connections: 'Primary determinant of hydraulic resistance R_hyd = 8ηL / (πR⁴).',
+        },
+        {
+          symbol: '\\Delta P',
+          name: 'Pressure Difference',
+          unit: '\\text{Pa}',
+          description: 'Driving pressure drop across length L.',
+          connections: 'Linearly drives flow rate Q against viscous drag.',
+        },
+        {
+          symbol: '\\eta',
+          name: 'Dynamic Viscosity',
+          unit: '\\text{Pa}\\cdot\\text{s} = \\text{kg}/(\\text{m}\\cdot\\text{s})',
+          description: 'Internal fluid shear resistance (Water ~ 1.0 × 10⁻³ Pa·s at 20°C).',
+          connections: 'Inversely proportional to volumetric flow rate Q.',
+        },
+        {
+          symbol: 'L',
+          name: 'Pipe Length',
+          unit: '\\text{m}',
+          description: 'Distance over which pressure drop occurs.',
+          connections: 'Longer pipe increases frictional resistance.',
+        },
+      ],
+    },
   ],
   interactiveGuide:
     'Explore the interactive Fluid Mechanics laboratory: (1) Hydrostatic Tank & Buoyancy Chamber with adjustable fluid density and submerged floating masses; and (2) Venturi Tube Flow Chamber showing velocity acceleration through constrictions and live static pressure gauge readouts.',

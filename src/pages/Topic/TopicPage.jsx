@@ -16,6 +16,7 @@ import ComProgDocView from '../../components/ComProgDocView/ComProgDocView.jsx';
 import MarkdownReader from '../../components/MarkdownReader/MarkdownReader.jsx';
 import IntegratedIDE from '../../components/visualizations/comProg/IntegratedIDE.jsx';
 import { getCodeSyntaxForTopic } from '../../data/comProgTopics/codeSyntaxRegistry.js';
+import TopicDownloadBtn from '../../components/TopicDownloadBtn/TopicDownloadBtn.jsx';
 import MathView from '../../components/MathView/MathView.jsx';
 import NotFound from '../NotFound/NotFound.jsx';
 import './TopicPage.css';
@@ -350,6 +351,9 @@ export default function TopicPage() {
             ))}
           </div>
         )}
+
+        {/* Contextual Master Handbook Download Banner */}
+        <TopicDownloadBtn topicId={topicId} />
       </header>
 
       {/* Sub-Pages Ribbon Bar when a topic has connected sub-topics */}

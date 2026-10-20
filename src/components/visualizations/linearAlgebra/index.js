@@ -8,6 +8,10 @@ import DeterminantsViz from './DeterminantsViz.jsx';
 import VectorSpacesViz from './VectorSpacesViz.jsx';
 import OrthogonalViz from './OrthogonalViz.jsx';
 import EigenvaluesViz from './EigenvaluesViz.jsx';
+import DiagonalizationViz from './DiagonalizationViz.jsx';
+import SymmetricMatricesViz from './SymmetricMatricesViz.jsx';
+import PositiveDefiniteViz from './PositiveDefiniteViz.jsx';
+import SvdViz from './SvdViz.jsx';
 
 const linearAlgebraVizMap = {
   vectors: VectorsViz,
@@ -20,6 +24,10 @@ const linearAlgebraVizMap = {
   'vector-spaces': VectorSpacesViz,
   orthogonal: OrthogonalViz,
   'eigenvalues-and-eigenvectors': EigenvaluesViz,
+  diagonalization: DiagonalizationViz,
+  'symmetric-matrices': SymmetricMatricesViz,
+  'positive-definite': PositiveDefiniteViz,
+  svd: SvdViz,
 };
 
 export function getLinearAlgebraVisualization(topicId) {

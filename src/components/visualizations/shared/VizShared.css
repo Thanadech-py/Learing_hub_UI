@@ -389,7 +389,8 @@
   margin-right: 0.25rem;
 }
 
-.viz-preset-chip {
+.viz-preset-chip,
+.viz-preset-btn {
   padding: 0.32rem 0.7rem;
   font-size: 0.76rem;
   font-weight: 600;
@@ -401,16 +402,34 @@
   transition: all 0.18s ease;
 }
 
-.viz-preset-chip:hover {
+.viz-preset-chip:hover,
+.viz-preset-btn:hover {
   background: rgba(56, 189, 248, 0.15);
   border-color: rgba(56, 189, 248, 0.45);
   color: #fff;
 }
 
-.viz-preset-chip--active {
+.viz-preset-chip--active,
+.viz-preset-btn--active {
   background: rgba(56, 189, 248, 0.22);
   border-color: #38bdf8;
   color: #38bdf8;
+}
+
+/* Fallback & Custom 3D Container Guard */
+.viz3d-container {
+  position: relative;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #0c1428 0%, #070b16 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.viz3d-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 @media (max-width: 680px) {

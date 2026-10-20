@@ -5,6 +5,7 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import Home from './pages/Home/Home.jsx';
 import SubjectPage from './pages/Subject/SubjectPage.jsx';
 import TopicPage from './pages/Topic/TopicPage.jsx';
+import HandbooksPage from './pages/Handbooks/HandbooksPage.jsx';
 import NotFound from './pages/NotFound/NotFound.jsx';
 
 /**
@@ -21,6 +22,7 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="handbooks" element={<HandbooksPage />} />
             <Route path="subjects/:subjectId" element={<SubjectPage />} />
             <Route path="subjects/:subjectId/:topicId" element={<TopicPage />} />
             <Route path="subjects/:subjectId/:topicId/:subTopicId" element={<TopicPage />} />

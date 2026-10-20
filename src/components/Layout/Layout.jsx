@@ -6,6 +6,7 @@ import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import { localizeSubject, localizeTopicData } from '../../i18n/thaiTranslations.js';
 import LanguageSlider from '../LanguageSlider/LanguageSlider.jsx';
 import SubjectIcon from '../SubjectCard/SubjectIcon.jsx';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.jsx';
 import logoImg from '../logo/Logo.png';
 import './Layout.css';
 
@@ -118,6 +119,15 @@ export default function Layout() {
           >
             <span className="sidebar-home-link__icon" aria-hidden="true">🏠</span>
             <span>{t('All Subjects Home', 'หน้าหลักรวมทุกวิชา')}</span>
+          </Link>
+
+          <Link
+            to="/handbooks"
+            className={`sidebar-home-link ${location.pathname === '/handbooks' ? 'sidebar-home-link--active' : ''}`}
+            onClick={handleMobileNavClick}
+          >
+            <span className="sidebar-home-link__icon" aria-hidden="true">📑</span>
+            <span>{t('Reference Handbooks', 'คลังเอกสารสรุป')}</span>
           </Link>
 
           <div className="sidebar-subjects-list">
@@ -306,13 +316,23 @@ export default function Layout() {
               );
             })}
 
+            <Link
+              to="/handbooks"
+              className={`layout__top-pill ${location.pathname === '/handbooks' ? 'layout__top-pill--active' : ''}`}
+              style={{ '--pill-accent': '#38bdf8' }}
+            >
+              📑 {t('Handbooks', 'เอกสารสรุป')}
+            </Link>
+
             {/* Top-of-page ENG / ไทย Slide Language Switcher */}
             <LanguageSlider />
           </div>
         </header>
 
         <main className="layout__main">
-          <Outlet />
+          <ErrorBoundary key={location.pathname}>
+            <Outlet />
+          </ErrorBoundary>
         </main>
 
         <footer className="layout__footer">

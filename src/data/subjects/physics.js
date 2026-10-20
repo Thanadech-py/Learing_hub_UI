@@ -50,8 +50,14 @@ const physics = {
     },
     {
       id: 'circular-motion',
-      title: 'Circular Motion',
-      description: 'Angular velocity, centripetal force, and rotating frames.',
+      title: 'Rotational Dynamics & Circular Motion',
+      description: 'Angular kinematics, moment of inertia, torque, rolling without slipping, and angular momentum.',
+      level: 'Intermediate',
+    },
+    {
+      id: 'elasticity',
+      title: 'Elasticity & Modulus of Materials',
+      description: "Stress, strain, Hooke's law, Young's, shear, and bulk moduli, Poisson's ratio, and thermal stress.",
       level: 'Intermediate',
     },
     {

@@ -1,0 +1,102 @@
+.error-boundary-container {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.error-boundary-card {
+  max-width: 600px;
+  width: 100%;
+  background: var(--surface, #1e293b);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.error-boundary-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.error-boundary-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #f8fafc);
+  margin-bottom: 0.75rem;
+}
+
+.error-boundary-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #94a3b8);
+  margin-bottom: 1.5rem;
+}
+
+.error-boundary-details {
+  text-align: left;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.825rem;
+}
+
+.error-boundary-details summary {
+  cursor: pointer;
+  color: var(--accent, #38bdf8);
+  font-weight: 500;
+  user-select: none;
+}
+
+.error-boundary-stack {
+  margin-top: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #f87171;
+  font-family: var(--font-mono, monospace);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.error-boundary-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-boundary-btn {
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.error-boundary-btn--primary {
+  background: var(--accent, #38bdf8);
+  color: #0f172a;
+}
+
+.error-boundary-btn--primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.error-boundary-btn--secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary, #f8fafc);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.error-boundary-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}

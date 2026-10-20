@@ -4,6 +4,7 @@ import newtonsLawsData from './newtons-laws.js';
 import workAndEnergyData from './work-and-energy.js';
 import momentumData from './momentum.js';
 import circularMotionData from './circular-motion.js';
+import elasticityData from './elasticity.js';
 import oscillationsData from './oscillations.js';
 import wavesData, { waveFoundationsSubPage, soundWavesSubPage } from './waves.js';
 import fluidMechanicsData from './fluid-mechanics.js';
@@ -16,6 +17,7 @@ const physicsTopics = [
   workAndEnergyData,
   momentumData,
   circularMotionData,
+  elasticityData,
   oscillationsData,
   wavesData,
   fluidMechanicsData,

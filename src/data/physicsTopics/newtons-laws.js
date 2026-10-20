@@ -207,6 +207,58 @@ const newtonsLawsData = {
         },
       ],
     },
+    {
+      name: 'Apparent Weight in Non-Inertial Elevators',
+      latex: 'N = m(g \\pm a)',
+      summary:
+        'Calculates the normal contact support force (apparent scale weight) of an occupant in a vertically accelerating frame.',
+      conditions: [
+        'Vertical linear acceleration a (use +a when accelerating upward, -a when accelerating downward)',
+        'Free fall occurs when a = g downward, yielding apparent weightlessness (N = 0)',
+      ],
+      variables: [
+        {
+          symbol: 'N',
+          name: 'Normal Force (Apparent Weight)',
+          unit: '\\text{N}',
+          description: 'Contact reaction force exerted by the scale or floor on the mass.',
+          connections: 'Scale reading indicates true weight mg only when acceleration a = 0.',
+        },
+        {
+          symbol: 'm',
+          name: 'Occupant Mass',
+          unit: '\\text{kg}',
+          description: 'Invariable inertial mass of the passenger.',
+          connections: 'Scales apparent normal force linearly.',
+        },
+      ],
+    },
+    {
+      name: 'Atwood Machine Coupled Acceleration',
+      latex: 'a = \\frac{m_2 - m_1}{m_1 + m_2}g, \\qquad T = \\frac{2m_1 m_2}{m_1 + m_2}g',
+      summary:
+        'Determines the linear acceleration and rope tension in an ideal dual-mass pulley constraint system.',
+      conditions: [
+        'Ideal frictionless, massless pulley and inextensible light string',
+        'm2 > m1 (mass 2 accelerates downward, mass 1 accelerates upward)',
+      ],
+      variables: [
+        {
+          symbol: 'a',
+          name: 'System Acceleration',
+          unit: '\\text{m/s}^2',
+          description: 'Common linear acceleration magnitude of both interconnected masses.',
+          connections: 'Driven by net gravitational imbalance (m2 - m1)g divided by total system inertia (m1 + m2).',
+        },
+        {
+          symbol: 'T',
+          name: 'Cord Tension',
+          unit: '\\text{N}',
+          description: 'Internal tensile force transmitted along the light inextensible rope.',
+          connections: 'Lies strictly between m1 g and m2 g.',
+        },
+      ],
+    },
   ],
   interactiveGuide:
     'Test the balance of forces on the interactive Inclined Plane simulator. Adjust ramp angle, mass, static and kinetic friction coefficients, and see the live Free Body Diagram with color-coded force vectors.',

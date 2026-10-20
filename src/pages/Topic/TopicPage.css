@@ -276,6 +276,12 @@
   grid-template-columns: 1fr;
 }
 
+.topic-workbench--stacked .topic-workbench__viz-pane {
+  position: static;
+  max-height: none;
+  overflow-y: visible;
+}
+
 .topic-workbench__viz-pane {
   position: sticky;
   top: 76px;
@@ -310,6 +316,11 @@
 .topic-section {
   margin-bottom: 2rem;
   scroll-margin-top: 5.5rem;
+  position: relative;
+}
+
+.topic-section--viz {
+  width: 100%;
 }
 
 .topic-section__header {
@@ -317,12 +328,15 @@
   align-items: flex-start;
   gap: 1.15rem;
   margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
 }
 
 .topic-section__header--viz {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .topic-section__header-left {

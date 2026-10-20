@@ -136,6 +136,46 @@ const unitsAndMeasurementData = {
         },
       ],
     },
+    {
+      name: 'Fundamental Physical Constants (Master Standard Compendium)',
+      latex: 'g = 9.80\\,\\text{m/s}^2, \\quad G = 6.674 \\times 10^{-11}\\,\\frac{\\text{N}\\cdot\\text{m}^2}{\\text{kg}^2}, \\quad R = 8.314\\,\\frac{\\text{J}}{\\text{mol}\\cdot\\text{K}}, \\quad k_B = 1.381 \\times 10^{-23}\\,\\frac{\\text{J}}{\\text{K}}',
+      summary:
+        'Official standard physical constants governing mechanics, universal gravitation, thermodynamics, and kinetic gas theory.',
+      conditions: [
+        'CODATA internationally recommended standard values',
+        'Standard atmospheric condition: T = 20°C (293.15 K), P = 1.013 × 10⁵ Pa',
+      ],
+      variables: [
+        {
+          symbol: 'g',
+          name: 'Standard Acceleration of Gravity',
+          unit: '\\text{m/s}^2',
+          description: 'Nominal gravitational acceleration at sea level (9.80665 m/s²).',
+          connections: 'Scales all weight forces, hydrostatic pressures, and pendulum frequencies.',
+        },
+        {
+          symbol: 'G',
+          name: 'Universal Gravitational Constant',
+          unit: '\\text{N}\\cdot\\text{m}^2/\\text{kg}^2',
+          description: "Newtonian constant of universal gravitation (6.6743 × 10⁻¹¹ N·m²/kg²).",
+          connections: 'Governs gravitational attraction F = G M m / r² and planetary orbit velocity.',
+        },
+        {
+          symbol: 'R',
+          name: 'Universal Ideal Gas Constant',
+          unit: '\\text{J}/(\\text{mol}\\cdot\\text{K})',
+          description: 'Molar gas constant linking macroscopic pressure and volume: PV = nRT (8.3145 J/(mol·K)).',
+          connections: 'Related to microscopic Boltzmann constant through R = N_A × k_B.',
+        },
+        {
+          symbol: 'k_B',
+          name: 'Boltzmann Constant',
+          unit: '\\text{J/K}',
+          description: 'Microscopic thermal energy scale per particle per Kelvin (1.3806 × 10⁻²³ J/K).',
+          connections: 'Sets the thermal kinetic energy per degree of freedom: E = 1/2 k_B T.',
+        },
+      ],
+    },
   ],
   interactiveGuide:
     'Use the interactive lab below to practice reading a virtual Vernier Caliper in real time, inspect the alignment between main scale and vernier lines, and explore dimensional homogeneity across common physical laws.',
