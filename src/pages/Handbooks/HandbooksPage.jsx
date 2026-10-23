@@ -50,6 +50,7 @@ const LA_SERIES_ROADMAP = [
   { code: 'LA-06', id: 'la-06-diagonalization', labelEn: '06 Diagonalization', labelTh: '06 เมทริกซ์ทแยงมุม', isNew: true },
   { code: 'LA-07', id: 'la-07-symmetric-spectral', labelEn: '07 Symmetric & Spectral', labelTh: '07 เมทริกซ์สมมาตร', isNew: true },
   { code: 'LA-08', id: 'la-08-positive-definite', labelEn: '08 Positive Definite', labelTh: '08 โพซิตีฟเดฟินิต', isNew: true },
+  { code: 'LA-09', id: 'la-09-svd', labelEn: '09 SVD & Pseudoinverse', labelTh: '09 ค่าเอกฐาน SVD', isNew: true },
 ];
 
 export default function HandbooksPage() {
@@ -205,13 +206,13 @@ export default function HandbooksPage() {
             <div className="la-roadmap-card__header">
               <span className="la-roadmap-card__badge">📐 LINEAR ALGEBRA MASTER SERIES</span>
               <h3 className="la-roadmap-card__title">
-                {t('Core Curriculum Volumes 01 → 08 Complete Roadmap', 'แผนผังหลักสูตรพีชคณิตเชิงเส้น เล่ม 01 ถึง 08 ครบวงจร')}
+                {t('Core Curriculum Volumes 01 → 09 Complete Roadmap', 'แผนผังหลักสูตรพีชคณิตเชิงเส้น เล่ม 01 ถึง 09 ครบวงจร')}
               </h3>
             </div>
             <p className="la-roadmap-card__desc">
               {t(
-                'Volumes 06 (Diagonalization), 07 (Symmetric & Spectral), and 08 (Positive Definite) are newly published in both Thai and English. Click any volume below to jump directly to its download entry:',
-                'เล่มที่ 06 (การแปลงทแยงมุม), 07 (เมทริกซ์สมมาตรและสเปกตรัม) และ 08 (โพซิตีฟเดฟินิต) ได้รับการเพิ่มเข้ามาใหม่ทั้งฉบับภาษาไทยและอังกฤษ คลิกเล่มใดก็ได้เพื่อเลื่อนไปยังรายการดาวน์โหลด:'
+                'Volumes 06 (Diagonalization), 07 (Symmetric & Spectral), 08 (Positive Definite), and 09 (Singular Value Decomposition) are newly published in both Thai and English. Click any volume below to jump directly to its download entry:',
+                'เล่มที่ 06 (การแปลงทแยงมุม), 07 (เมทริกซ์สมมาตรและสเปกตรัม), 08 (โพซิตีฟเดฟินิต) และ 09 (การแยกค่าเอกฐาน SVD) ได้รับการเพิ่มเข้ามาใหม่ทั้งฉบับภาษาไทยและอังกฤษ คลิกเล่มใดก็ได้เพื่อเลื่อนไปยังรายการดาวน์โหลด:'
               )}
             </p>
             <div className="la-roadmap-chips">

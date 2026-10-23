@@ -65,6 +65,26 @@ const svdData = {
       exampleNote:
         'This connects SVD directly to the Spectral Theorem for symmetric matrices (Volume 07 & 08).',
     },
+    {
+      title: 'Matrix Condition Number κ(A) & Sensitivity Analysis',
+      content:
+        'The condition number of a matrix measures its sensitivity to perturbations and numerical errors when solving linear systems Ax = b. Using SVD, the 2-norm condition number is simply the ratio of extreme singular values: κ(A) = ||A||₂ ||A⁺||₂ = σ₁ / σᵣ. If κ(A) ≈ 1, the matrix is well-conditioned (orthogonal); if κ(A) ≫ 1, the matrix is ill-conditioned (nearly singular).',
+      exampleLabel: 'Condition Number Calculation',
+      latex:
+        '\\kappa_2(A) = \\frac{\\sigma_1}{\\sigma_r} = \\frac{\\sigma_{\\max}}{\\sigma_{\\min}}, \\qquad \\frac{\\|\\Delta \\mathbf{x}\\|}{\\|\\mathbf{x}\\|} \\le \\kappa(A) \\frac{\\|\\Delta \\mathbf{b}\\|}{\\|\\mathbf{b}\\|}',
+      exampleNote:
+        'A loss of log₁₀(κ) decimal digits of precision occurs during numerical matrix inversion.',
+    },
+    {
+      title: '⚡ Fast-Track S1 & S2: Gram Dimension Selection & Rank-1 Inspection',
+      content:
+        'For an m × n matrix with m ≪ n (e.g. 2 × 100), never compute the huge 100 × 100 Gram matrix AᵀA! Instead, compute AAᵀ (only 2 × 2), find its non-zero eigenvalues σᵢ² and left singular vectors uᵢ, then instantly recover the right singular vectors via vᵢ = (1/σᵢ)Aᵀuᵢ. For rank-1 outer products A = xyᵀ, σ₁ = ||x|| ||y||, u₁ = x/||x||, and v₁ = y/||y|| with zero calculation!',
+      exampleLabel: 'Instant Outer Product SVD for A = [1, 2]ᵀ [3, 4]',
+      latex:
+        'A = \\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix} \\begin{bmatrix} 3 & 4 \\end{bmatrix} \\implies \\sigma_1 = \\sqrt{5}\\sqrt{25} = 5\\sqrt{5}, \\quad \\mathbf{u}_1 = \\frac{1}{\\sqrt{5}}\\begin{bmatrix} 1 \\\\ 2 \\end{bmatrix}, \\quad \\mathbf{v}_1 = \\frac{1}{5}\\begin{bmatrix} 3 \\\\ 4 \\end{bmatrix}',
+      exampleNote:
+        'Rank is 1, so σ₂ = 0. Derived completely by inspection in under 5 seconds!',
+    },
   ],
   equations: [
     {
@@ -149,6 +169,39 @@ const svdData = {
           unit: '\\mathbb{R}^m',
           description: 'Eigenvector of AAᵀ; first r span the column space, remaining m-r span the left nullspace.',
           connections: 'Forms the output orthonormal frame for the transformed ellipsoid.',
+        },
+      ],
+    },
+    {
+      name: 'Matrix Condition Number & Polar Decomposition',
+      latex: '\\kappa_2(A) = \\frac{\\sigma_{\\max}}{\\sigma_{\\min}} = \\frac{\\sigma_1}{\\sigma_r}, \\qquad A = Q S \\quad (Q^T Q = I, \\; S = V \\Sigma V^T = \\sqrt{A^T A} \\succeq 0)',
+      summary:
+        'Quantifies matrix numerical stability and factors any matrix into a pure isometry rotation Q followed by a symmetric stretch S.',
+      exampleDescription: 'Polar decomposition factorizing transformation into rotation and stretch',
+      exampleLatex:
+        'A = (U V^T)(V \\Sigma V^T) = Q S, \\quad Q = U V^T \\in O(n), \\quad S \\text{ is symmetric positive semi-definite}',
+      conditions: ['A is any real matrix; for κ(A), σ_r > 0 (full column rank)'],
+      variables: [
+        {
+          symbol: '\\kappa_2(A)',
+          name: 'Condition Number',
+          unit: '\\mathbb{R} \\ge 1',
+          description: 'Ratio of the maximum to minimum singular values governing numerical error magnification.',
+          connections: 'κ(Q) = 1 for any orthogonal matrix; κ(A) → ∞ as A approaches singularity.',
+        },
+        {
+          symbol: 'Q',
+          name: 'Polar Orthogonal Factor',
+          unit: '\\mathbb{R}^{m \\times n}',
+          description: 'The closest orthogonal matrix to A in Frobenius norm: Q = UVᵀ.',
+          connections: 'Preserves Euclidean vector lengths without any scaling distortion.',
+        },
+        {
+          symbol: 'S',
+          name: 'Polar Symmetric Stretch Factor',
+          unit: '\\mathbb{R}^{n \\times n}',
+          description: 'Symmetric positive semi-definite matrix encoding all directional stretch: S = VΣVᵀ = √(AᵀA).',
+          connections: 'Eigenvalues of S are exactly the singular values σᵢ of A.',
         },
       ],
     },

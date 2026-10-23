@@ -68,3 +68,24 @@ The singular vector matrices $U$ and $V$ cleanly partition the four fundamental 
 | **Left Nullspace $N(A^T)$** | $m - r$ | Remaining $m - r$ columns of $U$: $\mathbf{u}_{r+1}, \dots, \mathbf{u}_m$ |
 
 This unifies the entire linear algebra landscape into an explicit, orthogonal geometric dictionary!
+
+---
+
+## 6. Matrix Condition Number $\kappa(A)$ & Numerical Sensitivity
+
+The 2-norm condition number measures how much errors in $\mathbf{b}$ can be magnified when solving $A\mathbf{x} = \mathbf{b}$:
+$$\kappa_2(A) = \|A\|_2 \|A^+\|_2 = \frac{\sigma_{\max}}{\sigma_{\min}} = \frac{\sigma_1}{\sigma_r}$$
+
+- **Well-conditioned**: $\kappa(A) \approx 1$ (orthogonal matrix, perfectly stable).
+- **Ill-conditioned**: $\kappa(A) \gg 1$ (nearly singular, catastrophic loss of precision).
+- **Rule of Thumb**: You lose roughly $\log_{10} \kappa(A)$ decimal digits of numerical precision during matrix operations.
+
+---
+
+## 7. Polar Decomposition: $A = QS$
+
+Analogous to the polar form of a complex number $z = r e^{i\theta}$, every real square matrix factors into an orthogonal matrix $Q$ (pure rotation/reflection) and a symmetric positive semidefinite matrix $S$ (pure directional stretch):
+$$A = Q S = (U V^T)(V \Sigma V^T)$$
+
+- $Q = U V^T$ is the closest orthogonal matrix to $A$ in Frobenius distance ($\|A - Q\|_F$ is minimized).
+- $S = \sqrt{A^T A}$ contains the directional scaling factors along the eigenvectors $\mathbf{v}_i$, with eigenvalues equal to the singular values $\sigma_i$.
