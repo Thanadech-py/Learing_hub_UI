@@ -18,16 +18,16 @@ const linearAlgebraTopics = [
   linearCombinationsData,
   matricesData,
   matrixMultiplicationData,
-  linearTransformationsData,
   systemsOfEquationsData,
-  determinantsData,
   vectorSpacesData,
-  orthogonalData,
-  eigenvaluesData,
+  determinantsData,
+  linearTransformationsData,
   diagonalizationData,
   symmetricMatricesData,
   positiveDefiniteData,
+  orthogonalData,
   svdData,
+  eigenvaluesData,
 ];
 
 const linearAlgebraTopicMap = new Map(linearAlgebraTopics.map((t) => [t.id, t]));

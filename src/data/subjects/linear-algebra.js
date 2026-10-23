@@ -34,21 +34,9 @@ const linearAlgebra = {
       level: 'Intermediate',
     },
     {
-      id: 'linear-transformations',
-      title: 'Linear Transformations',
-      description: 'Rotations, scaling, shears, and how matrices move space.',
-      level: 'Intermediate',
-    },
-    {
       id: 'systems-of-equations',
       title: 'Systems of Linear Equations',
       description: 'Gaussian elimination, row echelon form, and solutions.',
-      level: 'Intermediate',
-    },
-    {
-      id: 'determinants',
-      title: 'Determinants',
-      description: 'How transformations scale area and volume.',
       level: 'Intermediate',
     },
     {
@@ -58,16 +46,16 @@ const linearAlgebra = {
       level: 'Advanced',
     },
     {
-      id: 'orthogonal',
-      title: 'Projection & least Square',
-      description: 'Show how to solve the system, when Ax=b has no solution.',
-      level: 'Advanced',
+      id: 'determinants',
+      title: 'Determinants',
+      description: 'How transformations scale area and volume.',
+      level: 'Intermediate',
     },
     {
-      id: 'eigenvalues-and-eigenvectors',
-      title: 'Eigenvalues & Eigenvectors',
-      description: 'Directions that only stretch under a transformation.',
-      level: 'Advanced',
+      id: 'linear-transformations',
+      title: 'Linear Transformations',
+      description: 'Rotations, scaling, shears, and how matrices move space.',
+      level: 'Intermediate',
     },
     {
       id: 'diagonalization',
@@ -88,9 +76,21 @@ const linearAlgebra = {
       level: 'Advanced',
     },
     {
+      id: 'orthogonal',
+      title: 'Projection & least Square',
+      description: 'Show how to solve the system, when Ax=b has no solution.',
+      level: 'Advanced',
+    },
+    {
       id: 'svd',
       title: 'Singular Value Decomposition (SVD)',
       description: 'Universal factorization A = UΣVᵀ, singular values, pseudoinverse, and data compression.',
+      level: 'Advanced',
+    },
+    {
+      id: 'eigenvalues-and-eigenvectors',
+      title: 'Eigenvalues & Eigenvectors',
+      description: 'Directions that only stretch under a transformation.',
       level: 'Advanced',
     },
   ],

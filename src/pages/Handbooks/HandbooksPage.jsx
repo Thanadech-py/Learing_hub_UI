@@ -206,7 +206,7 @@ export default function HandbooksPage() {
             <div className="la-roadmap-card__header">
               <span className="la-roadmap-card__badge">📐 LINEAR ALGEBRA MASTER SERIES</span>
               <h3 className="la-roadmap-card__title">
-                {t('Core Curriculum Volumes 01 → 09 Complete Roadmap', 'แผนผังหลักสูตรพีชคณิตเชิงเส้น เล่ม 01 ถึง 09 ครบวงจร')}
+                {t('Core Curriculum Volumes 01 → 10 Complete Roadmap', 'แผนผังหลักสูตรพีชคณิตเชิงเส้น เล่ม 01 ถึง 10 ครบวงจร พร้อมทั้งเอกสารเตรียมสอบ Final')}
               </h3>
             </div>
             <p className="la-roadmap-card__desc">
