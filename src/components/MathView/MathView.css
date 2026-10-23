@@ -4,23 +4,37 @@
 }
 
 .math-view--block {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
+  position: relative;
+  text-align: center;
   overflow-x: auto;
-  padding: 0.85rem 1rem;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.9rem 1.1rem;
   margin: 0.75rem 0;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: calc(1.08em * var(--math-scale, 1));
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.math-view__inner {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .math-view--block .katex-display {
+  display: inline-block;
   margin: 0;
+  max-width: none;
+  text-align: center;
 }
 
 .math-view .katex {
-  font-size: 1.1em;
+  font-size: 1.12em;
 }
 
 .math-fallback {
@@ -28,4 +42,50 @@
   background: rgba(255, 255, 255, 0.1);
   padding: 0.15rem 0.35rem;
   border-radius: 4px;
+}
+
+/* Floating Expand to Fullscreen Button */
+.math-view__expand-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  opacity: 0.65;
+  z-index: 2;
+}
+
+.math-view--block:hover .math-view__expand-btn {
+  opacity: 1;
+}
+
+.math-view__expand-btn:hover {
+  background: rgba(167, 139, 250, 0.25);
+  border-color: rgba(167, 139, 250, 0.5);
+  color: #f8fafc;
+  transform: scale(1.08);
+}
+
+/* Subtle visual affordance if formula still requires scrolling after minimum scale */
+.math-view--overflow {
+  box-shadow: inset -10px 0 12px -8px rgba(167, 139, 250, 0.3);
+}
+
+@media (max-width: 640px) {
+  .math-view--block {
+    padding: 0.75rem 0.85rem;
+  }
+  .math-view__expand-btn {
+    opacity: 0.9;
+  }
 }

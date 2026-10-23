@@ -42,3 +42,25 @@ Where each $P_i = \mathbf{q}_i \mathbf{q}_i^T$ is a rank-1 projection matrix sat
 - $P_i^2 = P_i$ (Idempotent)
 - $P_i P_j = 0$ for $i \neq j$ (Mutually orthogonal)
 - $\sum_{i=1}^n P_i = I$ (Partition of unity)
+
+---
+
+## 4. Sylvester's Law of Inertia
+
+Gaussian elimination on a symmetric matrix produces $S = L D L^T$ without row interchanges. Sylvester's Law of Inertia states that for any congruent transformation $C^T S C$ (with $\det(C) \neq 0$):
+$$\text{Inertia}(S) = (p, n, z) = (\#\{\lambda_i > 0\}, \#\{\lambda_i < 0\}, \#\{\lambda_i = 0\})$$
+
+> [!TIP]
+> The signs of the elimination pivots $d_1, d_2, \dots, d_n$ match the signs of the eigenvalues $\lambda_1, \dots, \lambda_n$ exactly! This counts positive/negative eigenvalues in $O(n^3)$ without polynomial factoring.
+
+---
+
+## 5. Spectral Functional Calculus
+
+Because the eigenvector frame $Q$ is rigid and orthogonal, applying any scalar function $f: \mathbb{R} \to \mathbb{R}$ to matrix $S$ simply transforms its eigenvalues:
+$$f(S) = Q f(\Lambda) Q^T = \sum_{i=1}^n f(\lambda_i) \mathbf{q}_i \mathbf{q}_i^T$$
+
+- Matrix powers: $S^k = Q \Lambda^k Q^T$
+- Matrix inverse: $S^{-1} = Q \Lambda^{-1} Q^T$ (if all $\lambda_i \neq 0$)
+- Matrix square root: $\sqrt{S} = Q \sqrt{\Lambda} Q^T$ (for $S \succeq 0$)
+- Spectral 2-norm: $\|S\|_2 = \max_i |\lambda_i|$

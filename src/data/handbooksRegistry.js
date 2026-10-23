@@ -5,6 +5,19 @@
  * Strictly contains synthesized master handbooks (zero raw source textbook/slide distribution).
  */
 
+/**
+ * Ensures relative path resolution with Vite base URL support.
+ * Essential for static hosting (e.g. GitHub Pages with base path).
+ */
+export function withBase(path) {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
+  const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL) || '/';
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${cleanBase}${cleanPath}`;
+}
+
 export const HANDBOOKS_CATALOG = [
   // ==================== PHYSICS VOLUMES ====================
   {
@@ -446,6 +459,8 @@ export const HANDBOOKS_CATALOG = [
     fileSize: '173 KB',
     badge: 'Volume 01',
     badgeTh: 'เล่มที่ 01',
+    series: 'core',
+    pages: { th: 31, en: 30 },
     author: 'Synthesized from Gilbert Strang & MIT 18.06',
     authorTh: 'สังเคราะห์จากตำรา Gilbert Strang และ MIT 18.06',
     description:
@@ -488,6 +503,8 @@ export const HANDBOOKS_CATALOG = [
     fileSize: '188 KB',
     badge: 'Volume 02',
     badgeTh: 'เล่มที่ 02',
+    series: 'core',
+    pages: { th: 20, en: 24 },
     author: 'Synthesized from Gilbert Strang & Numerical Linear Algebra',
     authorTh: 'สังเคราะห์จากตำรา Gilbert Strang และการคำนวณเชิงตัวเลข',
     description:
@@ -530,6 +547,8 @@ export const HANDBOOKS_CATALOG = [
     fileSize: '184 KB',
     badge: 'Volume 03',
     badgeTh: 'เล่มที่ 03',
+    series: 'core',
+    pages: { th: 14, en: 19 },
     author: 'Synthesized from Gilbert Strang & MIT Linear Algebra series',
     authorTh: 'สังเคราะห์จาก Gilbert Strang และชุดบรรยาย MIT',
     description:
@@ -572,6 +591,8 @@ export const HANDBOOKS_CATALOG = [
     fileSize: '200 KB',
     badge: 'Volume 04',
     badgeTh: 'เล่มที่ 04',
+    series: 'core',
+    pages: { th: 14, en: 26 },
     author: 'Synthesized from Gilbert Strang & Classical Linear Algebra',
     authorTh: 'สังเคราะห์จาก Gilbert Strang และตำราพีชคณิตเชิงเส้นคลาสสิก',
     description:
@@ -614,6 +635,8 @@ export const HANDBOOKS_CATALOG = [
     fileSize: '233 KB',
     badge: 'Volume 05',
     badgeTh: 'เล่มที่ 05',
+    series: 'core',
+    pages: { th: 14, en: 28 },
     author: 'Synthesized from Gilbert Strang & Geometric Linear Algebra',
     authorTh: 'สังเคราะห์จาก Gilbert Strang และพีชคณิตเชิงเส้นเรขาคณิต',
     description:
@@ -643,10 +666,151 @@ export const HANDBOOKS_CATALOG = [
     },
   },
   {
-    id: 'la-orthogonality',
+    id: 'la-06-diagonalization',
     code: 'LA-06',
-    title: 'Linear Algebra Volume 6: Orthogonality & Projections Master Handbook',
-    titleTh: 'พีชคณิตเชิงเส้น เล่ม 6: คู่มือเจาะลึกความตั้งฉากและการฉายเวกเตอร์',
+    title: 'Linear Algebra Volume 6: Diagonalization, Matrix Powers & Dynamical Systems Handbook',
+    titleTh: 'พีชคณิตเชิงเส้น เล่ม 6: คู่มือการแปลงเมทริกซ์ทแยงมุม เลขยกกำลัง และระบบพลวัต',
+    subjectId: 'linear-algebra',
+    subjectName: 'Linear Algebra',
+    subjectNameTh: 'พีชคณิตเชิงเส้น',
+    topicIds: ['diagonalization'],
+    filename: 'Linear-Algebra - 06 Diagonalization & Matrix Powers.pdf',
+    downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra - 06 Diagonalization & Matrix Powers.pdf',
+    fileSize: '234 KB',
+    badge: 'Volume 06',
+    badgeTh: 'เล่มที่ 06',
+    series: 'core',
+    isNew: true,
+    pages: { th: 20, en: 22 },
+    author: 'Synthesized from Gilbert Strang (5th Ed., Ch. 6) & Kenji Hiranabe',
+    authorTh: 'สังเคราะห์จากตำรา Gilbert Strang (พิมพ์ครั้งที่ 5 บทที่ 6) และ Kenji Hiranabe',
+    description:
+      'Spectral Diagonalization Theorem A = XΛX⁻¹, Multiplicity Criteria (AM vs. GM), defective shear matrices, discrete powers Aᵏ, Fibonacci companion matrix, Markov steady states, continuous differential systems du/dt = Au, matrix exponential e^{At}, Jordan canonical forms, and 6 hand-calculation Fast-Tracks.',
+    descriptionTh:
+      'ทฤษฎีบทการแปลงทแยงมุม A = XΛX⁻¹, การวิเคราะห์ภาวะทวีคูณ (AM vs. GM), เมทริกซ์บกพร่อง, เลขยกกำลังเมทริกซ์ Aᵏ, เมทริกซ์ฟีโบนัชชี, สภาวะคงตัวมาร์คอฟ, ระบบสมการเชิงอนุพันธ์ต่อเนื่อง du/dt = Au, เมทริกซ์เอกซ์โพเนนเชียล e^{At}, รูปแบบบัญญัติจอร์แดน และ 6 เทคนิคคำนวณเร็ว (Fast-Tracks)',
+    tags: ['Diagonalization', 'Matrix Powers', 'Eigenvalues', 'Fibonacci Matrix', 'Markov Chains', 'Matrix Exponential', 'Jordan Form'],
+    editions: {
+      th: {
+        lang: 'th',
+        label: 'ภาษาไทย (TH)',
+        shortLabel: 'TH',
+        filename: 'Linear-Algebra - 06 Diagonalization & Matrix Powers (TH).pdf',
+        downloadUrl: '/handbooks/linear-algebra/th/Linear-Algebra - 06 Diagonalization & Matrix Powers.pdf',
+        fileSize: '263 KB',
+        pages: 20,
+        available: true,
+      },
+      en: {
+        lang: 'en',
+        label: 'English (EN)',
+        shortLabel: 'EN',
+        filename: 'Linear-Algebra - 06 Diagonalization & Matrix Powers (EN).pdf',
+        downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra - 06 Diagonalization & Matrix Powers.pdf',
+        fileSize: '234 KB',
+        pages: 22,
+        available: true,
+      },
+    },
+  },
+  {
+    id: 'la-07-symmetric-spectral',
+    code: 'LA-07',
+    title: 'Linear Algebra Volume 7: Symmetric Matrices & The Spectral Theorem Handbook',
+    titleTh: 'พีชคณิตเชิงเส้น เล่ม 7: คู่มือเมทริกซ์สมมาตรและทฤษฎีบทสเปกตรัม',
+    subjectId: 'linear-algebra',
+    subjectName: 'Linear Algebra',
+    subjectNameTh: 'พีชคณิตเชิงเส้น',
+    topicIds: ['symmetric-matrices'],
+    filename: 'Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem.pdf',
+    downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem.pdf',
+    fileSize: '205 KB',
+    badge: 'Volume 07',
+    badgeTh: 'เล่มที่ 07',
+    series: 'core',
+    isNew: true,
+    pages: { th: 18, en: 19 },
+    author: 'Synthesized from Gilbert Strang (5th Ed., Ch. 6.4) & Kenji Hiranabe',
+    authorTh: 'สังเคราะห์จาก Gilbert Strang (พิมพ์ครั้งที่ 5 บทที่ 6.4) และ Kenji Hiranabe',
+    description:
+      'Universal orthogonal diagonalization S = QΛQᵀ, real eigenvalue and orthogonal eigenvector proofs, rank-1 projection decomposition S = ∑ λᵢ qᵢ qᵢᵀ, spectral functional calculus, Sylvester\'s Law of Inertia (pivot signs = eigenvalue signs), spectrum slicing bisection, complex Hermitian matrices H = UΛUᴴ, and 7 Fast-Tracks.',
+    descriptionTh:
+      'การแปลงทแยงมุมเชิงตั้งฉากสากล S = QΛQᵀ, การพิสูจน์ไอเกนแวลูจำนวนจริงและไอเกนเวกเตอร์ตั้งฉาก, การกระจายตัวฉายภาพอันดับหนึ่ง (Rank-1 Projections) S = ∑ λᵢ qᵢ qᵢᵀ, แคลคูลัสฟังก์ชันสเปกตรัม, กฎความเฉื่อยของซิลเวสเตอร์ (เครื่องหมายไพวอต = เครื่องหมายไอเกนแวลู), การสไลซ์สเปกตรัม, เมทริกซ์แฮร์มีเชียนเชิงซ้อน และ 7 สูตรลัด',
+    tags: ['Symmetric Matrices', 'Spectral Theorem', 'Orthogonal Diagonalization', 'Rank-1 Projections', 'Sylvesters Law of Inertia', 'Hermitian Matrices'],
+    editions: {
+      th: {
+        lang: 'th',
+        label: 'ภาษาไทย (TH)',
+        shortLabel: 'TH',
+        filename: 'Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem (TH).pdf',
+        downloadUrl: '/handbooks/linear-algebra/th/Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem.pdf',
+        fileSize: '232 KB',
+        pages: 18,
+        available: true,
+      },
+      en: {
+        lang: 'en',
+        label: 'English (EN)',
+        shortLabel: 'EN',
+        filename: 'Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem (EN).pdf',
+        downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem.pdf',
+        fileSize: '205 KB',
+        pages: 19,
+        available: true,
+      },
+    },
+  },
+  {
+    id: 'la-08-positive-definite',
+    code: 'LA-08',
+    title: 'Linear Algebra Volume 8: Positive Definite Matrices & Quadratic Forms Handbook',
+    titleTh: 'พีชคณิตเชิงเส้น เล่ม 8: คู่มือเมทริกซ์โพซิตีฟเดฟินิตและรูปแบบกำลังสอง',
+    subjectId: 'linear-algebra',
+    subjectName: 'Linear Algebra',
+    subjectNameTh: 'พีชคณิตเชิงเส้น',
+    topicIds: ['positive-definite'],
+    filename: 'Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms.pdf',
+    downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms.pdf',
+    fileSize: '178 KB',
+    badge: 'Volume 08',
+    badgeTh: 'เล่มที่ 08',
+    series: 'core',
+    isNew: true,
+    pages: { th: 21, en: 21 },
+    author: 'Synthesized from Gilbert Strang (5th Ed., Ch. 6.5, 7.1-7.2) & Kenji Hiranabe',
+    authorTh: 'สังเคราะห์จาก Gilbert Strang (พิมพ์ครั้งที่ 5 บทที่ 6.5, 7.1-7.2) และ Kenji Hiranabe',
+    description:
+      'Energy topography f(x) = xᵀ S x, the 5 canonical equivalence tests for positive definiteness (S ≻ 0), completing the square ↔ S = LDLᵀ, Cholesky factorization S = LLᵀ, geometry of hyper-ellipsoids (semi-axes aᵢ = 1/√λᵢ), Rayleigh quotient bounds, multivariable Hessian optimization H ≻ 0, and 6 calculation Fast-Tracks.',
+    descriptionTh:
+      'ภูมิทัศน์พลังงาน f(x) = xᵀ S x, การทดสอบความสมมูลทั้ง 5 ประการสำหรับเมทริกซ์บวกแน่นอน (S ≻ 0), การจัดรูปกำลังสองสมบูรณ์เชื่อมโยง S = LDLᵀ, การแยกตัวประกอบโชเลสกี S = LLᵀ, เรขาคณิตของทรงรีไฮเพอร์ (แกนหลัก aᵢ = 1/√λᵢ), ขอบเขตผลหารเรย์ลี (Rayleigh Quotient), การหาค่าสุดขีดเมทริกซ์เฮสเซียน และ 6 สูตรลัด',
+    tags: ['Positive Definite', 'Quadratic Forms', 'Cholesky Factorization', 'Energy Landscapes', 'Ellipsoids', 'Rayleigh Quotient', 'Hessian Optimization'],
+    editions: {
+      th: {
+        lang: 'th',
+        label: 'ภาษาไทย (TH)',
+        shortLabel: 'TH',
+        filename: 'Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms (TH).pdf',
+        downloadUrl: '/handbooks/linear-algebra/th/Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms.pdf',
+        fileSize: '221 KB',
+        pages: 21,
+        available: true,
+      },
+      en: {
+        lang: 'en',
+        label: 'English (EN)',
+        shortLabel: 'EN',
+        filename: 'Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms (EN).pdf',
+        downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms.pdf',
+        fileSize: '178 KB',
+        pages: 21,
+        available: true,
+      },
+    },
+  },
+  {
+    id: 'la-orthogonality',
+    code: 'LA-ORTH',
+    title: 'Linear Algebra: Orthogonality, Projections & Least Squares Master Handbook',
+    titleTh: 'พีชคณิตเชิงเส้น: คู่มือเจาะลึกความตั้งฉาก การฉายเวกเตอร์ และกำลังสองน้อยที่สุด',
     subjectId: 'linear-algebra',
     subjectName: 'Linear Algebra',
     subjectNameTh: 'พีชคณิตเชิงเส้น',
@@ -654,8 +818,10 @@ export const HANDBOOKS_CATALOG = [
     filename: 'Linear-Algebra-Orthogonality-Master.pdf',
     downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra-Orthogonality-Master.pdf',
     fileSize: '146 KB',
-    badge: 'Volume 06',
-    badgeTh: 'เล่มที่ 06',
+    badge: 'Master Compendium',
+    badgeTh: 'รวมเนื้อหาเข้มข้น',
+    series: 'compendium',
+    pages: { th: 22, en: 25 },
     author: 'Synthesized from Strang & TUDelft references',
     authorTh: 'สังเคราะห์จากเอกสารอ้างอิง Strang & TUDelft',
     description:
@@ -671,6 +837,7 @@ export const HANDBOOKS_CATALOG = [
         filename: 'Linear-Algebra-Orthogonality-Master (TH).pdf',
         downloadUrl: '/handbooks/linear-algebra/th/Linear-Algebra-Orthogonality-Master.pdf',
         fileSize: '175 KB',
+        pages: 22,
         available: true,
       },
       en: {
@@ -680,15 +847,16 @@ export const HANDBOOKS_CATALOG = [
         filename: 'Linear-Algebra-Orthogonality-Master (EN).pdf',
         downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra-Orthogonality-Master.pdf',
         fileSize: '146 KB',
+        pages: 25,
         available: true,
       },
     },
   },
   {
     id: 'la-eigenvalues',
-    code: 'LA-07',
-    title: 'Linear Algebra Volume 7: Eigenvalues & Matrix Decompositions Master Handbook',
-    titleTh: 'พีชคณิตเชิงเส้น เล่ม 7: คู่มือเจาะลึกไอเกนแวลูและการแปลงรูปเมทริกซ์',
+    code: 'LA-EIG',
+    title: 'Linear Algebra: Eigenvalues & Dynamical Systems Master Handbook',
+    titleTh: 'พีชคณิตเชิงเส้น: คู่มือเจาะลึกไอเกนแวลูและการแปลงรูปเมทริกซ์ฉบับรวม',
     subjectId: 'linear-algebra',
     subjectName: 'Linear Algebra',
     subjectNameTh: 'พีชคณิตเชิงเส้น',
@@ -696,8 +864,10 @@ export const HANDBOOKS_CATALOG = [
     filename: 'Linear-Algebra-Eigenvalues-Master.pdf',
     downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra-Eigenvalues-Master.pdf',
     fileSize: '128 KB',
-    badge: 'Volume 07',
-    badgeTh: 'เล่มที่ 07',
+    badge: 'Master Compendium',
+    badgeTh: 'รวมเนื้อหาเข้มข้น',
+    series: 'compendium',
+    pages: { th: 17, en: 19 },
     author: 'Synthesized from Strang & MIT Linear Algebra series',
     authorTh: 'สังเคราะห์จากเอกสารอ้างอิง Strang & MIT 18.06',
     description:
@@ -713,6 +883,7 @@ export const HANDBOOKS_CATALOG = [
         filename: 'Linear-Algebra-Eigenvalues-Master (TH).pdf',
         downloadUrl: '/handbooks/linear-algebra/th/Linear-Algebra-Eigenvalues-Master.pdf',
         fileSize: '168 KB',
+        pages: 17,
         available: true,
       },
       en: {
@@ -722,6 +893,7 @@ export const HANDBOOKS_CATALOG = [
         filename: 'Linear-Algebra-Eigenvalues-Master (EN).pdf',
         downloadUrl: '/handbooks/linear-algebra/en/Linear-Algebra-Eigenvalues-Master.pdf',
         fileSize: '128 KB',
+        pages: 19,
         available: true,
       },
     },
@@ -740,6 +912,8 @@ export const HANDBOOKS_CATALOG = [
     fileSize: '682 KB',
     badge: 'Exam Master Guide',
     badgeTh: 'คู่มือสอบไฟนอล',
+    series: 'exam',
+    pages: { th: 22, en: 22 },
     author: 'Synthesized from Gilbert Strang & Kenji Hiranabe Visual Linear Algebra',
     authorTh: 'สังเคราะห์จาก Gilbert Strang และ Kenji Hiranabe (The Art of Linear Algebra)',
     description:
@@ -755,6 +929,7 @@ export const HANDBOOKS_CATALOG = [
         filename: 'Linear-Algebra-Prefinals-Explanation (TH).pdf',
         downloadUrl: '/handbooks/linear-algebra/th/Prefinals-Explanation.pdf',
         fileSize: '682 KB',
+        pages: 22,
         available: true,
       },
       en: {
@@ -764,6 +939,7 @@ export const HANDBOOKS_CATALOG = [
         filename: 'Linear-Algebra-Prefinals-Explanation.pdf',
         downloadUrl: '/handbooks/linear-algebra/en/Prefinals-Explanation.pdf',
         fileSize: '682 KB',
+        pages: 22,
         available: true,
       },
     },
@@ -858,43 +1034,63 @@ export const HANDBOOKS_CATALOG = [
 
 /**
  * Resolve the specific language edition for a handbook, with fallback if only one edition exists.
+ * Automatically wraps downloadUrl with withBase() for environment compatibility.
  */
 export function getHandbookEdition(handbook, preferredLang = 'en') {
   if (!handbook) return null;
   const editions = handbook.editions || {};
+  let chosen = null;
   if (preferredLang === 'th' && editions.th?.available) {
-    return editions.th;
+    chosen = editions.th;
+  } else if (editions.en?.available) {
+    chosen = editions.en;
+  } else if (editions.th?.available) {
+    chosen = editions.th;
+  } else {
+    chosen = {
+      lang: 'en',
+      label: 'PDF',
+      shortLabel: 'PDF',
+      filename: handbook.filename,
+      downloadUrl: handbook.downloadUrl,
+      fileSize: handbook.fileSize,
+      available: true,
+    };
   }
-  if (editions.en?.available) {
-    return editions.en;
-  }
-  if (editions.th?.available) {
-    return editions.th;
-  }
+
   return {
-    lang: 'en',
-    label: 'PDF',
-    shortLabel: 'PDF',
-    filename: handbook.filename,
-    downloadUrl: handbook.downloadUrl,
-    fileSize: handbook.fileSize,
-    available: true,
+    ...chosen,
+    downloadUrl: withBase(chosen.downloadUrl),
   };
 }
 
 /**
- * Find handbooks relevant to a specific topic ID
+ * Series priority comparator: Core volumes (01-08) -> Master Compendiums -> Exam Guides -> Reference
+ */
+const SERIES_PRIORITY = { core: 1, compendium: 2, exam: 3, reference: 4 };
+
+/**
+ * Find all handbooks relevant to a specific topic ID, ordered by pedagogical series priority.
+ */
+export function getHandbooksForTopic(topicId) {
+  if (!topicId) return [];
+  return HANDBOOKS_CATALOG
+    .filter((h) => h.topicIds && h.topicIds.includes(topicId))
+    .sort((a, b) => (SERIES_PRIORITY[a.series || 'core'] || 99) - (SERIES_PRIORITY[b.series || 'core'] || 99));
+}
+
+/**
+ * Find handbooks relevant to a specific topic ID (alias for backward compatibility)
  */
 export function getHandbooksByTopic(topicId) {
-  if (!topicId) return [];
-  return HANDBOOKS_CATALOG.filter((h) => h.topicIds && h.topicIds.includes(topicId));
+  return getHandbooksForTopic(topicId);
 }
 
 /**
  * Find the primary handbook for a specific topic ID (or null)
  */
 export function getPrimaryHandbookForTopic(topicId) {
-  const matches = getHandbooksByTopic(topicId);
+  const matches = getHandbooksForTopic(topicId);
   return matches.length > 0 ? matches[0] : null;
 }
 

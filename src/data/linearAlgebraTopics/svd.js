@@ -55,6 +55,16 @@ const svdData = {
       exampleNote:
         'If A has independent columns, A⁺ = (AᵀA)⁻¹Aᵀ (the exact normal equations least-squares projector!). If A is invertible, A⁺ = A⁻¹.',
     },
+    {
+      title: 'The Gram Bridge & SVD Construction: AᵀA and AAᵀ',
+      content:
+        'To construct SVD without circular definitions, multiply A by its transpose: AᵀA = (VΣᵀUᵀ)(UΣVᵀ) = V(ΣᵀΣ)Vᵀ. Because AᵀA is symmetric positive semidefinite, its orthonormal eigenvectors are PRECISELY the right singular vectors vᵢ, and its eigenvalues are the squared singular values λᵢ = σᵢ²! The left singular vectors follow as uᵢ = (1/σᵢ)Avᵢ.',
+      exampleLabel: 'The 3-Step SVD Construction Algorithm',
+      latex:
+        'A^T A \\mathbf{v}_i = \\sigma_i^2 \\mathbf{v}_i, \\quad \\sigma_i = \\sqrt{\\lambda_i(A^T A)}, \\quad \\mathbf{u}_i = \\frac{1}{\\sigma_i} A \\mathbf{v}_i \\quad (i = 1, \\dots, r)',
+      exampleNote:
+        'This connects SVD directly to the Spectral Theorem for symmetric matrices (Volume 07 & 08).',
+    },
   ],
   equations: [
     {
@@ -113,6 +123,32 @@ const svdData = {
           unit: '\\mathbb{R}^n',
           description: 'The solution vector minimizing ||Ax - b|| that simultaneously minimizes ||x||.',
           connections: 'Resolves rank-deficient systems where normal equations fail due to non-invertibility.',
+        },
+      ],
+    },
+    {
+      name: 'Singular Vector Subspace Decomposition',
+      latex: 'A \\mathbf{v}_i = \\sigma_i \\mathbf{u}_i \\; (i \\le r), \\quad A \\mathbf{v}_j = \\mathbf{0} \\; (j > r), \\quad C(A) = \\text{span}(\\mathbf{u}_1, \\dots, \\mathbf{u}_r)',
+      summary:
+        'Maps orthogonal unit vectors vᵢ directly to orthogonal vectors uᵢ scaled by σᵢ, reading off the 4 fundamental subspaces.',
+      exampleDescription: 'Reading the 4 subspaces from SVD columns',
+      exampleLatex:
+        '\\mathbf{v}_1, \\dots, \\mathbf{v}_r \\in C(A^T); \\quad \\mathbf{v}_{r+1}, \\dots, \\mathbf{v}_n \\in N(A); \\quad \\mathbf{u}_1, \\dots, \\mathbf{u}_r \\in C(A); \\quad \\mathbf{u}_{r+1}, \\dots, \\mathbf{u}_m \\in N(A^T)',
+      conditions: ['r = rank(A) ≤ min(m, n)'],
+      variables: [
+        {
+          symbol: '\\mathbf{v}_i',
+          name: 'Right Singular Basis Vector',
+          unit: '\\mathbb{R}^n',
+          description: 'Eigenvector of AᵀA; first r span the row space, remaining n-r span the nullspace.',
+          connections: 'Guaranteed mutually orthogonal with unit norm: ||vᵢ|| = 1.',
+        },
+        {
+          symbol: '\\mathbf{u}_i',
+          name: 'Left Singular Basis Vector',
+          unit: '\\mathbb{R}^m',
+          description: 'Eigenvector of AAᵀ; first r span the column space, remaining m-r span the left nullspace.',
+          connections: 'Forms the output orthonormal frame for the transformed ellipsoid.',
         },
       ],
     },

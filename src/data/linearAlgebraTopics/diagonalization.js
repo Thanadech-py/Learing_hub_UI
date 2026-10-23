@@ -55,6 +55,46 @@ const diagonalizationData = {
       exampleNote:
         'System stability: stable if Re(λᵢ) < 0 for all i (trajectories spiral into origin), saddle if eigenvalues have opposite signs.',
     },
+    {
+      title: 'Algebraic vs. Geometric Multiplicity & Defective Shear Matrices',
+      content:
+        'The algebraic multiplicity AM(λ) is the root repetition in det(A - λI) = 0. The geometric multiplicity GM(λ) = dim(null(A - λI)) is the number of independent eigenvectors. A matrix is diagonalizable if and only if GM(λ) = AM(λ) for all eigenvalues. When GM < AM, the matrix is defective and acts as a coordinate shear.',
+      exampleLabel: 'Defective Shear Matrix Check for A = [[3, 1], [0, 3]]',
+      latex:
+        'A = \\begin{bmatrix} 3 & 1 \\\\ 0 & 3 \\end{bmatrix} \\implies (3-\\lambda)^2 = 0 \\;(\\text{AM}=2), \\quad A - 3I = \\begin{bmatrix} 0 & 1 \\\\ 0 & 0 \\end{bmatrix} \\implies \\text{GM} = \\dim(\\text{null}) = 1 < 2',
+      exampleNote:
+        'Because GM = 1 < AM = 2, A lacks a full eigenvector basis and cannot be diagonalized into XΛX⁻¹.',
+    },
+    {
+      title: 'Markov Transition Chains & Steady-State Equilibrium',
+      content:
+        'A Markov matrix M has non-negative entries with columns summing to 1. By the Perron-Frobenius theorem, λ₁ = 1 is always the maximum eigenvalue with |λᵢ| < 1 for all other i. As k → ∞, Mᵏu₀ converges to a unique steady-state distribution u∞ satisfying Mu∞ = u∞.',
+      exampleLabel: 'Worked 2×2 Markov Steady-State Solution',
+      latex:
+        'M = \\begin{bmatrix} 0.8 & 0.3 \\\\ 0.2 & 0.7 \\end{bmatrix} \\implies (M - I)\\mathbf{u}_\\infty = \\begin{bmatrix} -0.2 & 0.3 \\\\ 0.2 & -0.3 \\end{bmatrix}\\mathbf{u}_\\infty = \\mathbf{0} \\implies \\mathbf{u}_\\infty = \\begin{bmatrix} 0.6 \\\\ 0.4 \\end{bmatrix}',
+      exampleNote:
+        'Notice that regardless of the initial starting state u₀, M¹⁰⁰u₀ settles exactly into 60% in state 1 and 40% in state 2.',
+    },
+    {
+      title: 'Similarity Invariants & The Jordan Canonical Form',
+      content:
+        'Two matrices A and B are similar if B = P⁻¹AP for an invertible basis matrix P. Similarity preserves eigenvalues, trace, determinant, characteristic polynomial, and rank. If defective, A cannot reach diagonal Λ, but can always achieve Jordan form J = M⁻¹AM consisting of Jordan blocks Jᵢ(λ) with 1s on the super-diagonal.',
+      exampleLabel: 'Jordan Block Structure',
+      latex:
+        'J = \\begin{bmatrix} \\lambda & 1 & 0 \\\\ 0 & \\lambda & 1 \\\\ 0 & 0 & \\lambda \\end{bmatrix} = \\lambda I + N, \\quad N^3 = O \\; (\\text{Nilpotent})',
+      exampleNote:
+        'Because N is nilpotent, matrix exponentials e^{Jt} terminate as finite Taylor polynomials: e^{Jt} = e^{λt}(I + Nt + N²t²/2).',
+    },
+    {
+      title: '⚡ Fast-Track 6.6: Cayley-Hamilton Degree Reduction for High Powers',
+      content:
+        'Every square matrix satisfies its own characteristic equation: p(A) = O. For a 2×2 matrix, A² - tr(A)A + det(A)I = O. This allows computing any astronomical matrix power Aᵏ by polynomial division Aᵏ = q(A)p(A) + r(A) = r(A), reducing the power to a simple linear combination c₁A + c₀I.',
+      exampleLabel: 'Degree Reduction for A = [[4, 1], [2, 3]]',
+      latex:
+        'p(\\lambda) = \\lambda^2 - 7\\lambda + 10 = (\\lambda - 5)(\\lambda - 2) = 0 \\implies A^2 = 7A - 10I, \\quad A^k = c_1 A + c_0 I',
+      exampleNote:
+        'Solving 5ᵏ = 5c₁ + c₀ and 2ᵏ = 2c₁ + c₀ gives exact matrix powers without inverting an eigenvector matrix!',
+    },
   ],
   equations: [
     {
@@ -106,6 +146,58 @@ const diagonalizationData = {
           unit: '\\mathbb{R}^{n \\times n}',
           description: 'The continuous-time state transition matrix: I + At + (At)²/2! + ...',
           connections: 'Evaluates to X diag(e^{λ₁t}, ..., e^{λₙt}) X⁻¹.',
+        },
+      ],
+    },
+    {
+      name: 'Markov Steady-State Distribution & Column Stochasticity',
+      latex: 'M \\mathbf{u}_\\infty = 1 \\cdot \\mathbf{u}_\\infty, \\qquad \\sum_{i=1}^n (\\mathbf{u}_\\infty)_i = 1, \\quad \\rho(M) = 1',
+      summary:
+        'Governs probability transition systems converging to stationary equilibria along the eigenvector corresponding to λ = 1.',
+      exampleDescription: 'Steady-state condition (M - I)u = 0 with normalized unit sum',
+      exampleLatex:
+        '\\begin{bmatrix} m_{11}-1 & m_{12} \\\\ m_{21} & m_{22}-1 \\end{bmatrix} \\begin{bmatrix} u_1 \\\\ u_2 \\end{bmatrix} = \\begin{bmatrix} 0 \\\\ 0 \\end{bmatrix}, \\quad u_1 + u_2 = 1',
+      conditions: ['mᵢⱼ ≥ 0 and all columns sum to 1'],
+      variables: [
+        {
+          symbol: 'M',
+          name: 'Markov Transition Matrix',
+          unit: '[0, 1]^{n \\times n}',
+          description: 'Column-stochastic matrix where each entry represents a transition probability.',
+          connections: 'Guaranteed by Perron-Frobenius to have dominant eigenvalue λ₁ = 1.',
+        },
+        {
+          symbol: '\\mathbf{u}_\\infty',
+          name: 'Steady-State Probability Vector',
+          unit: '\\mathbb{R}^n',
+          description: 'The invariant probability distribution unaffected by further transitions.',
+          connections: 'Forms the 1-dimensional nullspace null(M - I).',
+        },
+      ],
+    },
+    {
+      name: 'Jordan Block & Nilpotent Operator Exponential',
+      latex: 'J_i(\\lambda) = \\lambda I_k + N, \\quad e^{J_i t} = e^{\\lambda t} \\sum_{m=0}^{k-1} \\frac{t^m}{m!} N^m',
+      summary:
+        'Canonical representation for non-diagonalizable defective matrices, expanding exponentials via finite nilpotent series.',
+      exampleDescription: 'Exponential of 2×2 Jordan block with superdiagonal 1',
+      exampleLatex:
+        'e^{J t} = \\exp\\left( \\begin{bmatrix} \\lambda & 1 \\\\ 0 & \\lambda \\end{bmatrix} t \\right) = e^{\\lambda t} \\begin{bmatrix} 1 & t \\\\ 0 & 1 \\end{bmatrix}',
+      conditions: ['N is a shift nilpotent operator: Nᵏ = O'],
+      variables: [
+        {
+          symbol: 'J_i',
+          name: 'Jordan Block',
+          unit: '\\mathbb{R}^{k \\times k}',
+          description: 'Square block with eigenvalue λ along diagonal and 1s immediately above.',
+          connections: 'Every square matrix A is similar to a block diagonal Jordan form J = M⁻¹AM.',
+        },
+        {
+          symbol: 'N',
+          name: 'Nilpotent Shift Matrix',
+          unit: '\\mathbb{R}^{k \\times k}',
+          description: 'Strictly upper-triangular operator satisfying Nᵏ = O.',
+          connections: 'Causes linear/polynomial secular growth terms t e^{λt} in differential systems.',
         },
       ],
     },

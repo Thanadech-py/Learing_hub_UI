@@ -53,3 +53,18 @@ $$A^+ = V \Sigma^+ U^T = \sum_{i=1}^r \frac{1}{\sigma_i} \mathbf{v}_i \mathbf{u}
 
 Where $\Sigma^+$ inverts all non-zero singular values along the diagonal. The minimum-norm least-squares solution to $A\mathbf{x} = \mathbf{b}$ is:
 $$\mathbf{x}^+ = A^+ \mathbf{b}$$
+
+---
+
+## 5. The Four Fundamental Subspaces from SVD
+
+The singular vector matrices $U$ and $V$ cleanly partition the four fundamental subspaces of $A$:
+
+| Subspace | Dimension | Orthonormal Basis Columns |
+| :--- | :--- | :--- |
+| **Row Space $C(A^T)$** | $r$ | First $r$ columns of $V$: $\mathbf{v}_1, \dots, \mathbf{v}_r$ |
+| **Nullspace $N(A)$** | $n - r$ | Remaining $n - r$ columns of $V$: $\mathbf{v}_{r+1}, \dots, \mathbf{v}_n$ |
+| **Column Space $C(A)$** | $r$ | First $r$ columns of $U$: $\mathbf{u}_1, \dots, \mathbf{u}_r$ |
+| **Left Nullspace $N(A^T)$** | $m - r$ | Remaining $m - r$ columns of $U$: $\mathbf{u}_{r+1}, \dots, \mathbf{u}_m$ |
+
+This unifies the entire linear algebra landscape into an explicit, orthogonal geometric dictionary!

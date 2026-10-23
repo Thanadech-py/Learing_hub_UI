@@ -42,3 +42,27 @@ Solving for coefficients:
 $$\ell_{11} = \sqrt{s_{11}}, \qquad \ell_{21} = \frac{s_{21}}{\ell_{11}}, \qquad \ell_{22} = \sqrt{s_{22} - \ell_{21}^2}$$
 
 Cholesky decomposition requires only $\frac{1}{6}n^3$ flops—half the computational cost of standard $LU$ decomposition.
+
+---
+
+## 4. Completing the Square ↔ The Pivot Bridge
+
+Every quadratic form $f(\mathbf{x}) = \mathbf{x}^T S \mathbf{x}$ decomposes into independent squares without cross-terms:
+$$f(x_1, \dots, x_n) = d_1(x_1 + \dots)^2 + d_2(x_2 + \dots)^2 + \dots + d_n(x_n)^2$$
+
+The multipliers $d_1, \dots, d_n$ are precisely the diagonal pivots from $S = L D L^T$.
+- If all $d_i > 0$, the sum of squares is strictly positive for $\mathbf{x} \neq \mathbf{0}$, proving $S \succ 0$.
+- If any $d_i \le 0$, the surface has zero curvature or saddles into negative energy.
+
+---
+
+## 5. Ellipsoid Geometry & The Rayleigh Quotient
+
+The level surface $\mathbf{x}^T S \mathbf{x} = 1$ is an ellipsoid whose principal axes align with the eigenvectors $\mathbf{q}_i$ of $S$.
+- **Semi-axis lengths**: $a_i = \frac{1}{\sqrt{\lambda_i}}$ (steeper eigenvalues create shorter axes).
+- **2D Ellipse Area**: $\text{Area} = \frac{\pi}{\sqrt{\lambda_1 \lambda_2}} = \frac{\pi}{\sqrt{\det(S)}}$.
+
+The **Rayleigh Quotient** bounds energy amplification in any direction:
+$$\lambda_{\min} \le R(\mathbf{x}) = \frac{\mathbf{x}^T S \mathbf{x}}{\mathbf{x}^T \mathbf{x}} \le \lambda_{\max}$$
+
+The minimum occurs at $\mathbf{q}_{\min}$ and the maximum occurs at $\mathbf{q}_{\max}$.

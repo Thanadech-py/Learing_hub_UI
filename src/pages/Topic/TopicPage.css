@@ -269,7 +269,7 @@
 }
 
 .topic-workbench--split {
-  grid-template-columns: minmax(580px, 1.38fr) minmax(400px, 1fr);
+  grid-template-columns: minmax(480px, 1.18fr) minmax(460px, 1fr);
 }
 
 .topic-workbench--stacked {
@@ -843,6 +843,10 @@
     position: static !important;
     max-height: none !important;
     overflow-y: visible !important;
+  }
+
+  .topic-layout-toggle--workspace {
+    display: none !important;
   }
 }
 

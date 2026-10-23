@@ -42,3 +42,24 @@ $$\mathbf{u}(t) = e^{At}\mathbf{u}(0) = X e^{\Lambda t} X^{-1}\mathbf{u}(0) = \s
 
 > [!NOTE]
 > **Stability Criterion**: The origin is asymptotically stable if and only if $\text{Re}(\lambda_i) < 0$ for all eigenvalues.
+
+---
+
+## 4. Multiplicity & Defective Matrices
+
+For each distinct eigenvalue $\lambda$:
+- **Algebraic Multiplicity (AM)**: The multiplicity of $\lambda$ as a root of $\det(A - \lambda I) = 0$.
+- **Geometric Multiplicity (GM)**: The dimension of the eigenspace $\text{null}(A - \lambda I)$, i.e. the number of independent eigenvectors.
+
+A matrix is diagonalizable if and only if $\text{GM}(\lambda) = \text{AM}(\lambda)$ for every eigenvalue. When $\text{GM} < \text{AM}$, the matrix is **defective** (missing eigenvectors) and can only be reduced to **Jordan Canonical Form** $J = M^{-1}AM$.
+
+---
+
+## 5. Cayley-Hamilton Fast Matrix Powers
+
+Every square matrix satisfies its own characteristic polynomial:
+$$p(A) = A^n - \text{tr}(A)A^{n-1} + \dots + (-1)^n \det(A)I = O$$
+
+For any large power $k$, dividing $x^k$ by $p(x)$ gives:
+$$x^k = q(x)p(x) + r(x) \implies A^k = r(A)$$
+where $\text{deg}(r) < n$. This reduces calculating $A^k$ to evaluating an $(n-1)$-degree polynomial without needing eigenvector inversion!

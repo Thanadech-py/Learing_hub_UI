@@ -11,6 +11,47 @@ const SUBJECT_ACCENTS = {
   mathematics: '#f59e0b',
 };
 
+const TOPIC_TITLES = {
+  vectors: { en: 'Vectors', th: 'เวกเตอร์' },
+  'linear-combinations': { en: 'Linear Combinations', th: 'ผลรวมเชิงเส้น' },
+  matrices: { en: 'Matrices', th: 'เมทริกซ์' },
+  'matrix-multiplication': { en: 'Matrix Multiplication', th: 'การคูณเมทริกซ์' },
+  'linear-transformations': { en: 'Linear Transformations', th: 'การแปลงเชิงเส้น' },
+  'systems-of-equations': { en: 'Systems of Equations', th: 'ระบบสมการเชิงเส้น' },
+  determinants: { en: 'Determinants', th: 'ดีเทอร์มิแนนต์' },
+  'vector-spaces': { en: 'Vector Spaces', th: 'ปริภูมิเวกเตอร์' },
+  orthogonal: { en: 'Projections & Least Squares', th: 'การฉายภาพและกำลังสองน้อยที่สุด' },
+  'eigenvalues-and-eigenvectors': { en: 'Eigenvalues & Eigenvectors', th: 'ไอเกนแวลูและไอเกนเวกเตอร์' },
+  diagonalization: { en: 'Diagonalization & Powers', th: 'การแปลงทแยงมุมและเลขยกกำลัง' },
+  'symmetric-matrices': { en: 'Symmetric & Spectral', th: 'เมทริกซ์สมมาตรและทฤษฎีบทสเปกตรัม' },
+  'positive-definite': { en: 'Positive Definite Matrices', th: 'เมทริกซ์โพซิตีฟเดฟินิต' },
+  svd: { en: 'Singular Value Decomposition (SVD)', th: 'การแยกค่าเอกฐาน (SVD)' },
+  kinematics: { en: 'Kinematics', th: 'จลนศาสตร์' },
+  'newtons-laws': { en: "Newton's Laws", th: 'กฎของนิวตัน' },
+  'work-and-energy': { en: 'Work & Energy', th: 'งานและพลังงาน' },
+  momentum: { en: 'Momentum', th: 'โมเมนตัม' },
+  'circular-motion': { en: 'Rotational Dynamics', th: 'พลศาสตร์การหมุน' },
+  elasticity: { en: 'Elasticity & Modulus', th: 'ความยืดหยุ่นและมอดุลัส' },
+  'fluid-mechanics': { en: 'Fluid Mechanics', th: 'กลศาสตร์ของไหล' },
+  oscillations: { en: 'Oscillations', th: 'การแกว่งกวัด' },
+  waves: { en: 'Waves & Sound', th: 'คลื่นและเสียง' },
+  thermodynamics: { en: 'Thermodynamics', th: 'อุณหพลศาสตร์' },
+  'units-and-measurement': { en: 'Units & Measurement', th: 'หน่วยและมิติ' },
+  'c-programming': { en: 'C Programming', th: 'การเขียนโปรแกรมภาษา C' },
+  'py-programming': { en: 'Python Programming', th: 'การเขียนโปรแกรมภาษา Python' },
+};
+
+const LA_SERIES_ROADMAP = [
+  { code: 'LA-01', id: 'la-01-vectors', labelEn: '01 Vectors', labelTh: '01 เวกเตอร์' },
+  { code: 'LA-02', id: 'la-02-solving-elimination', labelEn: '02 Elimination', labelTh: '02 การกำจัดเกาส์' },
+  { code: 'LA-03', id: 'la-03-vector-spaces', labelEn: '03 Subspaces', labelTh: '03 ปริภูมิย่อย' },
+  { code: 'LA-04', id: 'la-04-determinants', labelEn: '04 Determinants', labelTh: '04 ดีเทอร์มิแนนต์' },
+  { code: 'LA-05', id: 'la-05-linear-transformations', labelEn: '05 Transforms', labelTh: '05 การแปลงเชิงเส้น' },
+  { code: 'LA-06', id: 'la-06-diagonalization', labelEn: '06 Diagonalization', labelTh: '06 เมทริกซ์ทแยงมุม', isNew: true },
+  { code: 'LA-07', id: 'la-07-symmetric-spectral', labelEn: '07 Symmetric & Spectral', labelTh: '07 เมทริกซ์สมมาตร', isNew: true },
+  { code: 'LA-08', id: 'la-08-positive-definite', labelEn: '08 Positive Definite', labelTh: '08 โพซิตีฟเดฟินิต', isNew: true },
+];
+
 export default function HandbooksPage() {
   const { lang, t } = useLanguage();
   const isThai = lang === 'th';
@@ -87,6 +128,23 @@ export default function HandbooksPage() {
     }
   };
 
+  const scrollToHandbook = (id) => {
+    if (selectedSubject !== 'all' && selectedSubject !== 'linear-algebra') {
+      setSelectedSubject('linear-algebra');
+    }
+    setExpandedIds((prev) => ({ ...prev, [id]: true }));
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('handbook-strip--highlight');
+        setTimeout(() => el.classList.remove('handbook-strip--highlight'), 2200);
+      }
+    }, 100);
+  };
+
+  const showLaRoadmap = selectedSubject === 'all' || selectedSubject === 'linear-algebra';
+
   return (
     <div className="handbooks-page">
       {/* Breadcrumb Navigation */}
@@ -140,6 +198,39 @@ export default function HandbooksPage() {
             </p>
           </div>
         </div>
+
+        {/* Linear Algebra Full Curriculum Roadmap Strip */}
+        {showLaRoadmap && (
+          <div className="la-roadmap-card">
+            <div className="la-roadmap-card__header">
+              <span className="la-roadmap-card__badge">📐 LINEAR ALGEBRA MASTER SERIES</span>
+              <h3 className="la-roadmap-card__title">
+                {t('Core Curriculum Volumes 01 → 08 Complete Roadmap', 'แผนผังหลักสูตรพีชคณิตเชิงเส้น เล่ม 01 ถึง 08 ครบวงจร')}
+              </h3>
+            </div>
+            <p className="la-roadmap-card__desc">
+              {t(
+                'Volumes 06 (Diagonalization), 07 (Symmetric & Spectral), and 08 (Positive Definite) are newly published in both Thai and English. Click any volume below to jump directly to its download entry:',
+                'เล่มที่ 06 (การแปลงทแยงมุม), 07 (เมทริกซ์สมมาตรและสเปกตรัม) และ 08 (โพซิตีฟเดฟินิต) ได้รับการเพิ่มเข้ามาใหม่ทั้งฉบับภาษาไทยและอังกฤษ คลิกเล่มใดก็ได้เพื่อเลื่อนไปยังรายการดาวน์โหลด:'
+              )}
+            </p>
+            <div className="la-roadmap-chips">
+              {LA_SERIES_ROADMAP.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`la-roadmap-chip ${item.isNew ? 'la-roadmap-chip--new' : ''}`}
+                  onClick={() => scrollToHandbook(item.id)}
+                  title={`${isThai ? item.labelTh : item.labelEn} (${item.code})`}
+                >
+                  <span className="la-roadmap-chip__code">{item.code}</span>
+                  <span className="la-roadmap-chip__label">{isThai ? item.labelTh : item.labelEn}</span>
+                  {item.isNew && <span className="la-roadmap-chip__new-tag">✨ NEW</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Toolbar: Subject Tabs + Language Selector + Search */}
@@ -197,8 +288,8 @@ export default function HandbooksPage() {
               type="search"
               className="handbooks-search-input"
               placeholder={t(
-                'Filter releases by code (e.g. PHY-01), title, topic, or keyword...',
-                'ค้นหารหัสเอกสาร (เช่น PHY-01), ชื่อเรื่อง, คำสำคัญ หรือหัวข้อ...'
+                'Filter releases by code (e.g. LA-06, PHY-01), title, topic, or keyword...',
+                'ค้นหารหัสเอกสาร (เช่น LA-06, PHY-01), ชื่อเรื่อง, คำสำคัญ หรือหัวข้อ...'
               )}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -247,7 +338,7 @@ export default function HandbooksPage() {
               {t('DISCIPLINE & TAGS', 'หมวดวิชาและหัวข้อสำคัญ')}
             </div>
             <div className="handbook-ledger__col handbook-ledger__col--size">
-              {t('AVAILABLE EDITIONS', 'ขนาดไฟล์แยกภาษา')}
+              {t('AVAILABLE EDITIONS & PAGES', 'ขนาดไฟล์และจำนวนหน้า')}
             </div>
             <div className="handbook-ledger__col handbook-ledger__col--actions">
               {t('DIRECT ISO/PDF DOWNLOAD & PREVIEW', 'เลือกดาวน์โหลดแยกภาษา / เปิดอ่าน')}
@@ -276,7 +367,10 @@ export default function HandbooksPage() {
               return (
                 <article
                   key={handbook.id}
-                  className={`handbook-strip ${isExpanded ? 'handbook-strip--expanded' : ''}`}
+                  id={handbook.id}
+                  className={`handbook-strip ${isExpanded ? 'handbook-strip--expanded' : ''} ${
+                    handbook.isNew ? 'handbook-strip--new' : ''
+                  }`}
                   style={{ '--strip-accent': accent }}
                 >
                   {/* Main Horizontal Strip Row */}
@@ -288,7 +382,14 @@ export default function HandbooksPage() {
                         <span className="handbook-strip__code">{handbook.code || 'DOC'}</span>
                       </div>
                       <div className="handbook-strip__titles">
-                        <h2 className="handbook-strip__title">{primaryTitle}</h2>
+                        <div className="handbook-strip__title-row">
+                          <h2 className="handbook-strip__title">{primaryTitle}</h2>
+                          {handbook.isNew && (
+                            <span className="handbook-strip__new-badge">
+                              ✨ {t('NEW', 'ใหม่')}
+                            </span>
+                          )}
+                        </div>
                         <p className="handbook-strip__subtitle">{secondaryTitle}</p>
                       </div>
                     </div>
@@ -313,12 +414,14 @@ export default function HandbooksPage() {
                       </div>
                     </div>
 
-                    {/* Col 3: Available Editions & File Sizes */}
+                    {/* Col 3: Available Editions, Pages & File Sizes */}
                     <div className="handbook-strip__sizes">
                       {thEd ? (
                         <div className="handbook-strip__size-row handbook-strip__size-row--th">
                           <span className="handbook-strip__lang-dot">🇹🇭 TH</span>
-                          <span className="handbook-strip__size-val">{thEd.fileSize}</span>
+                          <span className="handbook-strip__size-val">
+                            {handbook.pages?.th ? `${handbook.pages.th}p · ` : ''}{thEd.fileSize}
+                          </span>
                         </div>
                       ) : (
                         <div className="handbook-strip__size-row handbook-strip__size-row--muted">
@@ -328,7 +431,9 @@ export default function HandbooksPage() {
                       {enEd && (
                         <div className="handbook-strip__size-row handbook-strip__size-row--en">
                           <span className="handbook-strip__lang-dot">🇬🇧 EN</span>
-                          <span className="handbook-strip__size-val">{enEd.fileSize}</span>
+                          <span className="handbook-strip__size-val">
+                            {handbook.pages?.en ? `${handbook.pages.en}p · ` : ''}{enEd.fileSize}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -432,16 +537,21 @@ export default function HandbooksPage() {
                                 {t('Connected Interactive Web Labs:', 'ห้องปฏิบัติการจำลองที่เชื่อมโยง:')}
                               </span>
                               <div className="handbook-strip__labs-list">
-                                {handbook.topicIds.map((tid) => (
-                                  <Link
-                                    key={tid}
-                                    to={`/subjects/${handbook.subjectId}/${tid}`}
-                                    className="handbook-strip__lab-link"
-                                  >
-                                    <span aria-hidden="true">🧪</span>
-                                    <span>{tid}</span>
-                                  </Link>
-                                ))}
+                                {handbook.topicIds.map((tid) => {
+                                  const topicLabel = isThai
+                                    ? TOPIC_TITLES[tid]?.th || tid
+                                    : TOPIC_TITLES[tid]?.en || tid;
+                                  return (
+                                    <Link
+                                      key={tid}
+                                      to={`/subjects/${handbook.subjectId}/${tid}`}
+                                      className="handbook-strip__lab-link"
+                                    >
+                                      <span aria-hidden="true">🧪</span>
+                                      <span>{topicLabel}</span>
+                                    </Link>
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
@@ -456,7 +566,10 @@ export default function HandbooksPage() {
                             {thEd && (
                               <div className="handbook-file-row">
                                 <div className="handbook-file-row__info">
-                                  <span className="handbook-file-row__lang">🇹🇭 ฉบับภาษาไทย (Thai Edition)</span>
+                                  <span className="handbook-file-row__lang">
+                                    🇹🇭 ฉบับภาษาไทย (Thai Edition)
+                                    {handbook.pages?.th && ` • ${handbook.pages.th} หน้า`}
+                                  </span>
                                   <code className="handbook-file-row__name">{thEd.filename}</code>
                                 </div>
                                 <div className="handbook-file-row__right">
@@ -483,7 +596,10 @@ export default function HandbooksPage() {
                             {enEd && (
                               <div className="handbook-file-row">
                                 <div className="handbook-file-row__info">
-                                  <span className="handbook-file-row__lang">🇬🇧 English Edition (ต้นฉบับภาษาอังกฤษ)</span>
+                                  <span className="handbook-file-row__lang">
+                                    🇬🇧 English Edition (ต้นฉบับภาษาอังกฤษ)
+                                    {handbook.pages?.en && ` • ${handbook.pages.en} pages`}
+                                  </span>
                                   <code className="handbook-file-row__name">{enEd.filename}</code>
                                 </div>
                                 <div className="handbook-file-row__right">

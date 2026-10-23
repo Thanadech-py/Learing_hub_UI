@@ -26,7 +26,25 @@ export default function TopicPage() {
   const { lang, t } = useLanguage();
   const rawSubject = getSubjectById(subjectId);
   const subject = localizeSubject(rawSubject, lang);
-  const [layoutMode, setLayoutMode] = useState('split'); // 'split' (side-by-side) | 'stacked'
+  const [layoutMode, setLayoutMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return localStorage.getItem('preferred_topic_layout') || 'split';
+      } catch {
+        return 'split';
+      }
+    }
+    return 'split';
+  });
+
+  const handleLayoutChange = (mode) => {
+    setLayoutMode(mode);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('preferred_topic_layout', mode);
+      } catch {}
+    }
+  };
   // 2D vs 3D visualization option for standard topics
   const [vizDimension, setVizDimension] = useState(
     subjectId === 'linear-algebra' ? '3d' : '2d'
@@ -450,6 +468,27 @@ export default function TopicPage() {
               </button>
             </div>
           )}
+
+          {/* Workbench Layout Switcher (Split vs Stacked/Expanded) */}
+          <div className="topic-layout-toggle topic-layout-toggle--workspace" role="group" aria-label="Workbench layout mode">
+            <span className="topic-layout-toggle__label">{t('Layout:', 'มุมมอง:')}</span>
+            <button
+              type="button"
+              className={`topic-layout-btn ${layoutMode === 'split' ? 'topic-layout-btn--active' : ''}`}
+              onClick={() => handleLayoutChange('split')}
+              title={t('Side-by-side split view', 'มุมมองแบ่งสองฝั่ง (Split)')}
+            >
+              <span aria-hidden="true">◧</span> {t('Split', 'แบ่งข้าง')}
+            </button>
+            <button
+              type="button"
+              className={`topic-layout-btn ${layoutMode === 'stacked' ? 'topic-layout-btn--active' : ''}`}
+              onClick={() => handleLayoutChange('stacked')}
+              title={t('Expanded stacked view — wide formula pane', 'มุมมองเต็มจอขยายช่องสมการ (Expanded)')}
+            >
+              <span aria-hidden="true">☰</span> {t('Expanded', 'ขยายเต็ม')}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -725,7 +764,15 @@ export default function TopicPage() {
                               'ตัวอย่างการคำนวณ (รูปเมทริกซ์ / เวกเตอร์)'
                             )}
                         </span>
-                        <MathView math={concept.latex} block className="concept-card__formula" />
+                        <MathView
+                          math={concept.latex}
+                          block
+                          fit
+                          expandable
+                          title={concept.title}
+                          description={concept.exampleLabel}
+                          className="concept-card__formula"
+                        />
                         {concept.exampleNote && (
                           <p className="concept-card__calc-note">{concept.exampleNote}</p>
                         )}

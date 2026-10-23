@@ -1,18 +1,21 @@
 import { Link } from 'react-router-dom';
-import { getPrimaryHandbookForTopic, getHandbookEdition } from '../../data/handbooksRegistry.js';
+import { getHandbooksForTopic, getHandbookEdition } from '../../data/handbooksRegistry.js';
 import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import './TopicDownloadBtn.css';
 
 /**
  * Contextual Bilingual Handbook Download Card for Topic Pages
- * Allows users to directly download either the Thai (TH) or English (EN) edition.
+ * Allows users to directly download the primary volume and discover companion compendiums.
  */
 export default function TopicDownloadBtn({ topicId, compact = false }) {
   const { lang, t } = useLanguage();
   const isThai = lang === 'th';
-  const handbook = getPrimaryHandbookForTopic(topicId);
+  const allHandbooks = getHandbooksForTopic(topicId);
 
-  if (!handbook) return null;
+  if (allHandbooks.length === 0) return null;
+
+  const handbook = allHandbooks[0];
+  const secondaryHandbooks = allHandbooks.slice(1);
 
   const title = isThai ? handbook.titleTh : handbook.title;
   const badge = isThai ? handbook.badgeTh : handbook.badge;
@@ -39,76 +42,130 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
   }
 
   return (
-    <div className="topic-dl-card">
-      <div className="topic-dl-card__left">
-        <div className="topic-dl-card__badge-row">
-          <span className="topic-dl-card__badge">
-            📄 {handbook.code ? `${handbook.code} • ` : ''}{badge}
-          </span>
+    <div className={`topic-dl-card ${handbook.isNew ? 'topic-dl-card--new' : ''}`}>
+      <div className="topic-dl-card__main-row">
+        <div className="topic-dl-card__left">
+          <div className="topic-dl-card__badge-row">
+            <span className="topic-dl-card__badge">
+              📄 {handbook.code ? `${handbook.code} • ` : ''}{badge}
+            </span>
+            {handbook.isNew && (
+              <span className="topic-dl-card__new-pill">
+                ✨ {t('NEW RELEASE', 'เอกสารอัปเดตใหม่')}
+              </span>
+            )}
+            {thEd && (
+              <span className="topic-dl-card__size">
+                🇹🇭 TH: {handbook.pages?.th ? `${handbook.pages.th}p · ` : ''}{thEd.fileSize}
+              </span>
+            )}
+            {enEd && (
+              <span className="topic-dl-card__size">
+                🇬🇧 EN: {handbook.pages?.en ? `${handbook.pages.en}p · ` : ''}{enEd.fileSize}
+              </span>
+            )}
+          </div>
+          <div className="topic-dl-card__title">{title}</div>
+          <div className="topic-dl-card__desc">
+            {t(
+              'Official synthesized university reference handbook. Select your preferred language edition to download:',
+              'เอกสารสรุปเนื้อหาหลักและคู่มือเตรียมสอบมาตรฐาน สามารถเลือกดาวน์โหลดไฟล์แยกตามภาษาได้ทันที:'
+            )}
+          </div>
+        </div>
+
+        <div className="topic-dl-card__actions">
           {thEd && (
-            <span className="topic-dl-card__size">🇹🇭 TH: {thEd.fileSize}</span>
+            <a
+              href={thEd.downloadUrl}
+              download={thEd.filename}
+              className={`topic-dl-action-btn ${
+                isThai ? 'topic-dl-action-btn--primary' : 'topic-dl-action-btn--secondary'
+              }`}
+              title={`ดาวน์โหลดฉบับภาษาไทย (${thEd.fileSize})`}
+            >
+              <span aria-hidden="true">📥 🇹🇭</span>
+              <span>{t('Thai PDF', 'โหลดฉบับไทย')}</span>
+              <span className="topic-dl-action-btn__size">{thEd.fileSize}</span>
+            </a>
           )}
+
           {enEd && (
-            <span className="topic-dl-card__size">🇬🇧 EN: {enEd.fileSize}</span>
+            <a
+              href={enEd.downloadUrl}
+              download={enEd.filename}
+              className={`topic-dl-action-btn ${
+                !isThai || !thEd ? 'topic-dl-action-btn--primary' : 'topic-dl-action-btn--secondary'
+              }`}
+              title={`Download English Edition (${enEd.fileSize})`}
+            >
+              <span aria-hidden="true">📥 🇬🇧</span>
+              <span>{t('English PDF', 'โหลดฉบับ EN')}</span>
+              <span className="topic-dl-action-btn__size">{enEd.fileSize}</span>
+            </a>
           )}
-        </div>
-        <div className="topic-dl-card__title">{title}</div>
-        <div className="topic-dl-card__desc">
-          {t(
-            'Official synthesized engineering reference handbook. Select your preferred language edition to download:',
-            'เอกสารสรุปเนื้อหาหลักเชิงวิศวกรรมที่ผ่านการสังเคราะห์ สามารถเลือกดาวน์โหลดไฟล์แยกตามภาษาได้ทันที:'
+
+          {preferredEd && (
+            <a
+              href={preferredEd.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="topic-dl-action-btn topic-dl-action-btn--ghost"
+              title={t('Open PDF in browser tab', 'เปิดอ่านไฟล์บนเบราว์เซอร์')}
+            >
+              <span aria-hidden="true">👁️</span>
+              <span>{t('Preview', 'เปิดอ่าน')}</span>
+            </a>
           )}
+
+          <Link to="/handbooks" className="topic-dl-card__hub-link">
+            {t('All Handbooks →', 'คลังเอกสารทั้งหมด →')}
+          </Link>
         </div>
       </div>
 
-      <div className="topic-dl-card__actions">
-        {thEd && (
-          <a
-            href={thEd.downloadUrl}
-            download={thEd.filename}
-            className={`topic-dl-action-btn ${
-              isThai ? 'topic-dl-action-btn--primary' : 'topic-dl-action-btn--secondary'
-            }`}
-            title={`ดาวน์โหลดฉบับภาษาไทย (${thEd.fileSize})`}
-          >
-            <span aria-hidden="true">📥 🇹🇭</span>
-            <span>{t('Thai PDF', 'โหลดฉบับไทย')}</span>
-            <span className="topic-dl-action-btn__size">{thEd.fileSize}</span>
-          </a>
-        )}
-
-        {enEd && (
-          <a
-            href={enEd.downloadUrl}
-            download={enEd.filename}
-            className={`topic-dl-action-btn ${
-              !isThai || !thEd ? 'topic-dl-action-btn--primary' : 'topic-dl-action-btn--secondary'
-            }`}
-            title={`Download English Edition (${enEd.fileSize})`}
-          >
-            <span aria-hidden="true">📥 🇬🇧</span>
-            <span>{t('English PDF', 'โหลดฉบับ EN')}</span>
-            <span className="topic-dl-action-btn__size">{enEd.fileSize}</span>
-          </a>
-        )}
-
-        {preferredEd && (
-          <a
-            href={preferredEd.downloadUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="topic-dl-action-btn topic-dl-action-btn--ghost"
-            title={t('Open PDF in browser tab', 'เปิดอ่านไฟล์บนเบราว์เซอร์')}
-          >
-            <span aria-hidden="true">👁️</span>
-            <span>{t('Preview', 'เปิดอ่าน')}</span>
-          </a>
-        )}
-
-        <Link to="/handbooks" className="topic-dl-card__hub-link">
-          {t('All Handbooks →', 'ดูคลังเอกสารทั้งหมด →')}
-        </Link>
-      </div>
+      {secondaryHandbooks.length > 0 && (
+        <div className="topic-dl-card__secondary-bar">
+          <span className="topic-dl-card__secondary-label">
+            {t('Also synthesized in companion master guides:', 'ครอบคลุมเพิ่มเติมในคู่มือรวมเนื้อหา:')}
+          </span>
+          <div className="topic-dl-card__secondary-chips">
+            {secondaryHandbooks.map((sec) => {
+              const secTh = sec.editions?.th?.available ? sec.editions.th : null;
+              const secEn = sec.editions?.en?.available ? sec.editions.en : null;
+              const secTitle = isThai ? sec.titleTh : sec.title;
+              return (
+                <div key={sec.id} className="topic-dl-sec-chip">
+                  <span className="topic-dl-sec-code">{sec.code}</span>
+                  <span className="topic-dl-sec-title" title={secTitle}>{secTitle}</span>
+                  <div className="topic-dl-sec-btns">
+                    {secTh && (
+                      <a
+                        href={secTh.downloadUrl}
+                        download={secTh.filename}
+                        className="topic-dl-sec-btn"
+                        title={secTh.filename}
+                      >
+                        🇹🇭 TH ({secTh.fileSize})
+                      </a>
+                    )}
+                    {secEn && (
+                      <a
+                        href={secEn.downloadUrl}
+                        download={secEn.filename}
+                        className="topic-dl-sec-btn"
+                        title={secEn.filename}
+                      >
+                        🇬🇧 EN ({secEn.fileSize})
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

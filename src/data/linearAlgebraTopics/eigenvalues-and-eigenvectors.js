@@ -55,6 +55,16 @@ const eigenvaluesData = {
       exampleNote:
         'No determinant expansion or polynomial factoring required whatsoever.',
     },
+    {
+      title: 'Matrix Similarity & Spectral Invariance (B = M⁻¹AM)',
+      content:
+        'Two matrices A and B are similar if B = M⁻¹AM for some invertible change-of-basis matrix M. Crucially, similar matrices share the EXACT same eigenvalues, trace, determinant, and characteristic polynomial. If x is an eigenvector of A with eigenvalue λ, then M⁻¹x is an eigenvector of B with the same λ.',
+      exampleLabel: 'Eigenvector Transformation under Similarity',
+      latex:
+        'A\\mathbf{x} = \\lambda\\mathbf{x} \\implies M^{-1} A (M M^{-1})\\mathbf{x} = \\lambda M^{-1}\\mathbf{x} \\implies B (M^{-1}\\mathbf{x}) = \\lambda (M^{-1}\\mathbf{x})',
+      exampleNote:
+        'Similarity represents inspecting the exact same underlying physical transformation through a rotated or rescaled coordinate system.',
+    },
   ],
   equations: [
     {
@@ -113,6 +123,32 @@ const eigenvaluesData = {
           unit: '\\mathbb{R}',
           description: 'Signed volume scaling factor, equal to the product of all eigenvalues.',
           connections: 'If det(A) = 0, at least one eigenvalue is 0 and the matrix is singular.',
+        },
+      ],
+    },
+    {
+      name: 'Continuous 2×2 Phase Plane Stability Criterion',
+      latex: '\\text{Re}(\\lambda_i) < 0 \\iff \\text{tr}(A) < 0 \\quad \\text{and} \\quad \\det(A) > 0',
+      summary:
+        'Determines whether continuous systems du/dt = Au spiral stably toward origin (0, 0) directly from trace and determinant invariants.',
+      exampleDescription: 'Trace-Determinant discriminant parabola: Δ = tr(A)² - 4 det(A)',
+      exampleLatex:
+        '\\Delta < 0 \\implies \\text{spiral sink/source}; \\quad \\Delta > 0 \\implies \\text{nodal node}; \\quad \\det(A) < 0 \\implies \\text{saddle point}',
+      conditions: ['A is a real 2 × 2 dynamical matrix'],
+      variables: [
+        {
+          symbol: '\\text{tr}(A)',
+          name: 'Dynamical Divergence Metric',
+          unit: '\\mathbb{R}',
+          description: 'Sum of eigenvalues governing rate of expansion or contraction of phase area.',
+          connections: 'Must be strictly negative for asymptotic stability.',
+        },
+        {
+          symbol: '\\det(A)',
+          name: 'Product Stability Indicator',
+          unit: '\\mathbb{R}',
+          description: 'Product λ₁λ₂; if negative, eigenvalues have opposite signs creating an unstable saddle.',
+          connections: 'Must be strictly positive to ensure eigenvalues share the same real sign.',
         },
       ],
     },

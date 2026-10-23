@@ -2,7 +2,7 @@
   background: linear-gradient(180deg, rgba(18, 26, 46, 0.96), rgba(14, 21, 38, 0.96));
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 1.75rem;
+  padding: 1.5rem 1.4rem;
   margin-bottom: 1.75rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   position: relative;
@@ -81,21 +81,21 @@
 }
 
 .eq-card__formula-box {
-  margin: 2rem 0;
-  padding: 1.3rem 1.5rem;
+  margin: 1.5rem 0;
+  padding: 1rem 1.15rem;
   border-radius: 14px;
   background: rgba(7, 11, 22, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow-x: auto;
+  position: relative;
 }
 
 .eq-card__formula-box .math-view--block {
   background: transparent;
   border: none;
   height: auto;
-  padding: 0;
+  padding: 0.2rem 0;
   margin: 0;
-  font-size: 1rem;
+  font-size: calc(1.14rem * var(--math-scale, 1));
 }
 
 .eq-card__summary {
@@ -107,11 +107,11 @@
 
 .eq-card__example-box {
   margin: 0 0 1.5rem;
-  padding: 1.15rem 1.35rem;
+  padding: 1rem 1.15rem;
   border-radius: 14px;
   background: rgba(8, 13, 25, 0.82);
   border: 1px solid color-mix(in srgb, var(--accent, #38bdf8) 35%, rgba(255, 255, 255, 0.08));
-  overflow-x: auto;
+  position: relative;
 }
 
 .eq-card__example-header {
@@ -142,7 +142,7 @@
   height: auto;
   padding: 0.25rem 0;
   margin: 0;
-  font-size: 1.14rem;
+  font-size: calc(1.08rem * var(--math-scale, 1));
 }
 
 .eq-card__variables-section {

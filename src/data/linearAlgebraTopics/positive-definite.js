@@ -45,6 +45,46 @@ const positiveDefiniteData = {
       exampleNote:
         'Check: 2×2 = 4, 2×6 = 12, 6² + 3² = 36 + 9 = 45! The diagonal pivots are ℓ₁₁ = 2 and ℓ₂₂ = 3.',
     },
+    {
+      title: 'Completing the Square ↔ The Pivot Bridge S = LDLᵀ',
+      content:
+        'Every quadratic form xᵀSx can be rewritten as a sum of independent squares without cross-terms: f(x) = d₁(x₁ + ... )² + d₂(x₂ + ... )² + ... + dₙ(xₙ)². The coefficients dᵢ outside the squared terms are precisely the elimination pivots from Gaussian elimination S = LDLᵀ. Positive pivots guarantee positive squares!',
+      exampleLabel: 'Completing the Square for S = [[2, 4], [4, 11]]',
+      latex:
+        'f(x_1, x_2) = 2x_1^2 + 8x_1 x_2 + 11x_2^2 = 2\\left(x_1 + 2x_2\\right)^2 + 3x_2^2 \\implies d_1 = 2 > 0, \\; d_2 = 3 > 0',
+      exampleNote:
+        'Because both squared multipliers d₁ = 2 and d₂ = 3 are strictly positive, f(x) > 0 for all non-zero x, proving S ≻ 0.',
+    },
+    {
+      title: 'Positive Semidefiniteness (S ⪰ 0) & The Sylvester Minor Pitfall',
+      content:
+        'A matrix is positive semidefinite (S ⪰ 0) if xᵀSx ≥ 0 and all λᵢ ≥ 0. CAUTION: You CANNOT test only leading principal minors for semidefiniteness! For example, S = [[0, 0], [0, -1]] has leading minors 0 and 0, yet λ = -1 (not semidefinite). For S ⪰ 0, ALL 2ⁿ - 1 principal minors must be ≥ 0.',
+      exampleLabel: 'Semidefinite Flat Valley vs Definite Bowl',
+      latex:
+        'S = \\begin{bmatrix} 1 & 1 \\\\ 1 & 1 \\end{bmatrix} \\implies \\lambda_1 = 2, \\; \\lambda_2 = 0 \\implies x^T S x = (x_1 + x_2)^2 \\ge 0',
+      exampleNote:
+        'Here energy is zero along the entire line x₁ + x₂ = 0 (the nullspace), forming a flat parabolic trough rather than a closed bowl.',
+    },
+    {
+      title: 'Geometry of Ellipsoids: Principal Semi-Axes aᵢ = 1/√λᵢ & Area',
+      content:
+        'The quadratic level surface xᵀSx = 1 forms an ellipse in 2D and an ellipsoid in nD. The principal axes align with the orthonormal eigenvectors qᵢ of S, and the semi-axis half-lengths are given by aᵢ = 1/√λᵢ. In 2D, the enclosed ellipse area is exactly π / √(λ₁λ₂) = π / √(det S).',
+      exampleLabel: 'Ellipse Metric Formula',
+      latex:
+        '\\mathbf{x}^T S \\mathbf{x} = \\lambda_1 y_1^2 + \\lambda_2 y_2^2 = 1 \\implies \\frac{y_1^2}{(1/\\sqrt{\\lambda_1})^2} + \\frac{y_2^2}{(1/\\sqrt{\\lambda_2})^2} = 1, \\quad \\text{Area} = \\frac{\\pi}{\\sqrt{\\det(S)}}',
+      exampleNote:
+        'A large eigenvalue λ₁ creates a steep energy wall and a very narrow semi-axis a₁ = 1/√λ₁.',
+    },
+    {
+      title: '⚡ Fast-Track 8.2: Gershgorin Strict Diagonal Dominance Instant Pass',
+      content:
+        'A symmetric matrix with positive diagonal entries that is strictly diagonally dominant (|sᵢᵢ| > ∑_{j≠i} |sᵢⱼ| for every row i) is GUARANTEED to be positive definite! This allows certifying S ≻ 0 in O(n) mental operations without any determinants, pivots, or characteristic polynomials.',
+      exampleLabel: 'Instant 3-Second Pass for S = [[5, 2], [2, 4]]',
+      latex:
+        '\\text{Row 1: } 5 > |2| = 2 \\; \\checkmark, \\quad \\text{Row 2: } 4 > |2| = 2 \\; \\checkmark \\implies S \\succ 0 \\; \\text{automatically!}',
+      exampleNote:
+        'Gershgorin disc centers are at sᵢᵢ with radius Rᵢ = ∑ |sᵢⱼ|. Strict dominance ensures all discs lie strictly in the positive real half-plane.',
+    },
   ],
   equations: [
     {
@@ -89,6 +129,51 @@ const positiveDefiniteData = {
           unit: '\\mathbb{R}^{n \\times n}',
           description: 'Lower triangular matrix with strictly positive real diagonal entries.',
           connections: 'Requires n³/6 floating-point operations—half the cost of standard LU elimination.',
+        },
+      ],
+    },
+    {
+      name: 'Rayleigh Quotient Variational Bounds & Ellipsoid Semi-Axes',
+      latex: '\\lambda_{\\min} \\le R(\\mathbf{x}) = \\frac{\\mathbf{x}^T S \\mathbf{x}}{\\mathbf{x}^T \\mathbf{x}} \\le \\lambda_{\\max}, \\qquad a_i = \\frac{1}{\\sqrt{\\lambda_i}}, \\quad \\text{Area} = \\frac{\\pi}{\\sqrt{\\det(S)}}',
+      summary:
+        'Variational characterization bounding quadratic energy ratios between extreme eigenvalues, defining geometric ellipsoid semi-axes.',
+      exampleDescription: 'Stationary points of R(x) occur exactly at the eigenvectors of S',
+      exampleLatex:
+        '\\nabla R(\\mathbf{x}) = \\mathbf{0} \\iff S\\mathbf{x} = R(\\mathbf{x})\\mathbf{x} = \\lambda\\mathbf{x}, \\quad R(\\mathbf{q}_i) = \\lambda_i',
+      conditions: ['x ≠ 0 and S is real symmetric'],
+      variables: [
+        {
+          symbol: 'R(\\mathbf{x})',
+          name: 'Rayleigh Quotient',
+          unit: '\\mathbb{R}^+',
+          description: 'Normalized quadratic energy ratio measuring directional matrix stiffness.',
+          connections: 'Achieves global minimum at q_min and global maximum at q_max.',
+        },
+        {
+          symbol: 'a_i',
+          name: 'Principal Ellipsoid Semi-Axis',
+          unit: '\\text{length}',
+          description: 'Distance from center of energy ellipsoid xᵀSx = 1 along eigenvector qᵢ.',
+          connections: 'Inversely proportional to the square root of the corresponding eigenvalue.',
+        },
+      ],
+    },
+    {
+      name: 'Multivariable Hessian Matrix & Local Convexity Test',
+      latex: 'H_{ij} = \\frac{\\partial^2 f}{\\partial x_i \\partial x_j}, \\qquad H(\\mathbf{x}^*) \\succ 0 \\iff \\mathbf{x}^* \\text{ is a strict local minimum}',
+      summary:
+        'The multivariable second derivative test in machine learning and calculus, using positive definiteness of the Hessian.',
+      exampleDescription: 'Taylor series expansion around critical point ∇f(x*) = 0',
+      exampleLatex:
+        'f(\\mathbf{x}^* + \\Delta\\mathbf{x}) \\approx f(\\mathbf{x}^*) + \\frac{1}{2} \\Delta\\mathbf{x}^T H(\\mathbf{x}^*) \\Delta\\mathbf{x} > f(\\mathbf{x}^*) \\quad \\forall \\; \\Delta\\mathbf{x} \\neq \\mathbf{0}',
+      conditions: ['f is twice continuously differentiable with ∇f(x*) = 0'],
+      variables: [
+        {
+          symbol: 'H(\\mathbf{x}^*)',
+          name: 'Hessian Matrix',
+          unit: '\\mathbb{R}^{n \\times n}',
+          description: 'Matrix of second-order partial derivatives evaluated at the critical point.',
+          connections: 'Positive definite implies positive curvature in every direction.',
         },
       ],
     },

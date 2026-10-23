@@ -36,7 +36,15 @@ export default function EquationInspector({ equation, index }) {
 
       {/* Main Formula */}
       <div className="eq-card__formula-box">
-        <MathView math={latex} block className="eq-card__formula" />
+        <MathView
+          math={latex}
+          block
+          fit
+          expandable
+          title={name}
+          description={summary}
+          className="eq-card__formula"
+        />
       </div>
 
       {summary && <p className="eq-card__summary">{summary}</p>}
@@ -49,7 +57,15 @@ export default function EquationInspector({ equation, index }) {
             </span>
             {exampleDescription && <span className="eq-card__example-desc">{exampleDescription}</span>}
           </div>
-          <MathView math={exampleLatex} block className="eq-card__example-math" />
+          <MathView
+            math={exampleLatex}
+            block
+            fit
+            expandable
+            title={`${name || t('Worked Example', 'ตัวอย่างการคำนวณ')} — ${t('Worked Example', 'ตัวอย่างการคำนวณ')}`}
+            description={exampleDescription}
+            className="eq-card__example-math"
+          />
         </div>
       )}
 
