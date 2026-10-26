@@ -479,7 +479,7 @@
 
 .handbook-ledger__head {
   display: grid;
-  grid-template-columns: minmax(300px, 2.2fr) minmax(200px, 1.3fr) minmax(130px, 0.75fr) minmax(290px, 1.6fr);
+  grid-template-columns: minmax(320px, 2.8fr) minmax(200px, 1.4fr) minmax(150px, 0.9fr) 60px;
   gap: 16px;
   align-items: center;
   padding: 13px 20px;
@@ -531,10 +531,12 @@
 
 .handbook-strip__main {
   display: grid;
-  grid-template-columns: minmax(300px, 2.2fr) minmax(200px, 1.3fr) minmax(130px, 0.75fr) minmax(290px, 1.6fr);
+  grid-template-columns: minmax(320px, 2.8fr) minmax(200px, 1.4fr) minmax(150px, 0.9fr) 60px;
   gap: 16px;
   align-items: center;
   padding: 15px 20px;
+  min-height: 76px;
+  cursor: pointer;
 }
 
 /* Col 1: Code & Titles */
@@ -660,7 +662,8 @@
 
 .handbook-strip__tags-preview {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow: hidden;
   gap: 4px;
 }
 
@@ -712,13 +715,11 @@
   color: #475569;
 }
 
-/* Col 4: Direct Download Buttons & Actions */
+/* Col 4: Action / Drawer Toggle */
 .handbook-strip__actions {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
-  gap: 7px;
+  justify-content: center;
 }
 
 .handbook-dl-btn {
@@ -791,20 +792,27 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.03);
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
   color: #94a3b8;
   cursor: pointer;
-  transition: all 0.15s ease;
+  font-size: 0.95rem;
+  transition: all 0.18s ease;
 }
 
-.handbook-expand-btn:hover,
-.handbook-expand-btn--open {
+.handbook-expand-btn:hover {
   background: rgba(56, 189, 248, 0.15);
-  border-color: rgba(56, 189, 248, 0.4);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+  transform: scale(1.08);
+}
+
+.handbook-expand-btn--open {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
   color: #38bdf8;
 }
 
@@ -1039,17 +1047,28 @@
   }
 
   .handbook-strip__main {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr auto;
     gap: 12px;
+    align-items: center;
   }
 
-  .handbook-strip__sizes {
-    flex-direction: row;
-    flex-wrap: wrap;
+  .handbook-strip__doc {
+    grid-column: 1;
   }
 
   .handbook-strip__actions {
-    justify-content: flex-start;
+    grid-column: 2;
+    justify-content: center;
+  }
+
+  .handbook-strip__meta {
+    grid-column: 1 / -1;
+  }
+
+  .handbook-strip__sizes {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .handbook-strip__drawer-grid {

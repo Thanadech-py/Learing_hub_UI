@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   getHandbooksSummary,
-  getHandbookEdition,
   triggerDirectDownload,
 } from '../../data/handbooksRegistry.js';
 import {
@@ -386,9 +385,7 @@ export default function HandbooksPage() {
             <div className="handbook-ledger__col handbook-ledger__col--size">
               {t('AVAILABLE EDITIONS & PAGES', 'ขนาดไฟล์และจำนวนหน้า')}
             </div>
-            <div className="handbook-ledger__col handbook-ledger__col--actions">
-              {t('DIRECT ISO/PDF DOWNLOAD & PREVIEW', 'เลือกดาวน์โหลดแยกภาษา / เปิดอ่าน')}
-            </div>
+            <div className="handbook-ledger__col handbook-ledger__col--actions" />
           </div>
 
           {/* Release Strip Rows */}
@@ -408,10 +405,6 @@ export default function HandbooksPage() {
 
               const thEd = handbook.editions?.th?.available ? handbook.editions.th : null;
               const enEd = handbook.editions?.en?.available ? handbook.editions.en : null;
-              const preferredEd = getHandbookEdition(handbook, lang);
-
-              const showThBtn = thEd && (langFilter === 'all' || langFilter === 'th');
-              const showEnBtn = enEd && (langFilter === 'all' || langFilter === 'en');
 
               return (
                 <article
@@ -423,9 +416,20 @@ export default function HandbooksPage() {
                   style={{ '--strip-accent': accent }}
                 >
                   {/* Main Horizontal Strip Row */}
-                  <div className="handbook-strip__main">
+                  <div
+                    className="handbook-strip__main"
+                    onClick={() => toggleExpand(handbook.id)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleExpand(handbook.id);
+                      }
+                    }}
+                  >
                     {/* Col 1: Code, Format Icon & Titles */}
-                    <div className="handbook-strip__doc" onClick={() => toggleExpand(handbook.id)}>
+                    <div className="handbook-strip__doc">
                       <div className="handbook-strip__code-box">
                         <span className="handbook-strip__format-badge">PDF</span>
                         <span className="handbook-strip__code">{handbook.code || 'DOC'}</span>
@@ -465,90 +469,35 @@ export default function HandbooksPage() {
 
                     {/* Col 3: Available Editions, Pages & File Sizes */}
                     <div className="handbook-strip__sizes">
-                      {thEd ? (
-                        <div className="handbook-strip__size-row handbook-strip__size-row--th">
-                          <span className="handbook-strip__lang-dot">🇹🇭 TH</span>
-                          <span className="handbook-strip__size-val">
-                            {handbook.pages?.th ? `${handbook.pages.th}p · ` : ''}{thEd.fileSize}
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="handbook-strip__size-row handbook-strip__size-row--muted">
-                          <span>🇹🇭 —</span>
-                        </div>
-                      )}
-                      {enEd && (
-                        <div className="handbook-strip__size-row handbook-strip__size-row--en">
-                          <span className="handbook-strip__lang-dot">🇬🇧 EN</span>
-                          <span className="handbook-strip__size-val">
-                            {handbook.pages?.en ? `${handbook.pages.en}p · ` : ''}{enEd.fileSize}
-                          </span>
-                        </div>
-                      )}
+                      <div className={`handbook-strip__size-row ${thEd ? 'handbook-strip__size-row--th' : 'handbook-strip__size-row--muted'}`}>
+                        <span className="handbook-strip__lang-dot">🇹🇭 TH</span>
+                        <span className="handbook-strip__size-val">
+                          {thEd ? `${handbook.pages?.th ? `${handbook.pages.th}p · ` : ''}${thEd.fileSize}` : '—'}
+                        </span>
+                      </div>
+                      <div className={`handbook-strip__size-row ${enEd ? 'handbook-strip__size-row--en' : 'handbook-strip__size-row--muted'}`}>
+                        <span className="handbook-strip__lang-dot">🇬🇧 EN</span>
+                        <span className="handbook-strip__size-val">
+                          {enEd ? `${handbook.pages?.en ? `${handbook.pages.en}p · ` : ''}${enEd.fileSize}` : '—'}
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Col 4: Ubuntu-Style Direct Download Buttons & Drawer Toggle */}
+                    {/* Col 4: Drawer Toggle */}
                     <div className="handbook-strip__actions">
-                      {showThBtn && (
-                        <a
-                          href={thEd.downloadUrl}
-                          download={thEd.filename}
-                          onClick={(e) => triggerDirectDownload(e, thEd.downloadUrl)}
-                          className={`handbook-dl-btn handbook-dl-btn--th ${
-                            isThai || langFilter === 'th' ? 'handbook-dl-btn--primary' : ''
-                          }`}
-                          title={`${t('Direct Download Thai PDF', 'ดาวน์โหลดฉบับภาษาไทยลงเครื่องทันที')} (${thEd.fileSize})`}
-                        >
-                          <span className="handbook-dl-btn__icon" aria-hidden="true">📥</span>
-                          <span className="handbook-dl-btn__flag" aria-hidden="true">🇹🇭</span>
-                          <span className="handbook-dl-btn__text">
-                            {t('Thai PDF', 'โหลดฉบับไทย')}
-                          </span>
-                          <span className="handbook-dl-btn__size">{thEd.fileSize}</span>
-                        </a>
-                      )}
-
-                      {showEnBtn && (
-                        <a
-                          href={enEd.downloadUrl}
-                          download={enEd.filename}
-                          onClick={(e) => triggerDirectDownload(e, enEd.downloadUrl)}
-                          className={`handbook-dl-btn handbook-dl-btn--en ${
-                            (!isThai && langFilter !== 'th') || !thEd ? 'handbook-dl-btn--primary' : ''
-                          }`}
-                          title={`${t('Direct Download English PDF', 'ดาวน์โหลดฉบับภาษาอังกฤษลงเครื่องทันที')} (${enEd.fileSize})`}
-                        >
-                          <span className="handbook-dl-btn__icon" aria-hidden="true">📥</span>
-                          <span className="handbook-dl-btn__flag" aria-hidden="true">🇬🇧</span>
-                          <span className="handbook-dl-btn__text">
-                            {t('English PDF', 'โหลด EN')}
-                          </span>
-                          <span className="handbook-dl-btn__size">{enEd.fileSize}</span>
-                        </a>
-                      )}
-
-                      {preferredEd && (
-                        <a
-                          href={preferredEd.previewUrl || preferredEd.downloadUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="handbook-icon-btn"
-                          title={t(
-                            `Preview ${preferredEd.label} in Browser`,
-                            `เปิดอ่าน (${preferredEd.label}) บนเบราว์เซอร์`
-                          )}
-                        >
-                          <span aria-hidden="true">👁️</span>
-                          <span className="handbook-icon-btn__label">{t('Read', 'อ่าน')}</span>
-                        </a>
-                      )}
-
                       <button
                         type="button"
                         className={`handbook-expand-btn ${isExpanded ? 'handbook-expand-btn--open' : ''}`}
-                        onClick={() => toggleExpand(handbook.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleExpand(handbook.id);
+                        }}
                         aria-expanded={isExpanded}
-                        title={t('Toggle release details & links', 'ดูรายละเอียดและลิงก์บทเรียน')}
+                        title={
+                          isExpanded
+                            ? t('Collapse release details', 'ย่อรายละเอียด')
+                            : t('Expand release details & files', 'ดูรายละเอียดและไฟล์เอกสาร')
+                        }
                       >
                         <span>{isExpanded ? '▴' : '▾'}</span>
                       </button>
