@@ -1,16 +1,23 @@
 import { Link } from 'react-router-dom';
-import { getHandbooksForTopic, getHandbookEdition } from '../../data/handbooksRegistry.js';
+import {
+  getHandbooksForTopic,
+  getHandbookEdition,
+  triggerDirectDownload,
+} from '../../data/handbooksRegistry.js';
+import { useDynamicHandbooks } from '../../services/googleDriveSync.js';
 import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import './TopicDownloadBtn.css';
 
 /**
  * Contextual Bilingual Handbook Download Card for Topic Pages
- * Allows users to directly download the primary volume and discover companion compendiums.
+ * Allows users to directly download the primary volume from Google Drive (no new tab redirection)
+ * and discover companion compendiums.
  */
 export default function TopicDownloadBtn({ topicId, compact = false }) {
   const { lang, t } = useLanguage();
   const isThai = lang === 'th';
-  const allHandbooks = getHandbooksForTopic(topicId);
+  const { catalog } = useDynamicHandbooks();
+  const allHandbooks = getHandbooksForTopic(topicId, catalog);
 
   if (allHandbooks.length === 0) return null;
 
@@ -30,8 +37,9 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
       <a
         href={preferredEd.downloadUrl}
         download={preferredEd.filename}
+        onClick={(e) => triggerDirectDownload(e, preferredEd.downloadUrl)}
         className="topic-dl-btn topic-dl-btn--compact"
-        title={`${t('Download', 'ดาวน์โหลด')} ${title} (${preferredEd.fileSize})`}
+        title={`${t('Direct Download', 'ดาวน์โหลดลงเครื่องทันที')} ${title} (${preferredEd.fileSize})`}
       >
         <span className="topic-dl-btn__icon" aria-hidden="true">📥</span>
         <span className="topic-dl-btn__text">
@@ -68,8 +76,8 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
           <div className="topic-dl-card__title">{title}</div>
           <div className="topic-dl-card__desc">
             {t(
-              'Official synthesized university reference handbook. Select your preferred language edition to download:',
-              'เอกสารสรุปเนื้อหาหลักและคู่มือเตรียมสอบมาตรฐาน สามารถเลือกดาวน์โหลดไฟล์แยกตามภาษาได้ทันที:'
+              'Official synthesized university reference handbook hosted on Google Drive. Select your preferred language edition for instant download:',
+              'เอกสารสรุปเนื้อหาหลักและคู่มือเตรียมสอบมาตรฐานจากคลัง Google Drive สามารถเลือกดาวน์โหลดไฟล์แยกตามภาษาลงเครื่องได้ทันที:'
             )}
           </div>
         </div>
@@ -79,10 +87,11 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
             <a
               href={thEd.downloadUrl}
               download={thEd.filename}
+              onClick={(e) => triggerDirectDownload(e, thEd.downloadUrl)}
               className={`topic-dl-action-btn ${
                 isThai ? 'topic-dl-action-btn--primary' : 'topic-dl-action-btn--secondary'
               }`}
-              title={`ดาวน์โหลดฉบับภาษาไทย (${thEd.fileSize})`}
+              title={`ดาวน์โหลดฉบับภาษาไทยลงเครื่องทันที (${thEd.fileSize})`}
             >
               <span aria-hidden="true">📥 🇹🇭</span>
               <span>{t('Thai PDF', 'โหลดฉบับไทย')}</span>
@@ -94,10 +103,11 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
             <a
               href={enEd.downloadUrl}
               download={enEd.filename}
+              onClick={(e) => triggerDirectDownload(e, enEd.downloadUrl)}
               className={`topic-dl-action-btn ${
                 !isThai || !thEd ? 'topic-dl-action-btn--primary' : 'topic-dl-action-btn--secondary'
               }`}
-              title={`Download English Edition (${enEd.fileSize})`}
+              title={`Direct Download English Edition (${enEd.fileSize})`}
             >
               <span aria-hidden="true">📥 🇬🇧</span>
               <span>{t('English PDF', 'โหลดฉบับ EN')}</span>
@@ -107,7 +117,7 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
 
           {preferredEd && (
             <a
-              href={preferredEd.downloadUrl}
+              href={preferredEd.previewUrl || preferredEd.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="topic-dl-action-btn topic-dl-action-btn--ghost"
@@ -143,6 +153,7 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
                       <a
                         href={secTh.downloadUrl}
                         download={secTh.filename}
+                        onClick={(e) => triggerDirectDownload(e, secTh.downloadUrl)}
                         className="topic-dl-sec-btn"
                         title={secTh.filename}
                       >
@@ -153,6 +164,7 @@ export default function TopicDownloadBtn({ topicId, compact = false }) {
                       <a
                         href={secEn.downloadUrl}
                         download={secEn.filename}
+                        onClick={(e) => triggerDirectDownload(e, secEn.downloadUrl)}
                         className="topic-dl-sec-btn"
                         title={secEn.filename}
                       >

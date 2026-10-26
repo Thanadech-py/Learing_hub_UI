@@ -1,13 +1,103 @@
 /**
  * Official Handbooks Registry (Bilingual Edition Support: TH & EN)
  *
- * Houses metadata for all downloadable master reference handbooks in public/handbooks/<subject>/{en,th}/
- * Strictly contains synthesized master handbooks (zero raw source textbook/slide distribution).
+ * Connected to Google Drive Repository:
+ * https://drive.google.com/drive/folders/1e1yRFC7MD98dXJmGUiiDjbOkMCwyGKLl
+ *
+ * Supports:
+ * 1. Instant direct-to-device downloads via Google Drive uc?export=download endpoint (no new tab redirection).
+ * 2. Browser PDF preview via Google Drive file/d/<ID>/view endpoint.
+ * 3. Dynamic folder & file synchronization via src/services/googleDriveSync.js.
  */
+
+export const GOOGLE_DRIVE_ROOT_FOLDER_ID = '1e1yRFC7MD98dXJmGUiiDjbOkMCwyGKLl';
+export const GOOGLE_DRIVE_ROOT_URL = `https://drive.google.com/drive/folders/${GOOGLE_DRIVE_ROOT_FOLDER_ID}`;
+
+export const GOOGLE_DRIVE_SUBJECT_FOLDERS = {
+  physics: {
+    id: '1jlt2q_-LUGpR0Oe13o0OGzPZMNi-HP0V',
+    en: '1Yyv2P6TT52VRbq38R5oRGBQOqd5_UtfE',
+    th: '12lO0uAii2oEugo8tJHseDk6lf_Asq190',
+  },
+  'linear-algebra': {
+    id: '1YOhKrSJoVAMz055t654jSycwui4pwjoD',
+    en: '11Z8PxMUAavBPNwnrlGn5DRPIfh4G8iOA',
+    th: '10e0-bvnNwTK4VimbhXePkgOVMNc97PGj',
+  },
+  'com-prog': {
+    id: '1ruWsJYblw43yz6ae2_0BNUMxXMiCcB8q',
+    en: '12cTzDw-6o0nXG6_WQo03Z1ag9XZxkvs4',
+    th: '1br6vhLtnZc7yAaTuowf1n3ZUYMe2s_xy',
+  },
+};
+
+/**
+ * Canonical mapping of relative handbook paths to their Google Drive File IDs.
+ * Used as the built-in baseline and enriched dynamically when new files/folders are added on Drive.
+ */
+export const GOOGLE_DRIVE_FILE_MAP = {
+  // Physics (EN)
+  '/handbooks/physics/en/Physics - 01 Kinematics & 2D Motion.pdf': '1k94-2yqVwkBTCCMPnRAkop4SR936-5ob',
+  "/handbooks/physics/en/Physics - 02 Newton's Laws & Dynamics.pdf": '1lkwSX7MKu8KP96q2ntnLp1TzzX-pUcFy',
+  '/handbooks/physics/en/Physics - 03 Work, Energy & Momentum.pdf': '1OYXhMzkq0HxsDPhqrYSY6Ot3ZD85kdz2',
+  '/handbooks/physics/en/Physics - 04 Rotational Dynamics & Angular Momentum.pdf': '1Td7OgBGb9f0QUkXs2V19m4jtVZrV1099',
+  '/handbooks/physics/en/Physics - 05 Elasticity & Modulus of Materials.pdf': '1W5w6g2VzyZlYLhfQuD1NHdxyc1bLAOku',
+  '/handbooks/physics/en/Physics - 06 Fluid Mechanics.pdf': '1DT18N4U5D2fU8VMB9sE9PbdUI7HoeY2v',
+  '/handbooks/physics/en/Physics - 07 Oscillations & Simple Harmonic Motion.pdf': '1R_2_zBLEbrOW-cXpu-9fs7vKy2_tLbmF',
+  '/handbooks/physics/en/Physics - 08 Waves & Sound.pdf': '1XpsHiGQ53nTG-0lqW8CM7Qh3q26O5fP3',
+  '/handbooks/physics/en/Physics - 09 Thermodynamics & Heat Transfer.pdf': '1h4mYJIhy7leDS5DQg6HCu_ebYyrNrWdH',
+  '/handbooks/physics/en/Physics - Comprehensive Master Formula Sheet & Constants.pdf': '1W9KigGGzKz40GB9WSeQtlLfExGxLmYeK',
+
+  // Physics (TH)
+  '/handbooks/physics/th/Physics - 01 Kinematics & 2D Motion.pdf': '1WnkYKQdmaPKRd6VQ6nNr0WkcUp0kVE3f',
+  "/handbooks/physics/th/Physics - 02 Newton's Laws & Dynamics.pdf": '1wLqMAs7uA4c1icBzkZJjDvc34wz8BUJX',
+  '/handbooks/physics/th/Physics - 03 Work, Energy & Momentum.pdf': '1spqGrx6eJWIQQZi6j4-am3SzcLIDlbdv',
+  '/handbooks/physics/th/Physics - 04 Rotational Dynamics & Angular Momentum.pdf': '19nisgj2A9suTz9jmFjtkrdEeFViwMxDj',
+  '/handbooks/physics/th/Physics - 05 Elasticity & Modulus of Materials.pdf': '1UUN_IW1mU0S4YE08MaWbTuhzwAacT0na',
+  '/handbooks/physics/th/Physics - 06 Fluid Mechanics.pdf': '1FEGZOddEOk3pNVR9qApGDffu4U6B-lRx',
+  '/handbooks/physics/th/Physics - 07 Oscillations & Simple Harmonic Motion.pdf': '1cP7PUQhpRR0O-esy-caneSs9ID-y7j8N',
+  '/handbooks/physics/th/Physics - 08 Waves & Sound.pdf': '1EWquRHkw4l7tPqbzEWp6UYjw_CXMib9a',
+  '/handbooks/physics/th/Physics - 09 Thermodynamics & Heat Transfer.pdf': '11waWXOu0V6Ndub-DaPXmCTbOzcIcZriH',
+
+  // Linear Algebra (EN)
+  '/handbooks/linear-algebra/en/Linear-Algebra - 01 Vectors & Linear Combinations.pdf': '1P-AheL4V2BsXKoChS804huevO2lsG0lA',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 02 Solving Linear Equations & Elimination.pdf': '12knR4-FJnPRf8rZCyjQYo-M_VMTdcoXy',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 03 Vector Spaces & Subspaces.pdf': '1CGYtKw8Vaj2HPGZ9MzJ4v2GVJ6MDyD1o',
+  "/handbooks/linear-algebra/en/Linear-Algebra - 04 Determinants & Cramer's Rule.pdf": '1NuFUZ73X3Mag3Xhn0zC5Okzs0Wa2YOuk',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 05 Linear Transformations & Change of Basis.pdf': '1UbPf9hEkbuXjAvzSMGXJfwQs2lBtgj-m',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 06 Diagonalization & Matrix Powers.pdf': '1LnB6Eriyfcs_gQ4DdSQDD_i8Jo__sJSx',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem.pdf': '1HO5b-4xSBptOC-_SyxyH9NBWAUXWauov',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms.pdf': '101hYJ_bOBgEPWy3jDMqVc2jw6SOdk4zj',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 09 Orthogonality.pdf': '1_Pf7ssQlIYlcADodtBpYZc1gehSH5vxS',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 09 Singular Value Decomposition (SVD).pdf': '19M252J4TzYq1j1lyehHF5o2dWvD_-eRf',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 10 Eigenvalues.pdf': '1yvI4_wC0jMlkMokQfnTqRAZGqf8MC_Hd',
+  '/handbooks/linear-algebra/en/Linear-Algebra - 10.1 Prefinals-Explanation.pdf': '1vlD8ilYQBAG9YN7SGgE4onhQhx0abiIq',
+
+  // Linear Algebra (TH)
+  '/handbooks/linear-algebra/th/Linear-Algebra - 01 Vectors & Linear Combinations.pdf': '15TcCIUac41U-NmvctiUYn_FIYhR-ZM0I',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 02 Solving Linear Equations & Elimination.pdf': '1CzC9Elb73xPDv7TBmOZPTvZevcBY1LTl',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 03 Vector Spaces & Subspaces.pdf': '1MshGBkYkl7urSXKY6VPzEFMNVNpAghq2',
+  "/handbooks/linear-algebra/th/Linear-Algebra - 04 Determinants & Cramer's Rule.pdf": '1-Uk5bw2OmklBp5O8Wwp3sa4BJ7GpAyqk',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 05 Linear Transformations & Change of Basis.pdf': '16yibNPTzAYsIx1Nqj7mZNCjTalyA3B5r',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 06 Diagonalization & Matrix Powers.pdf': '1fcXcq68LlhgTEr6QfgjXe6BZ3sCJ0yzj',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 07 Symmetric Matrices & Spectral Theorem.pdf': '1rhSlIVGfM7kEfwYsLkJ45CxJR4ZlEaY3',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 08 Positive Definite Matrices & Quadratic Forms.pdf': '1-FelpHBfhXLWX6Ada8ycuu7NwLHxREk3',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 09 Orthogonality.pdf': '1aKuSglgfiOBdyl_2teD-yogWkiG1mm28',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 09 Singular Value Decomposition (SVD).pdf': '1zcLldDB_I6RxGkK7k2X4Og1a4g44tfrK',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 10 Eigenvalues.pdf': '1t5mW6XwfQc1U0SN2ArEVRQsaB3MuIk--',
+  '/handbooks/linear-algebra/th/Linear-Algebra - 10.1 Prefinals-Explanation.pdf': '1it5wc6WTBol9ReX3B7UfkBT8mjLJ0nnF',
+
+  // Computer Programming (EN)
+  '/handbooks/com-prog/en/C-Programming-Master-Handbook.pdf': '1sOYU8y24MYbbKvMWdWMYLQgvKK6zjz0G',
+  '/handbooks/com-prog/en/Python-Programming-Master-Handbook.pdf': '18b7bbtbNQpJM1pbHon22GldMuZHXRfQj',
+
+  // Computer Programming (TH)
+  '/handbooks/com-prog/th/C-Programming-Master-Handbook.pdf': '19Pbyj_bzKW7gX81Y2UBXdd1B_LC0bav6',
+  '/handbooks/com-prog/th/Python-Programming-Master-Handbook.pdf': '1gTlUx-f63n8-VDKH6gyjSoBMduK-q_X-',
+};
 
 /**
  * Ensures relative path resolution with Vite base URL support.
- * Essential for static hosting (e.g. GitHub Pages with base path).
  */
 export function withBase(path) {
   if (!path) return '';
@@ -18,7 +108,114 @@ export function withBase(path) {
   return `${cleanBase}${cleanPath}`;
 }
 
-export const HANDBOOKS_CATALOG = [
+/**
+ * Validate that a string is a strictly well-formed Google Drive File/Folder ID.
+ * Prevents XSS, parameter injection, and open-redirect attacks.
+ */
+export function isValidDriveId(id) {
+  if (!id || typeof id !== 'string') return false;
+  return /^[a-zA-Z0-9_-]{10,64}$/.test(id.trim());
+}
+
+/**
+ * Extract Google Drive File ID from a raw ID, a Google Drive share URL, or a mapped local handbook path.
+ */
+export function extractDriveFileId(input) {
+  if (!input) return null;
+  const trimmed = String(input).trim();
+  if (GOOGLE_DRIVE_FILE_MAP[trimmed]) {
+    return GOOGLE_DRIVE_FILE_MAP[trimmed];
+  }
+  const fileMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileMatch && isValidDriveId(fileMatch[1])) return fileMatch[1];
+  const idMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (idMatch && isValidDriveId(idMatch[1])) return idMatch[1];
+  if (/^[a-zA-Z0-9_-]{18,64}$/.test(trimmed) && !trimmed.includes('/')) {
+    return trimmed;
+  }
+  return null;
+}
+
+/**
+ * Generate a Google Drive direct-to-device download URL (Content-Disposition: attachment).
+ */
+export function toDriveDownloadUrl(fileId) {
+  if (!isValidDriveId(fileId)) return '';
+  return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId.trim())}`;
+}
+
+/**
+ * Generate a Google Drive browser preview URL.
+ */
+export function toDrivePreviewUrl(fileId) {
+  if (!isValidDriveId(fileId)) return '';
+  return `https://drive.google.com/file/d/${encodeURIComponent(fileId.trim())}/view`;
+}
+
+/**
+ * Resolve any handbook URL/path/Drive ID into { driveId, downloadUrl, previewUrl, isGoogleDrive }.
+ */
+export function resolveHandbookUrls(pathOrDriveInput, explicitDriveId = null) {
+  const driveId = explicitDriveId || extractDriveFileId(pathOrDriveInput);
+  if (driveId) {
+    return {
+      driveId,
+      downloadUrl: toDriveDownloadUrl(driveId),
+      previewUrl: toDrivePreviewUrl(driveId),
+      isGoogleDrive: true,
+    };
+  }
+  const resolvedLocal = withBase(pathOrDriveInput);
+  return {
+    driveId: null,
+    downloadUrl: resolvedLocal,
+    previewUrl: resolvedLocal,
+    isGoogleDrive: false,
+  };
+}
+
+/**
+ * Verify that a download URL is safe to load (either same-origin relative path or official Google Drive direct download).
+ */
+export function isSafeDownloadUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) return true;
+  return /^https:\/\/drive\.google\.com\/uc\?export=download&id=[a-zA-Z0-9_-]{10,64}$/.test(trimmed);
+}
+
+/**
+ * Trigger an immediate direct-to-device download without opening a new tab or navigating away.
+ * Uses a hidden iframe so Google Drive's Content-Disposition: attachment header downloads seamlessly
+ * in the current window context.
+ */
+export function triggerDirectDownload(event, url) {
+  if (!isSafeDownloadUrl(url)) return;
+  if (event) {
+    // Allow Ctrl/Cmd/Middle-click if user explicitly wants a new tab, otherwise stay on current page
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button === 1) {
+      return;
+    }
+    event.preventDefault();
+  }
+
+  try {
+    let iframe = document.getElementById('handbook-direct-dl-iframe');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'handbook-direct-dl-iframe';
+      iframe.title = 'Direct Download Frame';
+      iframe.style.display = 'none';
+      iframe.setAttribute('sandbox', 'allow-downloads allow-scripts allow-same-origin');
+      document.body.appendChild(iframe);
+    }
+    iframe.src = url;
+  } catch {
+    window.location.assign(url);
+  }
+}
+
+const RAW_HANDBOOKS_CATALOG = [
   // ==================== PHYSICS VOLUMES ====================
   {
     id: 'phy-01-kinematics',
@@ -732,7 +929,7 @@ export const HANDBOOKS_CATALOG = [
     author: 'Synthesized from Gilbert Strang (5th Ed., Ch. 6.4) & Kenji Hiranabe',
     authorTh: 'สังเคราะห์จาก Gilbert Strang (พิมพ์ครั้งที่ 5 บทที่ 6.4) และ Kenji Hiranabe',
     description:
-      'Universal orthogonal diagonalization S = QΛQᵀ, real eigenvalue and orthogonal eigenvector proofs, rank-1 projection decomposition S = ∑ λᵢ qᵢ qᵢᵀ, spectral functional calculus, Sylvester\'s Law of Inertia (pivot signs = eigenvalue signs), spectrum slicing bisection, complex Hermitian matrices H = UΛUᴴ, and 7 Fast-Tracks.',
+      "Universal orthogonal diagonalization S = QΛQᵀ, real eigenvalue and orthogonal eigenvector proofs, rank-1 projection decomposition S = ∑ λᵢ qᵢ qᵢᵀ, spectral functional calculus, Sylvester's Law of Inertia (pivot signs = eigenvalue signs), spectrum slicing bisection, complex Hermitian matrices H = UΛUᴴ, and 7 Fast-Tracks.",
     descriptionTh:
       'การแปลงทแยงมุมเชิงตั้งฉากสากล S = QΛQᵀ, การพิสูจน์ไอเกนแวลูจำนวนจริงและไอเกนเวกเตอร์ตั้งฉาก, การกระจายตัวฉายภาพอันดับหนึ่ง (Rank-1 Projections) S = ∑ λᵢ qᵢ qᵢᵀ, แคลคูลัสฟังก์ชันสเปกตรัม, กฎความเฉื่อยของซิลเวสเตอร์ (เครื่องหมายไพวอต = เครื่องหมายไอเกนแวลู), การสไลซ์สเปกตรัม, เมทริกซ์แฮร์มีเชียนเชิงซ้อน และ 7 สูตรลัด',
     tags: ['Symmetric Matrices', 'Spectral Theorem', 'Orthogonal Diagonalization', 'Rank-1 Projections', 'Sylvesters Law of Inertia', 'Hermitian Matrices'],
@@ -1093,8 +1290,49 @@ export const HANDBOOKS_CATALOG = [
 ];
 
 /**
+ * Hydrate an edition object with Google Drive Direct Download & Preview URLs.
+ */
+function hydrateEdition(edition) {
+  if (!edition) return null;
+  const resolved = resolveHandbookUrls(edition.localPath || edition.downloadUrl, edition.driveId);
+  return {
+    ...edition,
+    localPath: edition.localPath || edition.downloadUrl,
+    driveId: resolved.driveId,
+    downloadUrl: resolved.downloadUrl,
+    previewUrl: resolved.previewUrl,
+    isGoogleDrive: resolved.isGoogleDrive,
+  };
+}
+
+/**
+ * Hydrate a handbook catalog entry so all editions point directly to Google Drive.
+ */
+export function hydrateHandbookEntry(entry) {
+  const mainResolved = resolveHandbookUrls(entry.localPath || entry.downloadUrl, entry.driveId);
+  const editions = {};
+  if (entry.editions?.th) {
+    editions.th = hydrateEdition(entry.editions.th);
+  }
+  if (entry.editions?.en) {
+    editions.en = hydrateEdition(entry.editions.en);
+  }
+  return {
+    ...entry,
+    localPath: entry.localPath || entry.downloadUrl,
+    driveId: mainResolved.driveId,
+    downloadUrl: mainResolved.downloadUrl,
+    previewUrl: mainResolved.previewUrl,
+    isGoogleDrive: mainResolved.isGoogleDrive,
+    editions,
+  };
+}
+
+export const HANDBOOKS_CATALOG = RAW_HANDBOOKS_CATALOG.map(hydrateHandbookEntry);
+
+/**
  * Resolve the specific language edition for a handbook, with fallback if only one edition exists.
- * Automatically wraps downloadUrl with withBase() for environment compatibility.
+ * Returns { ...edition, downloadUrl, previewUrl, driveId }.
  */
 export function getHandbookEdition(handbook, preferredLang = 'en') {
   if (!handbook) return null;
@@ -1113,15 +1351,14 @@ export function getHandbookEdition(handbook, preferredLang = 'en') {
       shortLabel: 'PDF',
       filename: handbook.filename,
       downloadUrl: handbook.downloadUrl,
+      previewUrl: handbook.previewUrl,
+      driveId: handbook.driveId,
       fileSize: handbook.fileSize,
       available: true,
     };
   }
 
-  return {
-    ...chosen,
-    downloadUrl: withBase(chosen.downloadUrl),
-  };
+  return hydrateEdition(chosen);
 }
 
 /**
@@ -1132,9 +1369,9 @@ const SERIES_PRIORITY = { core: 1, compendium: 2, exam: 3, reference: 4 };
 /**
  * Find all handbooks relevant to a specific topic ID, ordered by pedagogical series priority.
  */
-export function getHandbooksForTopic(topicId) {
+export function getHandbooksForTopic(topicId, catalog = HANDBOOKS_CATALOG) {
   if (!topicId) return [];
-  return HANDBOOKS_CATALOG
+  return catalog
     .filter((h) => h.topicIds && h.topicIds.includes(topicId))
     .sort((a, b) => (SERIES_PRIORITY[a.series || 'core'] || 99) - (SERIES_PRIORITY[b.series || 'core'] || 99));
 }
@@ -1142,24 +1379,24 @@ export function getHandbooksForTopic(topicId) {
 /**
  * Find handbooks relevant to a specific topic ID (alias for backward compatibility)
  */
-export function getHandbooksByTopic(topicId) {
-  return getHandbooksForTopic(topicId);
+export function getHandbooksByTopic(topicId, catalog = HANDBOOKS_CATALOG) {
+  return getHandbooksForTopic(topicId, catalog);
 }
 
 /**
  * Find the primary handbook for a specific topic ID (or null)
  */
-export function getPrimaryHandbookForTopic(topicId) {
-  const matches = getHandbooksForTopic(topicId);
+export function getPrimaryHandbookForTopic(topicId, catalog = HANDBOOKS_CATALOG) {
+  const matches = getHandbooksForTopic(topicId, catalog);
   return matches.length > 0 ? matches[0] : null;
 }
 
 /**
  * Find handbooks by subject ID
  */
-export function getHandbooksBySubject(subjectId) {
-  if (!subjectId || subjectId === 'all') return HANDBOOKS_CATALOG;
-  return HANDBOOKS_CATALOG.filter((h) => h.subjectId === subjectId);
+export function getHandbooksBySubject(subjectId, catalog = HANDBOOKS_CATALOG) {
+  if (!subjectId || subjectId === 'all') return catalog;
+  return catalog.filter((h) => h.subjectId === subjectId);
 }
 
 /**
@@ -1170,17 +1407,17 @@ export function getAllHandbooks() {
 }
 
 /**
- * Return summary statistics for the handbook repository
+ * Return summary statistics for a handbook catalog
  */
-export function getHandbooksSummary() {
+export function getHandbooksSummary(catalog = HANDBOOKS_CATALOG) {
   let thCount = 0;
   let enCount = 0;
-  HANDBOOKS_CATALOG.forEach((h) => {
+  catalog.forEach((h) => {
     if (h.editions?.th?.available) thCount += 1;
     if (h.editions?.en?.available) enCount += 1;
   });
   return {
-    totalVolumes: HANDBOOKS_CATALOG.length,
+    totalVolumes: catalog.length,
     thCount,
     enCount,
     totalFiles: thCount + enCount,

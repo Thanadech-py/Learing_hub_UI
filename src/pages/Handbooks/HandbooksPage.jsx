@@ -1,6 +1,14 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { HANDBOOKS_CATALOG, getHandbooksSummary, getHandbookEdition } from '../../data/handbooksRegistry.js';
+import {
+  getHandbooksSummary,
+  getHandbookEdition,
+  triggerDirectDownload,
+} from '../../data/handbooksRegistry.js';
+import {
+  useDynamicHandbooks,
+  resolveSubjectMeta,
+} from '../../services/googleDriveSync.js';
 import { useLanguage } from '../../i18n/LanguageContext.jsx';
 import './HandbooksPage.css';
 
@@ -39,6 +47,13 @@ const TOPIC_TITLES = {
   'units-and-measurement': { en: 'Units & Measurement', th: 'หน่วยและมิติ' },
   'c-programming': { en: 'C Programming', th: 'การเขียนโปรแกรมภาษา C' },
   'py-programming': { en: 'Python Programming', th: 'การเขียนโปรแกรมภาษา Python' },
+  'number-systems': { en: 'Number Systems', th: 'ระบบจำนวน' },
+  'algebraic-expressions': { en: 'Algebraic Expressions', th: 'นิพจน์พีชคณิต' },
+  functions: { en: 'Functions', th: 'ฟังก์ชัน' },
+  trigonometry: { en: 'Trigonometry', th: 'ตรีโกณมิติ' },
+  limits: { en: 'Limits', th: 'ลิมิตและความต่อเนื่อง' },
+  derivatives: { en: 'Derivatives', th: 'อนุพันธ์' },
+  integrals: { en: 'Integrals & Integration', th: 'ปริพันธ์และเทคนิคการอินทิเกรต' },
 };
 
 const LA_SERIES_ROADMAP = [
@@ -57,30 +72,43 @@ export default function HandbooksPage() {
   const { lang, t } = useLanguage();
   const isThai = lang === 'th';
 
+  const {
+    catalog,
+    discoveredSubjects,
+    isSyncing,
+    syncNow,
+  } = useDynamicHandbooks();
+
   const [selectedSubject, setSelectedSubject] = useState('all');
   const [langFilter, setLangFilter] = useState('all'); // 'all' | 'th' | 'en'
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedIds, setExpandedIds] = useState({});
 
-  const summary = useMemo(() => getHandbooksSummary(), []);
+  const summary = useMemo(() => getHandbooksSummary(catalog), [catalog]);
 
   const subjectsFilterList = useMemo(() => {
-    const counts = {
-      all: HANDBOOKS_CATALOG.length,
-      physics: HANDBOOKS_CATALOG.filter((h) => h.subjectId === 'physics').length,
-      'linear-algebra': HANDBOOKS_CATALOG.filter((h) => h.subjectId === 'linear-algebra').length,
-      'com-prog': HANDBOOKS_CATALOG.filter((h) => h.subjectId === 'com-prog').length,
+    const allTab = {
+      id: 'all',
+      icon: '📦',
+      labelEn: 'All Releases',
+      labelTh: 'เอกสารทั้งหมด',
+      count: catalog.length,
     };
-    return [
-      { id: 'all', icon: '📦', labelEn: 'All Releases', labelTh: 'เอกสารทั้งหมด', count: counts.all },
-      { id: 'physics', icon: '⚛️', labelEn: 'Physics', labelTh: 'ฟิสิกส์', count: counts.physics },
-      { id: 'linear-algebra', icon: '📐', labelEn: 'Linear Algebra', labelTh: 'พีชคณิตเชิงเส้น', count: counts['linear-algebra'] },
-      { id: 'com-prog', icon: '💻', labelEn: 'Programming', labelTh: 'การเขียนโปรแกรม', count: counts['com-prog'] },
-    ];
-  }, []);
+
+    const dynamicTabs = discoveredSubjects.map((sub) => ({
+      id: sub.id,
+      icon: sub.icon || '📁',
+      labelEn: sub.labelEn,
+      labelTh: sub.labelTh,
+      count: catalog.filter((h) => h.subjectId === sub.id).length,
+      accent: sub.accent,
+    }));
+
+    return [allTab, ...dynamicTabs];
+  }, [catalog, discoveredSubjects]);
 
   const filteredHandbooks = useMemo(() => {
-    let list = HANDBOOKS_CATALOG;
+    let list = catalog;
 
     if (selectedSubject !== 'all') {
       list = list.filter((h) => h.subjectId === selectedSubject);
@@ -105,7 +133,7 @@ export default function HandbooksPage() {
       );
     }
     return list;
-  }, [selectedSubject, langFilter, searchQuery]);
+  }, [catalog, selectedSubject, langFilter, searchQuery]);
 
   const toggleExpand = (id) => {
     setExpandedIds((prev) => ({
@@ -159,7 +187,7 @@ export default function HandbooksPage() {
       <header className="handbooks-hero">
         <div className="handbooks-hero__top-row">
           <div className="handbooks-hero__badge">
-            <span>📚 OFFICIAL LEARNING RESOURCE REPOSITORY • BILINGUAL EDITION LEDGER</span>
+            <span>☁️ GOOGLE DRIVE CLOUD REPOSITORY • DIRECT DOWNLOAD LEDGER</span>
           </div>
           <div className="handbooks-telemetry">
             <span className="handbooks-telemetry__chip">
@@ -171,6 +199,23 @@ export default function HandbooksPage() {
             <span className="handbooks-telemetry__chip handbooks-telemetry__chip--en">
               🇬🇧 <strong>{summary.enCount}</strong> {t('English PDFs', 'ฉบับภาษาอังกฤษ')}
             </span>
+            <button
+              type="button"
+              className="handbooks-telemetry__sync-btn"
+              onClick={() => syncNow(true)}
+              disabled={isSyncing}
+              title={t(
+                'Sync latest folders and PDF handbooks from Google Drive',
+                'ซิงก์โฟลเดอร์วิชาและไฟล์ PDF ล่าสุดจาก Google Drive'
+              )}
+            >
+              <span aria-hidden="true">{isSyncing ? '⏳' : '🔄'}</span>
+              <span>
+                {isSyncing
+                  ? t('Syncing Drive...', 'กำลังซิงก์ Drive...')
+                  : t('Sync Drive', 'ซิงก์ข้อมูล Drive')}
+              </span>
+            </button>
           </div>
         </div>
 
@@ -179,8 +224,8 @@ export default function HandbooksPage() {
         </h1>
         <p className="handbooks-hero__subtitle">
           {t(
-            'Select and download synthesized university reference handbooks in Thai (TH) or English (EN). Structured like a software release directory for instant one-click access and offline study.',
-            'เลือกดาวน์โหลดเอกสารสรุปเนื้อหาหลักแยกตามรายวิชาและภาษา (ฉบับภาษาไทย TH / ฉบับภาษาอังกฤษ EN) ในรูปแบบแถบรายการดาวน์โหลดที่ค้นหาและเข้าถึงได้ทันที'
+            'Select and download synthesized university reference handbooks in Thai (TH) or English (EN). Hosted on Google Drive for zero-bloat instant direct-to-device downloads.',
+            'เลือกดาวน์โหลดเอกสารสรุปเนื้อหาหลักแยกตามรายวิชาและภาษา (ฉบับภาษาไทย TH / ฉบับภาษาอังกฤษ EN) เชื่อมต่อโดยตรงกับคลัง Google Drive กดดาวน์โหลดลงเครื่องได้ทันทีโดยไม่ต้องเปลี่ยนหน้า'
           )}
         </p>
 
@@ -237,7 +282,7 @@ export default function HandbooksPage() {
       {/* Toolbar: Subject Tabs + Language Selector + Search */}
       <div className="handbooks-toolbar">
         <div className="handbooks-toolbar__row">
-          {/* Subject Filter Pills */}
+          {/* Subject Filter Pills (Dynamically updated when new subject folders are added on Drive) */}
           <div className="handbooks-subject-pills" role="tablist" aria-label="Filter by subject">
             {subjectsFilterList.map((sub) => (
               <button
@@ -310,8 +355,8 @@ export default function HandbooksPage() {
           <div className="handbooks-toolbar__meta-actions">
             <span className="handbooks-result-count">
               {t(
-                `Showing ${filteredHandbooks.length} of ${HANDBOOKS_CATALOG.length} releases`,
-                `แสดง ${filteredHandbooks.length} จาก ${HANDBOOKS_CATALOG.length} รายการ`
+                `Showing ${filteredHandbooks.length} of ${catalog.length} releases`,
+                `แสดง ${filteredHandbooks.length} จาก ${catalog.length} รายการ`
               )}
             </span>
             <button
@@ -350,13 +395,16 @@ export default function HandbooksPage() {
           <div className="handbook-ledger__body">
             {filteredHandbooks.map((handbook) => {
               const isExpanded = Boolean(expandedIds[handbook.id]);
-              const accent = SUBJECT_ACCENTS[handbook.subjectId] || '#38bdf8';
+              const subjectMeta = resolveSubjectMeta(handbook.subjectId);
+              const accent = SUBJECT_ACCENTS[handbook.subjectId] || subjectMeta.accent || '#38bdf8';
               const primaryTitle = isThai ? handbook.titleTh : handbook.title;
               const secondaryTitle = isThai ? handbook.title : handbook.titleTh;
               const desc = isThai ? handbook.descriptionTh : handbook.description;
               const badge = isThai ? handbook.badgeTh : handbook.badge;
               const author = isThai ? handbook.authorTh : handbook.author;
-              const subjectName = isThai ? handbook.subjectNameTh : handbook.subjectName;
+              const subjectName = isThai
+                ? handbook.subjectNameTh || subjectMeta.labelTh
+                : handbook.subjectName || subjectMeta.labelEn;
 
               const thEd = handbook.editions?.th?.available ? handbook.editions.th : null;
               const enEd = handbook.editions?.en?.available ? handbook.editions.en : null;
@@ -445,10 +493,11 @@ export default function HandbooksPage() {
                         <a
                           href={thEd.downloadUrl}
                           download={thEd.filename}
+                          onClick={(e) => triggerDirectDownload(e, thEd.downloadUrl)}
                           className={`handbook-dl-btn handbook-dl-btn--th ${
                             isThai || langFilter === 'th' ? 'handbook-dl-btn--primary' : ''
                           }`}
-                          title={`${t('Download Thai PDF', 'ดาวน์โหลดฉบับภาษาไทย')} (${thEd.fileSize})`}
+                          title={`${t('Direct Download Thai PDF', 'ดาวน์โหลดฉบับภาษาไทยลงเครื่องทันที')} (${thEd.fileSize})`}
                         >
                           <span className="handbook-dl-btn__icon" aria-hidden="true">📥</span>
                           <span className="handbook-dl-btn__flag" aria-hidden="true">🇹🇭</span>
@@ -463,10 +512,11 @@ export default function HandbooksPage() {
                         <a
                           href={enEd.downloadUrl}
                           download={enEd.filename}
+                          onClick={(e) => triggerDirectDownload(e, enEd.downloadUrl)}
                           className={`handbook-dl-btn handbook-dl-btn--en ${
                             (!isThai && langFilter !== 'th') || !thEd ? 'handbook-dl-btn--primary' : ''
                           }`}
-                          title={`${t('Download English PDF', 'ดาวน์โหลดฉบับภาษาอังกฤษ')} (${enEd.fileSize})`}
+                          title={`${t('Direct Download English PDF', 'ดาวน์โหลดฉบับภาษาอังกฤษลงเครื่องทันที')} (${enEd.fileSize})`}
                         >
                           <span className="handbook-dl-btn__icon" aria-hidden="true">📥</span>
                           <span className="handbook-dl-btn__flag" aria-hidden="true">🇬🇧</span>
@@ -479,7 +529,7 @@ export default function HandbooksPage() {
 
                       {preferredEd && (
                         <a
-                          href={preferredEd.downloadUrl}
+                          href={preferredEd.previewUrl || preferredEd.downloadUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="handbook-icon-btn"
@@ -561,7 +611,7 @@ export default function HandbooksPage() {
                         {/* Right: Ubuntu-Style Checksum / Edition Mirror Sub-table */}
                         <div className="handbook-strip__drawer-files">
                           <h3 className="handbook-strip__drawer-heading">
-                            {t('Direct Release Files (Select Language)', 'ไฟล์เอกสารแยกตามภาษา (เลือกดาวน์โหลด / เปิดอ่าน)')}
+                            {t('Direct Release Files (Select Language)', 'ไฟล์เอกสารแยกตามภาษา (เลือกดาวน์โหลดลงเครื่อง / เปิดอ่าน)')}
                           </h3>
                           <div className="handbook-file-list">
                             {thEd && (
@@ -578,12 +628,13 @@ export default function HandbooksPage() {
                                   <a
                                     href={thEd.downloadUrl}
                                     download={thEd.filename}
+                                    onClick={(e) => triggerDirectDownload(e, thEd.downloadUrl)}
                                     className="handbook-file-row__btn handbook-file-row__btn--dl"
                                   >
                                     📥 {t('Download', 'ดาวน์โหลด')}
                                   </a>
                                   <a
-                                    href={thEd.downloadUrl}
+                                    href={thEd.previewUrl || thEd.downloadUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="handbook-file-row__btn handbook-file-row__btn--view"
@@ -608,12 +659,13 @@ export default function HandbooksPage() {
                                   <a
                                     href={enEd.downloadUrl}
                                     download={enEd.filename}
+                                    onClick={(e) => triggerDirectDownload(e, enEd.downloadUrl)}
                                     className="handbook-file-row__btn handbook-file-row__btn--dl"
                                   >
                                     📥 {t('Download', 'ดาวน์โหลด')}
                                   </a>
                                   <a
-                                    href={enEd.downloadUrl}
+                                    href={enEd.previewUrl || enEd.downloadUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="handbook-file-row__btn handbook-file-row__btn--view"

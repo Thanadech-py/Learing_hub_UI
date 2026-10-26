@@ -98,6 +98,32 @@
   background: rgba(167, 139, 250, 0.08);
 }
 
+.handbooks-telemetry__sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.handbooks-telemetry__sync-btn:hover:not(:disabled) {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: rgba(52, 211, 153, 0.55);
+  color: #ecfdf5;
+}
+
+.handbooks-telemetry__sync-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 .handbooks-hero__title {
   font-size: clamp(1.65rem, 3vw, 2.35rem);
   font-weight: 800;
