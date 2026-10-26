@@ -61,10 +61,10 @@ const LA_SERIES_ROADMAP = [
   { code: 'LA-03', id: 'la-03-vector-spaces', labelEn: '03 Subspaces', labelTh: '03 ปริภูมิย่อย' },
   { code: 'LA-04', id: 'la-04-determinants', labelEn: '04 Determinants', labelTh: '04 ดีเทอร์มิแนนต์' },
   { code: 'LA-05', id: 'la-05-linear-transformations', labelEn: '05 Transforms', labelTh: '05 การแปลงเชิงเส้น' },
-  { code: 'LA-06', id: 'la-06-diagonalization', labelEn: '06 Diagonalization', labelTh: '06 เมทริกซ์ทแยงมุม', isNew: true },
-  { code: 'LA-07', id: 'la-07-symmetric-spectral', labelEn: '07 Symmetric & Spectral', labelTh: '07 เมทริกซ์สมมาตร', isNew: true },
-  { code: 'LA-08', id: 'la-08-positive-definite', labelEn: '08 Positive Definite', labelTh: '08 โพซิตีฟเดฟินิต', isNew: true },
-  { code: 'LA-09', id: 'la-09-svd', labelEn: '09 SVD & Pseudoinverse', labelTh: '09 ค่าเอกฐาน SVD', isNew: true },
+  { code: 'LA-06', id: 'la-06-diagonalization', labelEn: '06 Diagonalization', labelTh: '06 เมทริกซ์ทแยงมุม', isNew: false},
+  { code: 'LA-07', id: 'la-07-symmetric-spectral', labelEn: '07 Symmetric & Spectral', labelTh: '07 เมทริกซ์สมมาตร', isNew: false },
+  { code: 'LA-08', id: 'la-08-positive-definite', labelEn: '08 Positive Definite', labelTh: '08 โพซิตีฟเดฟินิต', isNew: false },
+  { code: 'LA-09', id: 'la-09-svd', labelEn: '09 SVD & Pseudoinverse', labelTh: '09 ค่าเอกฐาน SVD', isNew: false },
 ];
 
 export default function HandbooksPage() {
@@ -297,32 +297,6 @@ export default function HandbooksPage() {
                 <span className="handbooks-pill__count">{sub.count}</span>
               </button>
             ))}
-          </div>
-
-          {/* Language Edition Filter */}
-          <div className="handbooks-lang-switch" role="group" aria-label="Filter by language edition">
-            <span className="handbooks-lang-switch__label">{t('Edition:', 'ภาษา:')}</span>
-            <button
-              type="button"
-              className={`handbooks-lang-btn ${langFilter === 'all' ? 'handbooks-lang-btn--active' : ''}`}
-              onClick={() => setLangFilter('all')}
-            >
-              🌐 {t('All (TH + EN)', 'ทั้งหมด (ไทย + EN)')}
-            </button>
-            <button
-              type="button"
-              className={`handbooks-lang-btn ${langFilter === 'th' ? 'handbooks-lang-btn--active' : ''}`}
-              onClick={() => setLangFilter('th')}
-            >
-              🇹🇭 {t('Thai (TH)', 'ภาษาไทย')}
-            </button>
-            <button
-              type="button"
-              className={`handbooks-lang-btn ${langFilter === 'en' ? 'handbooks-lang-btn--active' : ''}`}
-              onClick={() => setLangFilter('en')}
-            >
-              🇬🇧 {t('English (EN)', 'English')}
-            </button>
           </div>
         </div>
 
